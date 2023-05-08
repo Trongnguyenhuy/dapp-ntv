@@ -1,35 +1,37 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect } from "react";
+import { HomeBody } from "./Pages/Home/HomeBody";
+import { Header } from "./Templates/HomeTepmplate/Header/Header";
+import web3 from "./Services/Web3/Web3";
 
 function App() {
-  const [count, setCount] = useState(0)
+  useEffect(() => {
+    (async () => {
+      let balance = 0;
+      let accounts = [];
+      try {
+        accounts = await web3.eth.getAccounts();
+        if (accounts.length > 0) {
+          balance = await web3.eth.getBalance(accounts[0]);
+          console.log("accounts: ", accounts);
+          console.log("balance: ", web3.utils.fromWei(balance, "ether"));
+        } else {
+          console.log("Please Connect To Your MetaMask !")
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    })();
+  }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div
+      style={{ background: "rgb(30,27,39)", color: "white" }}
+      className="h-screen"
+    >
+      <Header />
+      <HomeBody />
+    </div>
+  );
 }
 
-export default App
+export default App;
