@@ -1,10 +1,18 @@
 import { AiFillCaretDown, AiOutlineCaretUp } from "react-icons/ai";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ModalContract from "../Modals/ModalContract";
+import { useSelector } from "react-redux";
 
 const FarmingCard = () => {
   const [drop, setDrop] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
+  const { account, amountOfHarvestingToken } = useSelector(
+    (state) => state.farmingReducer
+  );
+
+  useEffect(() => {
+    console.log("account: ", account);
+  }, [account]);
 
   const handleDrop = () => {
     setDrop(!drop);
@@ -17,7 +25,7 @@ const FarmingCard = () => {
   return (
     <div
       style={{ background: "rgb(9,3,23)" }}
-      className="p-8 w-1/3 rounded-2xl shadow-2xl"
+      className="p-8 w-full md:w-1/2 xl:w-1/3 rounded-2xl shadow-2xl mt-4 lg:mt-16"
     >
       <div className="flex flex-row justify-around items-center gap-4">
         <div className="flex flex-row justify-start relative px-2">
@@ -32,35 +40,37 @@ const FarmingCard = () => {
             alt="BUSDT"
           />
         </div>
-        <h2 className="text-3xl font-bold">MIA-BUSDT</h2>
-        <p className="bg-[rgb(124,77,255)] p-2 rounded-2xl">25x</p>
+        <h2 className="text-3xl font-bold">DAT-RET</h2>
+        <p className="bg-[rgb(124,77,255)] p-4 rounded-2xl w-10 h-10 flex flex-row justify-center items-center">
+          <span> 4x</span>
+        </p>
       </div>
-      <div className="border-2 border-white rounded-lg p-4 mt-4 fontsize-[20rem]">
+      <div className="border-2 border-gray-600 rounded-lg p-4 mt-4 fontsize-[20rem]">
         <p className="flex flex-row justify-between">
           <span>APR</span>
-          <span>1740.5191%</span>
+          <span>283.11%</span>
         </p>
         <p className="flex flex-row justify-between">
           <span>Earn</span>
-          <span>MIA + Fees</span>
+          <span>RET + Fees</span>
         </p>
       </div>
-      <div className="border-2 border-white rounded-lg p-4 mt-4 fontsize-[20rem]">
+      <div className="border-2 border-gray-600 rounded-lg p-4 mt-4 fontsize-[20rem]">
         <div className="border-b-2 border-gray-200">
-          <p>MIA Earned</p>
-          <p>0.0000</p>
+          <p>RET Earned</p>
+          <p>{amountOfHarvestingToken}</p>
           <div className="flex flex-row justify-center w-full py-4">
-            <button className="w-full p-4 bg-[rgb(28,23,41)] rounded-lg border-white border-2 disabled">
+            <button className="w-full p-4 bg-[rgb(28,23,41)] rounded-lg border-gray-600 border-2 disabled">
               Harvest
             </button>
           </div>
         </div>
         <div className="mt-4">
-          <p>MIA-BUSD LP Staked</p>
+          <p>DAT-RET LP Staked</p>
           <div className="flex flex-row justify-center w-full py-4">
             <button
               onClick={handleModal}
-              className="w-full p-4 bg-[rgb(127,82,255)] rounded-lg border-white border-2"
+              className="w-full p-4 bg-[rgb(127,82,255)] rounded-lg border-gray-600 border-2"
             >
               Enable Contract
             </button>
@@ -89,7 +99,11 @@ const FarmingCard = () => {
           <p>Ends in</p>
         </div>
       )}
-      <ModalContract modalOpen={modalOpen} setModalOpen={setModalOpen} />
+      <ModalContract
+        modalOpen={modalOpen}
+        setModalOpen={setModalOpen}
+        account={account}
+      />
     </div>
   );
 };

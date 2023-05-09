@@ -1,25 +1,41 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
 import { Modal } from "antd";
 import { useRef } from "react";
+import { useDispatch } from "react-redux";
+import {
+  setHarvestingToken,
+  setMessage,
+} from "../../Redux/Reducers/FarmingReducer";
 
 const ModalContract = (props) => {
-  const { modalOpen, setModalOpen } = props;
+  const { modalOpen, setModalOpen, account } = props;
+  const dispatch = useDispatch();
+
   const amountOfToken = useRef(0);
 
   const handleConfirm = () => {
     setModalOpen(false);
-    console.log(`Confirm!!! ${amountOfToken.current}`);
+    const setHarvestingTokenAction = setHarvestingToken(amountOfToken.current);
+    const setMessageAction = setMessage({
+      type: "confirm",
+      message: `${amountOfToken.current} tokens have been confirmed!`,
+    });
+    dispatch(setHarvestingTokenAction);
+    dispatch(setMessageAction);
+    console.log(`amountOfToken: ${amountOfToken.current}`);
+    console.log(`Address: ${account.walletAddress}`);
+    console.log(`Balance: ${account.balance}`);
   };
 
   const handleCancel = () => {
     setModalOpen(false);
     amountOfToken.current = 0;
-  }
+  };
 
   const handleChange = (e) => {
     const { value } = e.target;
-
     amountOfToken.current = value;
-    console.log(amountOfToken.current);
   };
 
   return (
@@ -29,6 +45,18 @@ const ModalContract = (props) => {
       open={modalOpen}
       onOk={handleConfirm}
       onCancel={handleCancel}
+      footer={[
+        <button key="back" onClick={handleCancel} className="font-bold font-poppins p-2 text-white bg-[rgb(28,23,41)] rounded-md">
+          Return
+        </button>,
+        <button
+          key="submit"
+          onClick={handleConfirm}
+          className="font-bold font-poppins p-2 text-white bg-[rgb(127,82,255)] rounded-md ml-4"
+        >
+          Submit
+        </button>,
+      ]}
     >
       <input
         type="number"

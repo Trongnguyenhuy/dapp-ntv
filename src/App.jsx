@@ -1,35 +1,93 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react";
 import { HomeBody } from "./Pages/Home/HomeBody";
 import { Header } from "./Templates/HomeTepmplate/Header/Header";
 import web3 from "./Services/Web3/Web3";
+import {
+  getWalletInfor,
+  setMessage,
+  // setNetwork,
+} from "./Redux/Reducers/FarmingReducer";
+import { useDispatch, useSelector } from "react-redux";
+import ModalInfo from "./Components/Modals/ModalInfo";
+import { checkNetwork } from "./Ultis/NetworkCheck/NetworkCheck";
 
 function App() {
+  const { message } = useSelector((state) => state.farmingReducer);
+  const dispatch = useDispatch();
   useEffect(() => {
     (async () => {
-      let balance = 0;
-      let accounts = [];
-      try {
-        accounts = await web3.eth.getAccounts();
-        if (accounts.length > 0) {
-          balance = await web3.eth.getBalance(accounts[0]);
-          console.log("accounts: ", accounts);
-          console.log("balance: ", web3.utils.fromWei(balance, "ether"));
-        } else {
-          console.log("Please Connect To Your MetaMask !")
+      if (window.ethereum) {
+        try {
+          await addWalletInfo();
+        } catch (error) {
+          console.error(error);
         }
-      } catch (err) {
-        console.log(err);
+
+        window.ethereum.on("chainChanged", async () => {
+          await addWalletInfo();
+        });
+        window.ethereum.on("accountsChanged", addWalletInfo);
+
+      } else {
+        const warmingAction = setMessage({
+          type: "warming",
+          message: "Please Connect to your MetaMask Wallet!",
+        });
+        dispatch(warmingAction);
       }
     })();
+    return () => {
+      window.ethereum?.removeListener("chainChanged", (chainId) => {
+        console.log("chainId", chainId);
+      });
+      window.ethereum?.removeListener("accountsChanged", (accounts) => {
+        console.log("accounts", accounts);
+      });
+      
+    };
   }, []);
+
+  const addWalletInfo = async () => {
+    const accounts = await web3.eth.getAccounts();
+    if (accounts.length > 0) {
+      const balance = await web3.eth.getBalance(accounts[0]);
+      const chainId = await web3.eth.getChainId();
+
+      const network = checkNetwork(chainId);
+
+      const walletInfor = {
+        account: accounts[0],
+        balance: web3.utils.fromWei(balance, "ether"),
+        network: network,
+      };
+
+      const getWalletInforAction = getWalletInfor(walletInfor);
+      const connectAction = setMessage({
+        type: "infor",
+        message: "Connect to MetaMask success!",
+      });
+      dispatch(getWalletInforAction);
+      dispatch(connectAction);
+    }
+  };
 
   return (
     <div
       style={{ background: "rgb(30,27,39)", color: "white" }}
-      className="h-screen"
+      className="h-screen font-poppins relative"
     >
       <Header />
       <HomeBody />
+      <div className="flex flex-col items-start justify-center gap-2 absolute left-0 md:bottom-14 w-1/4">
+        {message.map((item, index) => {
+          return (
+            <div key={index}>
+              <ModalInfo message={item} />
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
