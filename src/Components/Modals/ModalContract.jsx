@@ -1,18 +1,31 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import { Modal } from "antd";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import {
   setHarvestingToken,
   setMessage,
 } from "../../Redux/Reducers/FarmingReducer";
+import stakingServices from "../../Services/StakingServices/StakingServices";
 
 const ModalContract = (props) => {
   const { modalOpen, setModalOpen, account } = props;
   const dispatch = useDispatch();
 
   const amountOfToken = useRef(0);
+
+  useEffect(() => {
+    (async () => {
+      const pool = await stakingServices.methods.pools(0).call();
+      const tx = await stakingServices.methods
+        .deposit(0, 10)
+        .send({ from: "0xee0d47fB627a8a812169C13F7FEe5e3100c329f3" });
+
+      console.log("pool:", pool);
+      console.log("Tx:", tx);
+    })();
+  }, []);
 
   const handleConfirm = () => {
     setModalOpen(false);
@@ -40,21 +53,29 @@ const ModalContract = (props) => {
 
   return (
     <Modal
-      title={<h2 className="p-2 font-bold text-2xl">Amount Confirm</h2>}
-      centered
+      title={
+        <h2 className="p-4 font-bold text-3xl border-b-2 border-gray-700">
+          Số Lượng Muốn Nạp
+        </h2>
+      }
+      bodyStyle={{ padding: 20 }}
       open={modalOpen}
       onOk={handleConfirm}
       onCancel={handleCancel}
       footer={[
-        <button key="back" onClick={handleCancel} className="font-bold font-poppins p-2 text-white bg-[rgb(28,23,41)] rounded-md">
-          Return
+        <button
+          key="back"
+          onClick={handleCancel}
+          className="text-xl w-1/4 font-poppins p-4 text-white bg-[rgb(28,23,41)] rounded-md"
+        >
+          Quay Về
         </button>,
         <button
           key="submit"
           onClick={handleConfirm}
-          className="font-bold font-poppins p-2 text-white bg-[rgb(127,82,255)] rounded-md ml-4"
+          className="text-xl font-poppins p-4 text-white bg-[rgb(127,82,255)] w-1/4 rounded-md ml-4"
         >
-          Submit
+          Nạp
         </button>,
       ]}
     >
@@ -62,8 +83,8 @@ const ModalContract = (props) => {
         type="number"
         id="amountOfToke"
         name="amountOfToke"
-        className="w-full p-2 border-2 boder-black"
-        placeholder="Please enter Amount of Token that you want to farm!"
+        className="w-full p-2 border-2 boder-black rounded-xl text-xl"
+        placeholder="Nhập Vào Số Lượng Muốn Nạp"
         onChange={handleChange}
       />
     </Modal>

@@ -27,7 +27,7 @@ export const Header = () => {
   };
 
   return (
-    <div className="border-b-2 border-gray-600 relative">
+    <div className="border-b-2 border-gray-600 relative p-2">
       <div className="flex flex-row justify-between">
         <ul className="flex flex-row justify-start items-center ml-8 gap-2 font-bold text-xl">
           <li>
@@ -49,7 +49,7 @@ export const Header = () => {
             <li>
               <button
                 onClick={connectWalletHandler}
-                className="p-4 hover:bg-[rgb(127,82,255)] rounded-lg border-gray-600 border-2 hover:border-black cursor-pointer"
+                className="p-4 hover:bg-[rgb(161,123,134)] rounded-lg border-gray-600 border-2 hover:border-black cursor-pointer"
               >
                 Connect Wallet
               </button>

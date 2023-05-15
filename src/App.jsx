@@ -4,6 +4,7 @@ import { HomeBody } from "./Pages/Home/HomeBody";
 import { Header } from "./Templates/HomeTepmplate/Header/Header";
 import web3 from "./Services/Web3/Web3";
 import {
+  deleteMessage,
   getWalletInfor,
   setMessage,
   // setNetwork,
@@ -11,6 +12,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import ModalInfo from "./Components/Modals/ModalInfo";
 import { checkNetwork } from "./Ultis/NetworkCheck/NetworkCheck";
+import background from "../src/assets/background.jpg";
 
 function App() {
   const { message } = useSelector((state) => state.farmingReducer);
@@ -28,7 +30,6 @@ function App() {
           await addWalletInfo();
         });
         window.ethereum.on("accountsChanged", addWalletInfo);
-
       } else {
         const warmingAction = setMessage({
           type: "warming",
@@ -44,9 +45,23 @@ function App() {
       window.ethereum?.removeListener("accountsChanged", (accounts) => {
         console.log("accounts", accounts);
       });
-      
     };
   }, []);
+
+  useEffect(() => {
+    if (message.length > 0) {
+      const { id } = message[0];
+
+      setTimeout(() => {
+        const action = deleteMessage(id);
+        dispatch(action);
+      }, 3000);
+    }
+
+    return () => {
+      clearTimeout();
+    };
+  }, [message]);
 
   const addWalletInfo = async () => {
     const accounts = await web3.eth.getAccounts();
@@ -74,8 +89,8 @@ function App() {
 
   return (
     <div
-      style={{ background: "rgb(30,27,39)", color: "white" }}
-      className="h-screen font-poppins relative"
+      style={{ backgroundImage: `url(${background})`, color: "white" }}
+      className="h-screen font-poppins leading-loose relative"
     >
       <Header />
       <HomeBody />

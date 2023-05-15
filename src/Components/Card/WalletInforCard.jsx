@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect, useRef } from "react";
 import { AiFillCaretDown, AiOutlineCaretUp } from "react-icons/ai";
 import { GoPrimitiveDot } from "react-icons/go";
 import { HiViewfinderCircle } from "react-icons/hi2";
@@ -12,14 +12,29 @@ const WalletInforCard = () => {
   const [accountCard, setAccountCard] = useState(false);
   const { account } = useSelector((state) => state.farmingReducer);
   const dispatch = useDispatch();
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    // Gán sự kiện click cho document
+    document.addEventListener("mousedown", handleClick);
+
+    // Hủy bỏ sự kiện click
+    return () => {
+      document.removeEventListener("mousedown", handleClick);
+    };
+  }, []);
 
   const handleAccountCard = () => {
     setAccountCard(!accountCard);
   };
 
-  const handleMouseLeave = () => {
+  const handleClick = e => {
+    if (dropdownRef.current.contains(e.target)) {
+      return;
+    }
     setAccountCard(false);
   };
+
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(account.walletAddress);
@@ -34,7 +49,7 @@ const WalletInforCard = () => {
     <div>
       <div
         onClick={handleAccountCard}
-        className="flex flex-row justify-between items-center gap-4 p-2 hover:bg-[rgb(127,82,255)] rounded-lg border-gray-600 hover:border-black border-2 cursor-pointer"
+        className="flex flex-row justify-between items-center gap-4 p-2 hover:bg-[rgb(161,123,134)] rounded-lg border-gray-600 hover:border-black border-2 cursor-pointer"
       >
         <img
           src="https://picsum.photos/id/134/200"
@@ -52,7 +67,7 @@ const WalletInforCard = () => {
         <div
           className="rounded-lg shadow-2xl border-2 border-gray-500 absolute top-20 right-4"
           style={{ background: "rgb(51,61,81)" }}
-          onMouseLeave={handleMouseLeave}
+          ref={dropdownRef}
         >
           <div className="border-b-2 border-gray-600 p-4">
             <div className="flex flex-row justify-start items-center gap-4">
