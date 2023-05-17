@@ -7,7 +7,18 @@ import {
   setHarvestingToken,
   setMessage,
 } from "../../Redux/Reducers/FarmingReducer";
-import stakingServices from "../../Services/StakingServices/StakingServices";
+import {
+  unStakingToken,
+  depositTokenToPool,
+  getAccountAddress,
+  getBalanceOfStakeToken,
+  getPoolInfor,
+  getStakerInfo,
+  getAllPools,
+  createStakingToken,
+  approveStakingPool,
+  checkAllowance,
+} from "../../Services/StakingServices/FarmingServices";
 
 const ModalContract = (props) => {
   const { modalOpen, setModalOpen, account } = props;
@@ -17,13 +28,30 @@ const ModalContract = (props) => {
 
   useEffect(() => {
     (async () => {
-      const pool = await stakingServices.methods.pools(0).call();
-      const tx = await stakingServices.methods
-        .deposit(0, 10)
-        .send({ from: "0xee0d47fB627a8a812169C13F7FEe5e3100c329f3" });
-
-      console.log("pool:", pool);
-      console.log("Tx:", tx);
+      try {
+        // const tx = await createStakingToken();
+        const address = await getAccountAddress();
+        const prevBalance = await getBalanceOfStakeToken(address);
+        console.log("prevBalance", prevBalance);
+        // const approve = await approveStakingPool(1000);
+        // console.log("approve", approve);
+        // const allowance = await checkAllowance();
+        // console.log("allowance:", allowance);
+        // const deposit = await depositTokenToPool(1,20);
+        // console.log("deposit:",deposit)
+        // const unStaking = await unStakingToken(1,40);
+        // console.log("unStaking:",unStaking)
+        const beforeBalance = await getBalanceOfStakeToken(address);
+        console.log("beforeBalance", beforeBalance);
+        // const pool = await getPoolInfor(0);
+        const stakerInfo = await getStakerInfo(1);
+        const pools = await getAllPools();
+        // console.log("pool", pool);
+        console.log("stakerInfo:", stakerInfo);
+        console.log("pools", pools);
+      } catch (err) {
+        console.log("message", err.message);
+      }
     })();
   }, []);
 

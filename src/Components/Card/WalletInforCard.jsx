@@ -1,4 +1,4 @@
-import { useState,useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import { AiFillCaretDown, AiOutlineCaretUp } from "react-icons/ai";
 import { GoPrimitiveDot } from "react-icons/go";
 import { HiViewfinderCircle } from "react-icons/hi2";
@@ -28,13 +28,12 @@ const WalletInforCard = () => {
     setAccountCard(!accountCard);
   };
 
-  const handleClick = e => {
-    if (dropdownRef.current.contains(e.target)) {
+  const handleClick = (e) => {
+    if (dropdownRef?.current?.contains(e.target)) {
       return;
     }
     setAccountCard(false);
   };
-
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(account.walletAddress);
@@ -111,7 +110,8 @@ const WalletInforCard = () => {
             </p>
             <a
               href={`https://etherscan.io/address/${account.walletAddress}`}
-              target="_blank" rel="noreferrer"
+              target="_blank"
+              rel="noreferrer"
             >
               <p className="font-bold text-xl flex flex-row gap-2 justify-start items-center py-2 px-4 cursor-pointer hover:bg-gray-400">
                 <HiViewfinderCircle className="text-3xl" />

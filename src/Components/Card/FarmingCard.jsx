@@ -25,7 +25,7 @@ const FarmingCard = (props) => {
   return (
     <div
       style={{ background: "rgb(9,3,23)" }}
-      className="p-8 w-full rounded-2xl shadow-2xl mt-4 lg:mt-16"
+      className="p-8 w-full rounded-2xl shadow-2xl mt-2 lg:mt-4"
     >
       <div className="flex flex-row justify-around items-center gap-4">
         <div className="flex flex-row justify-start relative px-2">
