@@ -24,86 +24,52 @@ const FarmingCard = () => {
 
   return (
     <div
-      style={{ background: "rgb(9,3,23)" }}
-      className="p-8 w-full md:w-1/2 xl:w-1/3 rounded-2xl shadow-2xl mt-4 lg:mt-16"
+      style={{ background: "#fff", color: "#091227" }}
+      className="p-8 w-full rounded-lg font-sans"
     >
-      <div className="flex flex-row justify-around items-center gap-4">
-        <div className="flex flex-row justify-start relative px-2">
+
+
+      <div className="flex flex-row justify-between items-center">
+        <div className="flex flex-row items-center font-poppins">
           <img
-            className="w-12 h-12 absolute right-10"
-            src="https://miaswap.io/assets/token/0x5df107f23d3ec5efa926b999ce285a88955ae56b.png"
-            alt="MIA"
-          />
-          <img
-            className="w-12 h-12"
+            className="w-14 h-14"
             src="https://miaswap-img-s3.s3.ap-northeast-1.amazonaws.com/busd.png"
             alt="BUSDT"
           />
-        </div>
-        <h2 className="text-3xl font-bold">DAT-RET</h2>
-        <p className="bg-[rgb(124,77,255)] p-4 rounded-2xl w-10 h-10 flex flex-row justify-center items-center">
-          <span> 4x</span>
-        </p>
-      </div>
-      <div className="border-2 border-gray-600 rounded-lg p-4 mt-4 fontsize-[20rem]">
-        <p className="flex flex-row justify-between">
-          <span>APR</span>
-          <span>283.11%</span>
-        </p>
-        <p className="flex flex-row justify-between">
-          <span>Earn</span>
-          <span>RET + Fees</span>
-        </p>
-      </div>
-      <div className="border-2 border-gray-600 rounded-lg p-4 mt-4 fontsize-[20rem]">
-        <div className="border-b-2 border-gray-200">
-          <p>RET Earned</p>
-          <p>{amountOfHarvestingToken}</p>
-          <div className="flex flex-row justify-center w-full py-4">
-            <button className="w-full p-4 bg-[rgb(28,23,41)] rounded-lg border-gray-600 border-2 disabled">
-              Harvest
-            </button>
+          <img
+            className="w-14 h-14"
+            src="https://miaswap-img-s3.s3.ap-northeast-1.amazonaws.com/busd.png"
+            alt="MIA"
+          />
+          <div className="flex flex-col ms-6 gap-2">
+            <h2 className="text-xl font-bold">Nạp BSC</h2>
+            <h2 className="text-lg font-medium">Nhận BRC</h2>
           </div>
         </div>
-        <div className="mt-4">
-          <p>DAT-RET LP Staked</p>
-          <div className="flex flex-row justify-center w-full py-4">
-            <button
-              onClick={handleModal}
-              className="w-full p-4 bg-[rgb(127,82,255)] rounded-lg border-gray-600 border-2"
-            >
-              Enable Contract
-            </button>
-          </div>
+
+
+        <div className="flex flex-col text-center gap-2">
+          <h2 className="text-xl font-bold">APY</h2>
+          <h2 className="text-lg font-medium">283.11%</h2>
         </div>
-      </div>
-      <div className="w-full flex flex-row justify-center mt-4">
-        {!drop ? (
-          <AiFillCaretDown
-            className="text-2xl cursor-pointer"
-            onClick={handleDrop}
-          />
-        ) : (
-          <AiOutlineCaretUp
-            className="text-2xl cursor-pointer"
-            onClick={handleDrop}
-          />
-        )}
-      </div>
-      {drop && (
-        <div>
-          <p className="flex flex-row justify-between">
-            <span>Total Liquidity</span>
-            <span>$516.32</span>
-          </p>
-          <p>Ends in</p>
+        <div className="flex flex-col text-center gap-2">
+          <h2 className="text-xl font-bold">Kết thúc vào</h2>
+          <h2 className="text-lg font-medium">17-05-2023</h2>
         </div>
-      )}
-      <ModalContract
-        modalOpen={modalOpen}
-        setModalOpen={setModalOpen}
-        account={account}
-      />
+        <div className="flex flex-col text-center">
+          <button className="py-2 px-6 text-[#fff] bg-[#170296] hover:bg-[#026796] rounded-md font-sans font-medium cursor-pointer">
+            Xem chi tiết
+          </button>
+        </div>
+
+      </div>
+
+
+
+
+
+
+
     </div>
   );
 };

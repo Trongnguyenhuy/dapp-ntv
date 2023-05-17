@@ -39,43 +39,43 @@ const WalletInforCard = () => {
     navigator.clipboard.writeText(account.walletAddress);
     const action = setMessage({
       type: "info",
-      message: "Wallet Adress have just copied !",
+      message: "Sao chép thành công !",
     });
     dispatch(action);
   };
 
   return (
-    <div>
+    <div className="pe-4 w-full">
       <div
         onClick={handleAccountCard}
-        className="flex flex-row justify-between items-center gap-4 p-2 hover:bg-[rgb(161,123,134)] rounded-lg border-gray-600 hover:border-black border-2 cursor-pointer"
+        className="flex flex-row justify-between gap-4 items-center p-2 text-[#091227] bg-[#fff] rounded-md"
       >
         <img
           src="https://picsum.photos/id/134/200"
           alt="account"
           className="w-10 h-10 rounded-full"
         />
-        <p>{account.walletAddress.slice(0, 6) + "..."}</p>
+        <p>{account.walletAddress.slice(0, 7) + "..."}</p>
         {!accountCard ? (
-          <AiFillCaretDown className="text-2xl" />
+          <AiFillCaretDown className="text-xl" />
         ) : (
-          <AiOutlineCaretUp className="text-2xl" />
+          <AiOutlineCaretUp className="text-xl" />
         )}
       </div>
       {accountCard && (
         <div
-          className="rounded-lg shadow-2xl border-2 border-gray-500 absolute top-20 right-4"
-          style={{ background: "rgb(51,61,81)" }}
+          className="rounded-md absolute top-20 right-12 bg-white text-[#091227]"
+          
           ref={dropdownRef}
         >
-          <div className="border-b-2 border-gray-600 p-4">
+          <div className="border-b-2 border-gray-300 p-4">
             <div className="flex flex-row justify-start items-center gap-4">
               <img
                 src="https://picsum.photos/id/134/200"
                 alt="account"
-                className="w-16 rounded-full"
+                className="w-12 rounded-full"
               />
-              <p className="text-xl font-bold">
+              <p className="font-poppins text-md">
                 {account.walletAddress.slice(0, 6) + "..."}
               </p>
             </div>
@@ -88,34 +88,34 @@ const WalletInforCard = () => {
               </button>
             </div> */}
           </div>
-          <div className="border-b-2 border-gray-600 p-4">
-            <p>Network</p>
+          <div className="border-b-2 border-gray-300 px-4 py-2">
+            <p>Mạng</p>
             <h2 className="font-bold text-xl flex flex-row gap-2 justify-start items-center">
-              <GoPrimitiveDot className="text-[rgb(113,87,255)] text-3xl" />{" "}
+              <GoPrimitiveDot className="text-xl" />{" "}
               {account.network}
             </h2>
-            <p>Balance</p>
-            <h2 className="font-bold text-xl flex flex-row gap-2 justify-start items-center">
-              <MdAccountBalanceWallet className="text-[rgb(113,87,255)] text-3xl" />
+            <p>Tiền trong ví</p>
+            <h2 className="font-poppins text-md flex flex-row gap-2 justify-start items-center">
+              <MdAccountBalanceWallet className="text-xl" />
               {account.balance} {checkNetworkToken(account.network)}
             </h2>
           </div>
           <div>
             <p
               onClick={copyToClipboard}
-              className="font-bold text-xl flex flex-row gap-2 justify-start items-center py-2 px-4 cursor-pointer hover:bg-gray-400"
+              className="font-poppins text-md flex flex-row gap-2 justify-start items-center py-2 px-4 cursor-pointer hover:bg-gray-400"
             >
-              <IoCopyOutline className="text-3xl" />
-              <span>Copy Address</span>
+              <IoCopyOutline className="text-md font-poppins" />
+              <span>Sao chép địa chỉ ví</span>
             </p>
             <a
               href={`https://etherscan.io/address/${account.walletAddress}`}
               target="_blank"
               rel="noreferrer"
             >
-              <p className="font-bold text-xl flex flex-row gap-2 justify-start items-center py-2 px-4 cursor-pointer hover:bg-gray-400">
-                <HiViewfinderCircle className="text-3xl" />
-                <span>View on Explorer</span>
+              <p className="font-poppins text-md flex flex-row gap-2 justify-start items-center py-2 px-4 cursor-pointer hover:bg-gray-400">
+                <HiViewfinderCircle className="text-xl" />
+                <span>Xem trên trình duyệt</span>
               </p>
             </a>
           </div>
