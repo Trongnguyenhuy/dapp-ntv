@@ -1,5 +1,5 @@
-// import rewardTokenServices from "./RewardTokenServices";
 import web3 from "../Web3/Web3";
+import rewardTokenServices from "./RewardTokenServices";
 import StakeTokenServices from "./StakeTokenServices";
 import StakingServices from "./StakingServices";
 
@@ -50,7 +50,7 @@ export const createStakingToken = async () => {
     const allowance = checkAllowance(address, poolAddress);
 
     if (allowance == 0) {
-      await approveStakingPool();
+      await approveStakingPool(1000);
     }
 
     await StakingServices.methods
@@ -71,6 +71,14 @@ export const depositTokenToPool = async (poolId, numberOfToken) => {
   try {
     const address = await getAccountAddress();
     const wei = web3.utils.toWei(`${numberOfToken}`, "ether");
+    const poolAddress = await StakingServices.options.address;
+
+    const allowance = checkAllowance(address, poolAddress);
+
+    if (allowance == 0) {
+      await approveStakingPool(numberOfToken);
+    }
+
     await StakingServices.methods.deposit(poolId, wei).send({
       from: address,
     });
@@ -94,6 +102,7 @@ export const getStakerInfo = async (poolId) => {
       amountOfStakeTokenOnPool: stakerInfor.amount,
       rewardDebt: stakerInfor.rewardDebt,
       rewards: stakerInfor.rewards,
+      startBlock: stakerInfor.startBlock,
     };
   } catch (err) {
     return false;
@@ -157,6 +166,53 @@ export const checkAllowance = async () => {
     return allowanceNumber;
   } catch (err) {
     console.log(err.message);
+    return false;
+  }
+};
+
+// Thu nhận token thưởng từ pool
+export const harvestReward = async (poolId) => {
+  try {
+    const address = await getAccountAddress();
+    const beforeBalance = await rewardTokenServices.methods
+      .balanceOf(address)
+      .call({
+        from: address,
+      });
+
+    await StakingServices.methods.collectRewards(poolId).call({
+      from: address,
+    });
+
+    const afterBalance = await rewardTokenServices.methods
+      .balanceOf(address)
+      .call({
+        from: address,
+      });
+
+    return afterBalance - beforeBalance;
+  } catch (err) {
+    return false;
+  }
+};
+
+// Cập nhật thông tin phần thưởng trong pool
+export const updatePoolRewards = async (poolId) => {
+  try {
+    // const address = await getAccountAddress();
+
+    const beforeStakerInfor = await getStakerInfo(poolId);
+
+    await StakingServices.methods.updatePoolRewards(poolId).call();
+
+    const afterStakerInfor = await getStakerInfo(poolId);
+
+    if (beforeStakerInfor.rewards <= afterStakerInfor) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (err) {
     return false;
   }
 };

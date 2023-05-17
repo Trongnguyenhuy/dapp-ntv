@@ -18,6 +18,8 @@ import {
   createStakingToken,
   approveStakingPool,
   checkAllowance,
+  harvestReward,
+  updatePoolRewards,
 } from "../../Services/StakingServices/FarmingServices";
 
 const ModalContract = (props) => {
@@ -43,16 +45,33 @@ const ModalContract = (props) => {
         // console.log("unStaking:",unStaking)
         const beforeBalance = await getBalanceOfStakeToken(address);
         console.log("beforeBalance", beforeBalance);
-        // const pool = await getPoolInfor(0);
-        const stakerInfo = await getStakerInfo(1);
-        const pools = await getAllPools();
-        // console.log("pool", pool);
+        const updatePool = await updatePoolRewards(0);
+        const pool = await getPoolInfor(0);
+        const stakerInfo = await getStakerInfo(0);
+        // const pools = await getAllPools();
+        console.log("updatePool", updatePool);
+        console.log("pool", pool);
         console.log("stakerInfo:", stakerInfo);
-        console.log("pools", pools);
+        // console.log("pools", pools);
       } catch (err) {
         console.log("message", err.message);
       }
     })();
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      await updatePoolRewards(0);
+      const stakerInfo = await getStakerInfo(0);
+      const pool = await getPoolInfor(0);
+      console.log("pool lastRewardedBlock:", pool.lastRewardedBlock);
+      console.log("stakerInfo startBlock", stakerInfo.startBlock);
+      console.log("stakerInfo rewards", stakerInfo.rewards);
+    }, 30000); 
+
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
   const handleConfirm = () => {
