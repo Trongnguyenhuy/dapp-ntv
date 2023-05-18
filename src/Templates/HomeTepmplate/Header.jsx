@@ -1,7 +1,9 @@
+import { Link } from 'react-router-dom';
 import logo from "../../assets/logo.png";
 import WalletInforCard from "../../Components/Card/WalletInforCard";
 import { useDispatch, useSelector } from "react-redux";
 import { setMessage } from "../../Redux/Reducers/FarmingReducer";
+
 
 export const Header = () => {
   const { account } = useSelector((state) => state.farmingReducer);
@@ -27,16 +29,22 @@ export const Header = () => {
   };
 
   return (
-    <div className="border-b-2 border-gray-800 py-1 fixed w-full bg-[#091227]">
-      <div className="flex flex-row justify-between">
-        <ul className="flex flex-row justify-start items-center ml-8 gap-2 font-semibold text-xl">
+    <div className="border-b-2 border-gray-800 py-1 fixed w-full bg-[#091227] z-20">
+      <div className="flex flex-row justify-between font-sans">
+        <ul className="flex flex-row justify-center ml-8 gap-2 font-medium text-lg">
           <li>
             <img src={logo} alt="logo" width={65} height={65} />
           </li>
-          <div className="grid grid-cols-3 justify-items-center content-center gap-6 ps-8">
-            <li className="cursor-pointer hover:text-[#1CE6EC]">Home</li>
-            <li className="cursor-pointer hover:text-[#1CE6EC]">Farming</li>
-            <li className="cursor-pointer hover:text-[#1CE6EC]">Pool</li>
+          <div className="grid grid-cols-3 justify-items-start content-center gap-6 ps-8">
+            <li className="cursor-pointer hover:text-[#1CE6EC]">
+              <Link to="/">Trang chủ</Link>
+            </li>
+            <li className="cursor-pointer hover:text-[#1CE6EC]">
+              <Link to="/farm">Farms</Link>
+            </li>
+            <li className="cursor-pointer hover:text-[#1CE6EC]">
+              <Link to="/pool">Pools</Link>
+            </li>
           </div>
         </ul>
         <ul className="flex flex-row justify-start items-center gap-8 mr-8">

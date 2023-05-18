@@ -2,9 +2,18 @@ import logo from "../../assets/home-image.png";
 import { useState } from "react";
 import FarmingCard from "../../Components/Card/FarmingCard";
 import PoolCard from "../../Components/Card/PoolCard";
-import FarmingInforCard from "../../Components/Card/FarmingInforCard";
+
 export const HomeBody = () => {
-  const [openInforCard, setOpenInforCard] = useState("");
+  const farmingCard = [
+    { id: 1, isHome: true },
+    { id: 2, isHome: true },
+    { id: 3, isHome: true }
+  ]
+  const poolCard = [
+    { id: 1, isHome: true },
+    { id: 2, isHome: true },
+    { id: 3, isHome: true }
+  ]
 
   return (
     <div className={`p-1 md:p-2`}>
@@ -25,23 +34,13 @@ export const HomeBody = () => {
         </div>
 
         <div className={`flex flex-row justify-between h-sceen px-16 gap-12`}>
-
-          <FarmingCard
-            isHome={true}
-            openInforCard={openInforCard}
-            setOpenInforCard={setOpenInforCard}
-          />
-          <FarmingCard
-            isHome={true}
-            openInforCard={openInforCard}
-            setOpenInforCard={setOpenInforCard}
-          />
-          <FarmingCard
-            isHome={true}
-            openInforCard={openInforCard}
-            setOpenInforCard={setOpenInforCard}
-          />
-
+          {farmingCard.map(item => (    
+              <FarmingCard
+                key={item.id}
+                id={item.id}
+                isHome={item.isHome}
+              />
+            ))}
         </div>
       </div>
 
@@ -53,19 +52,15 @@ export const HomeBody = () => {
 
         <div className={`flex flex-col justify-between h-sceen px-16 gap-6`}>
 
-          <PoolCard/>
-          <PoolCard/>
-          <PoolCard/>
-
-
+        {poolCard.map(item => (    
+              <PoolCard
+                key={item.id}
+                id={item.id}
+                isHome={item.isHome}
+              />
+            ))}
         </div>
       </div>
-
-
-
-
-
-
     </div>
   );
 };

@@ -1,16 +1,53 @@
-/* eslint-disable react/prop-types */
-import { AiFillCloseCircle } from "react-icons/ai";
-import { BsPatchQuestion } from "react-icons/bs";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import { useHistory } from 'react-router-dom';
+import ModalContract from "../Modals/ModalContract";
 
 const FarmingInforCard = (props) => {
   const { setOpenInforCard } = props;
+  const [modalOpen, setModalOpen] = useState(false);
+  const { account } = useSelector((state) => state.farmingReducer);
+  useEffect(() => {
+    console.log("account: ", account);
+  }, [account]);
+
+  const handleModal = () => {
+    setModalOpen(true);
+  };
   return (
-    <div
-      style={{ background: "rgb(9,3,23)" }}
-      className="p-8 w-[70%] rounded-2xl shadow-2xl mt-2 lg:mt-4 relative"
-    >
+
+    <div className="flex flex-col gap-4 pt-24 px-56 py-12">
       <div className="flex flex-row justify-around items-center gap-4">
-        <div className="flex flex-row justify-start relative px-2">
+        <div className="w-1/2">
+          <div className="flex flex-col gap-4 items-center">
+            <div className="flex flex-row justify-start relative px-2">
+              <img
+                className="w-20 h-20"
+                src="https://miaswap-img-s3.s3.ap-northeast-1.amazonaws.com/busd.png"
+                alt="BUSDT"
+              />
+              <img
+                className="w-12 h-12 absolute left-12 bottom-9 bg-white rounded-full p-1"
+                src="https://miaswap-img-s3.s3.ap-northeast-1.amazonaws.com/busd.png"
+                alt="MIA"
+              />
+            </div>
+            <h2 className="text-2xl font-bold">Nạp BSC nhận BRC</h2>
+
+          </div>
+        </div>
+        <div className="w-1/2 border-2 border-gray-800 rounded-md px-8">
+          
+          <p className="flex flex-row justify-between py-4">
+            <span>Đã đặt</span>
+            <p>0 BSC</p>
+          </p>
+          <p className="flex flex-row justify-between py-4">
+            <span>Phần thưởng kiếm được</span>
+            <span>0 BRC</span>
+          </p>
+        </div>
+        {/* <div className="flex flex-row justify-start relative px-2">
           <img
             className="w-14 h-14"
             src="https://miaswap-img-s3.s3.ap-northeast-1.amazonaws.com/busd.png"
@@ -25,59 +62,45 @@ const FarmingInforCard = (props) => {
         <h2 className="text-3xl font-bold">Nạp VNDC</h2>
         <button className="p-1 border-2 border-[rgb(124,77,255)] text-[rgb(124,77,255)] hover:text-white hover:bg-[rgb(124,77,255)] rounded-lg shadow-lg">
           Auto Renew
-        </button>
+        </button> */}
       </div>
-      <div className="grid grid-col-4 content-center divide-y divide-gray-600 border-2 border-gray-600 rounded-lg p-6 mt-4 text-base">
-        <p className="flex flex-row justify-between py-4">
-          <span>APY</span>
-          <span>283.11%</span>
-        </p>
-        <p className="flex flex-row justify-between py-4">
-          <span>Phần Thưởng Đã Rút</span>
-          <span>0 VNDC</span>
-        </p>
-        <p className="flex flex-row justify-between py-4">
-          <span>Phần Thưởng Khả Dụng</span>
-          <span>0 VNDC</span>
-        </p>
-      </div>
-      <div className="grid grid-col-4 content-center divide-y divide-gray-600 border-2 border-gray-600 rounded-lg p-6 mt-4 text-base">
-        <div className="flex flex-row justify-between py-4">
-          <p className="flex flex-row justify-start gap-2">
-            <span>Chu Kỳ</span>
-            <span>
-              <BsPatchQuestion className="cursor-pointer text-xl" />
-            </span>
+      <div className="flex flex-row justify-around items-center gap-4">
+
+        <div className="w-full border-2 border-gray-800 rounded-md px-8">
+          <div className="flex flex-col">
+          <p className="flex flex-row justify-between py-4">
+            <span>APY</span>
+            <span>283.11%</span>
           </p>
-          <p>30 Ngày</p>
+            <p className="flex flex-row justify-between py-4">
+              <span>Tổng số thanh khoản đã được đặt cọc</span>
+              <span>10,000,000 BSC</span>
+            </p>
+            <p className="flex flex-row justify-between py-4">
+              <span>Chu kỳ trả thưởng</span>
+              <span>Hằng ngày</span>
+            </p>
+          </div>
+
         </div>
-        <p className="flex flex-row justify-between py-4">
-          <span>Số Lượng Nạp</span>
-          <span>10,000,000,000 VNDC</span>
-        </p>
-        <p className="flex flex-row justify-between py-4">
-          <span>Chu Kỳ Trả Thưởng</span>
-          <span>Hằng Ngày</span>
-        </p>
       </div>
-      <p className="p-2 text-gray-500">
-        <b>Lưu Ý: </b>Mỗi khi kết thúc chu kỳ, bạn có thể rút tài sản về trong 5
-        ngày. Nếu không rút, tài sản của bạn sẽ được tự động nạp vào chu kỳ mới.
-      </p>
-      <div className="flex flex-row justify-center py-2 text-base">
+
+      <div className="flex flex-col items-center gap-8 w-full rounded-md cursor-pointer">
+        <span className="underline">Xem hợp đồng</span>
         <button
-          // onClick={handleModal}
-          className="w-full p-4 bg-[rgb(127,82,255)] rounded-lg border-gray-600 border-2"
+          onClick={handleModal}
+          className="w-full p-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg"
         >
-          Nạp Ngay
+          Thêm thanh khoản
         </button>
       </div>
-      <AiFillCloseCircle
-        className="text-4xl font-bold absolute -top-4 -right-4 cursor-pointer text-white"
-        onClick={() => {
-          setOpenInforCard("");
-        }}
+
+      <ModalContract
+        modalOpen={modalOpen}
+        setModalOpen={setModalOpen}
+        account={account}
       />
+
     </div>
   );
 };

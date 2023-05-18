@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 import ModalContract from "../Modals/ModalContract";
 import { useSelector } from "react-redux";
 
-const FarmingCard = () => {
+const PoolCard = (props) => {
+  const { id, isHome } = props;
   const [drop, setDrop] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const { account, amountOfHarvestingToken } = useSelector(
@@ -53,11 +54,15 @@ const FarmingCard = () => {
           <h2 className="text-lg font-medium">283.11%</h2>
         </div>
         <div className="flex flex-col text-center gap-2">
-          <h2 className="text-xl font-bold">Kết thúc vào</h2>
-          <h2 className="text-lg font-medium">17-05-2023</h2>
+          <h2 className="text-xl font-bold">Tổng số tiền đã đặt cọc</h2>
+          <h2 className="text-lg font-medium">3,008,000 BSC</h2>
+        </div>
+        <div className="flex flex-col text-center gap-2">
+          <h2 className="text-xl font-bold">Kết thúc</h2>
+          <h2 className="text-lg font-medium">15 ngày</h2>
         </div>
         <div className="flex flex-col text-center">
-          <button className="py-2 px-6 text-[#fff] bg-[#170296] hover:bg-[#026796] rounded-md font-sans font-medium cursor-pointer">
+          <button className="py-2 px-6 text-[#fff] bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-md font-sans font-medium cursor-pointer">
             Xem chi tiết
           </button>
         </div>
@@ -74,4 +79,4 @@ const FarmingCard = () => {
   );
 };
 
-export default FarmingCard;
+export default PoolCard;
