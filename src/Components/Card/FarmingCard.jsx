@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+/* eslint-disable react/prop-types */
+import { useState } from "react";
 import ModalContract from "../Modals/ModalContract";
 import { useSelector } from "react-redux";
 import { useHistory } from 'react-router-dom';
@@ -8,9 +9,6 @@ const FarmingCard = (props) => {
   const [modalOpen, setModalOpen] = useState(false);
   const { account } = useSelector((state) => state.farmingReducer);
 
-  useEffect(() => {
-    console.log("account: ", account);
-  }, [account]);
 
   const handleClick = () => {
     history.push(`/farm-detail/${id}`); // Chuyển đến đường dẫn với param
@@ -80,6 +78,7 @@ const FarmingCard = (props) => {
         modalOpen={modalOpen}
         setModalOpen={setModalOpen}
         account={account}
+        poolId={id - 1}
       />
     </div>
   );

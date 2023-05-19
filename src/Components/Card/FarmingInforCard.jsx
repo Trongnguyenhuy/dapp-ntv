@@ -1,22 +1,20 @@
-import { useEffect, useState } from "react";
+/* eslint-disable no-unused-vars */
+import { useState } from "react";
 import { useSelector } from "react-redux";
-import { useHistory } from 'react-router-dom';
+// import { useHistory } from 'react-router-dom';
 import ModalContract from "../Modals/ModalContract";
 
 const FarmingInforCard = (props) => {
-  const { setOpenInforCard } = props;
+  // const { id } = props;
   const [modalOpen, setModalOpen] = useState(false);
   const { account } = useSelector((state) => state.farmingReducer);
-  useEffect(() => {
-    console.log("account: ", account);
-  }, [account]);
 
   const handleModal = () => {
     setModalOpen(true);
   };
-  return (
 
-    <div className="flex flex-col gap-4 pt-24 px-56 py-12">
+  return (
+    <div className="flex flex-col gap-4 pt-24 px-56 py-12 h-screen">
       <div className="flex flex-row justify-around items-center gap-4">
         <div className="w-1/2">
           <div className="flex flex-col gap-4 items-center">
@@ -33,11 +31,9 @@ const FarmingInforCard = (props) => {
               />
             </div>
             <h2 className="text-2xl font-bold">Nạp BSC nhận BRC</h2>
-
           </div>
         </div>
         <div className="w-1/2 border-2 border-gray-800 rounded-md px-8">
-          
           <p className="flex flex-row justify-between py-4">
             <span>Đã đặt</span>
             <p>0 BSC</p>
@@ -65,13 +61,12 @@ const FarmingInforCard = (props) => {
         </button> */}
       </div>
       <div className="flex flex-row justify-around items-center gap-4">
-
         <div className="w-full border-2 border-gray-800 rounded-md px-8">
           <div className="flex flex-col">
-          <p className="flex flex-row justify-between py-4">
-            <span>APY</span>
-            <span>283.11%</span>
-          </p>
+            <p className="flex flex-row justify-between py-4">
+              <span>APY</span>
+              <span>283.11%</span>
+            </p>
             <p className="flex flex-row justify-between py-4">
               <span>Tổng số thanh khoản đã được đặt cọc</span>
               <span>10,000,000 BSC</span>
@@ -81,7 +76,6 @@ const FarmingInforCard = (props) => {
               <span>Hằng ngày</span>
             </p>
           </div>
-
         </div>
       </div>
 
@@ -100,7 +94,6 @@ const FarmingInforCard = (props) => {
         setModalOpen={setModalOpen}
         account={account}
       />
-
     </div>
   );
 };

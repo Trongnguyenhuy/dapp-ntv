@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react";
-import { HomeBody } from "./Pages/Home/HomeBody";
-import { Header } from "./Templates/HomeTepmplate/Header";
-import { Footer } from "./Templates/HomeTepmplate/Footer";
+// import { HomeBody } from "./Pages/Home/HomeBody";
+// import { Header } from "./Templates/HomeTepmplate/Header";
+// import { Footer } from "./Templates/HomeTepmplate/Footer";
 import web3 from "./Services/Web3/Web3";
 import {Router} from "./Components/Router/Router";
 import {
@@ -14,7 +14,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import ModalInfo from "./Components/Modals/ModalInfo";
 import { checkNetwork } from "./Ultis/NetworkCheck/NetworkCheck";
-import background from "../src/assets/background.jpg";
+// import background from "../src/assets/background.jpg";
 
 function App() {
   const { message } = useSelector((state) => state.farmingReducer);
