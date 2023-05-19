@@ -1,13 +1,10 @@
-/* eslint-disable react/prop-types */
-// import { AiFillCaretDown, AiOutlineCaretUp } from "react-icons/ai";
 import { useEffect, useState } from "react";
 import ModalContract from "../Modals/ModalContract";
 import { useSelector } from "react-redux";
-
+import { useHistory } from 'react-router-dom';
 const FarmingCard = (props) => {
-  const { openInforCard, setOpenInforCard, isHome} = props;
-
-  // const [drop, setDrop] = useState(false);
+  const { id, isHome } = props;
+  const history = useHistory();
   const [modalOpen, setModalOpen] = useState(false);
   const { account } = useSelector((state) => state.farmingReducer);
 
@@ -15,9 +12,9 @@ const FarmingCard = (props) => {
     console.log("account: ", account);
   }, [account]);
 
-  // const handleDrop = () => {
-  //   setDrop(!drop);
-  // };
+  const handleClick = () => {
+    history.push(`/farm-detail/${id}`); // Chuyển đến đường dẫn với param
+  };
 
   const handleModal = () => {
     setModalOpen(true);
@@ -42,50 +39,42 @@ const FarmingCard = (props) => {
           />
         </div>
         <h2 className="text-2xl font-bold mt-3">Nạp BSC nhận BRC</h2>
-        
+
       </div>
-      <div className="grid grid-col-4 content-center divide-y divide-gray-600 rounded-lg p-2 mt-4 text-lg">
-        {openInforCard.length > 0 ? (
-          <>
-            <p className="flex flex-row justify-between py-6">
-              <span>Nhận lại</span>
-              <span>VNDC</span>
-            </p>
-          </>
-        ) : (
-          <>
-            <p className="flex flex-row justify-between py-6">
-              <span>APY</span>
-              <span className="font-bold">283.11%</span>
-            </p>
-            <p className="flex flex-row justify-between py-4">
-              <span>Chu Kỳ</span>
-              <span className="font-bold">30 ngày</span>
-            </p>
-            <div className="flex flex-row justify-center pt-8">
+      <div className="grid grid-col-4 content-center rounded-lg p-2 mt-4 text-lg w-full">
+
+        <div className="grid grid-col-4 content-center rounded-lg p-2 mt-4 text-lg w-full divide-y divide-gray-600">
+          <p className="flex flex-row justify-between py-6">
+            <span>APY</span>
+            <span className="font-bold">283.11%</span>
+          </p>
+
+          <p className="flex flex-row justify-between py-4">
+            <span>Chu Kỳ</span>
+            <span className="font-bold">30 ngày</span>
+          </p>
+          <div className="flex flex-col items-center pt-8">
             <button
-              onClick={() => {
-                setOpenInforCard("Card 1");
-              }}
-              className="w-full py-4 text-[#fff] bg-[#170296] hover:bg-[#026796] rounded-lg font-sans font-medium cursor-pointer"
+              onClick={handleClick}
+              className={`${isHome == false ? "hidden" : ""} w-full py-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg font-sans font-medium cursor-pointer text-white`}
             >
               Xem chi tiết
             </button>
-            </div>
-            
+            <span 
+            onClick={handleClick}
+            className={`${isHome == true ? "hidden" : ""} underline cursor-pointer`}>Xem chi tiết</span>
+          </div>
+        </div>
 
-              <div className={`flex flex-row justify-center py-4 ${isHome == true ? "hidden" : ""}`}>
-              <button
-                onClick={handleModal}
-                className="w-full p-4 bg-[rgb(127,82,255)] rounded-lg border-gray-600 border-2"
-              >
-                Nạp
-              </button>
-            </div>
-            
-            
-          </>
-        )}
+        <div className={`flex flex-row justify-center py-4 ${isHome == true ? "hidden" : ""}`}>
+          <button
+            onClick={handleModal}
+            className="w-full py-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg font-sans font-medium cursor-pointer text-white"
+          >
+            Nạp
+          </button>
+        </div>
+
       </div>
       <ModalContract
         modalOpen={modalOpen}

@@ -4,6 +4,7 @@ import { HomeBody } from "./Pages/Home/HomeBody";
 import { Header } from "./Templates/HomeTepmplate/Header";
 import { Footer } from "./Templates/HomeTepmplate/Footer";
 import web3 from "./Services/Web3/Web3";
+import {Router} from "./Components/Router/Router";
 import {
   deleteMessage,
   getWalletInfor,
@@ -93,9 +94,10 @@ function App() {
       style={{ backgroundColor: "#091227", color: "white" }}
       className="h-max font-poppins leading-loose relative"
     >
-      <Header />
+      {/* <Header />
       <HomeBody />
-      <Footer />
+      <Footer /> */}
+      <Router/>
       <div className="flex flex-col items-start justify-center gap-2 absolute left-0 md:bottom-14 w-1/4">
         {message.map((item, index) => {
           return (

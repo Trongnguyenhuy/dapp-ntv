@@ -106,9 +106,12 @@ const ModalContract = (props) => {
   return (
     <Modal
       title={
-        <h2 className="p-4 font-bold text-3xl border-b-2 border-gray-700">
-          Số Lượng Muốn Nạp
-        </h2>
+
+        <div className="flex flex-row justify-center">
+          <h2 className="p-4 font-bold uppercase text-xl">
+            Số Lượng Muốn Nạp
+          </h2>
+        </div>
       }
       bodyStyle={{ padding: 20 }}
       open={modalOpen}
