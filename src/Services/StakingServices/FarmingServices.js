@@ -70,9 +70,8 @@ export const depositTokenToPool = async (poolId, numberOfToken) => {
   try {
     const address = await getAccountAddress();
     const wei = web3.utils.toWei(`${numberOfToken}`, "ether");
-
     const allowance = await checkAllowance();
-
+    
     if (allowance == false) {
       await approveStakingPool(numberOfToken);
     }
