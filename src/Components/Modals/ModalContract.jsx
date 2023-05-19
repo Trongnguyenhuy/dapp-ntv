@@ -31,27 +31,29 @@ const ModalContract = (props) => {
   useEffect(() => {
     (async () => {
       try {
-        // const tx = await createStakingToken();
         const address = await getAccountAddress();
+        console.log("address", address);
         const prevBalance = await getBalanceOfStakeToken(address);
         console.log("prevBalance", prevBalance);
+        // const createPool = await createStakingToken(2592000, 25);
+        // console.log("createPool", createPool);
         // const approve = await approveStakingPool(1000);
         // console.log("approve", approve);
         // const allowance = await checkAllowance();
         // console.log("allowance:", allowance);
-        // const deposit = await depositTokenToPool(1,20);
+        // const deposit = await depositTokenToPool(0,60);
         // console.log("deposit:",deposit)
+        // const harvest = await harvestReward(0);
+        // console.log("harvest", harvest);
         // const unStaking = await unStakingToken(1,40);
         // console.log("unStaking:",unStaking)
         const beforeBalance = await getBalanceOfStakeToken(address);
         console.log("beforeBalance", beforeBalance);
-        const updatePool = await updatePoolRewards(0);
         const pool = await getPoolInfor(0);
-        const stakerInfo = await getStakerInfo(0);
+        // const stakerInfo = await getStakerInfo(0);
         // const pools = await getAllPools();
-        console.log("updatePool", updatePool);
         console.log("pool", pool);
-        console.log("stakerInfo:", stakerInfo);
+        // console.log("stakerInfo:", stakerInfo);
         // console.log("pools", pools);
       } catch (err) {
         console.log("message", err.message);
@@ -61,13 +63,16 @@ const ModalContract = (props) => {
 
   useEffect(() => {
     const interval = setInterval(async () => {
-      await updatePoolRewards(0);
       const stakerInfo = await getStakerInfo(0);
-      const pool = await getPoolInfor(0);
-      console.log("pool lastRewardedBlock:", pool.lastRewardedBlock);
+      console.log("=============================================");
+      console.log(
+        "amountOfStakeTokenOnPool:",
+        stakerInfo.amountOfStakeTokenOnPool
+      );
       console.log("stakerInfo startBlock", stakerInfo.startBlock);
+      console.log("stakerInfo currentBlock", stakerInfo.currentBlock);
       console.log("stakerInfo rewards", stakerInfo.rewards);
-    }, 30000); 
+    }, 30000);
 
     return () => {
       clearInterval(interval);

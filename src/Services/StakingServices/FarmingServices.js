@@ -3,6 +3,8 @@ import rewardTokenServices from "./RewardTokenServices";
 import StakeTokenServices from "./StakeTokenServices";
 import StakingServices from "./StakingServices";
 
+const NUMBEROFBLOCKPERDAY = 43000;
+
 // Lấy địa chỉ ví của người dùng.
 export const getAccountAddress = async () => {
   try {
@@ -36,25 +38,22 @@ export const getPoolInfor = async (poolId) => {
     owner: owner,
     StakedToken: stakedToken,
     totalTokenStaked: poolFromContract.tokensStaked,
-    lastRewardedBlock: poolFromContract.lastRewardedBlock,
-    accumulatedRewardsPerShare: poolFromContract.accumulatedRewardsPerShare,
+    endStakeTime: poolFromContract.endStakeTime,
+    farmMultiplier: poolFromContract.farmMultiplier,
   };
 };
 
 // Khởi tạo pool muốn staking và approve số lượng token stake vào.
-export const createStakingToken = async () => {
+export const createStakingToken = async (depositDuration, farmMultiplier) => {
   try {
     const address = await getAccountAddress();
-    const poolAddress = await StakingServices.options.address;
-
-    const allowance = checkAllowance(address, poolAddress);
-
-    if (allowance == 0) {
-      await approveStakingPool(1000);
-    }
 
     await StakingServices.methods
-      .createStakingPool(StakeTokenServices.options.address)
+      .createStakingPool(
+        StakeTokenServices.options.address,
+        depositDuration,
+        farmMultiplier
+      )
       .send({
         from: address,
       });
@@ -71,11 +70,10 @@ export const depositTokenToPool = async (poolId, numberOfToken) => {
   try {
     const address = await getAccountAddress();
     const wei = web3.utils.toWei(`${numberOfToken}`, "ether");
-    const poolAddress = await StakingServices.options.address;
 
-    const allowance = checkAllowance(address, poolAddress);
+    const allowance = await checkAllowance();
 
-    if (allowance == 0) {
+    if (allowance == false) {
       await approveStakingPool(numberOfToken);
     }
 
@@ -97,12 +95,15 @@ export const getStakerInfo = async (poolId) => {
     const stakerInfor = await StakingServices.methods
       .stakerInfo(poolId, address)
       .call();
+    const rewards = await updatePoolRewards(poolId);
+    const currentBlock = await StakingServices.methods.getCurrentBlock().call();
 
     return {
       amountOfStakeTokenOnPool: stakerInfor.amount,
-      rewardDebt: stakerInfor.rewardDebt,
-      rewards: stakerInfor.rewards,
+      depositStartTime: stakerInfor.depositStartTime,
+      rewards: rewards,
       startBlock: stakerInfor.startBlock,
+      currentBlock: currentBlock,
     };
   } catch (err) {
     return false;
@@ -140,9 +141,6 @@ export const approveStakingPool = async (numberOfToken) => {
     const address = await getAccountAddress();
     const poolAddress = await StakingServices.options.address;
     const wei = web3.utils.toWei(`${numberOfToken}`, "ether");
-    console.log("address", address);
-    console.log("poolAddress", poolAddress);
-    console.log("wei", wei);
     const approve = await StakeTokenServices.methods
       .approve(poolAddress, wei)
       .send({
@@ -180,7 +178,7 @@ export const harvestReward = async (poolId) => {
         from: address,
       });
 
-    await StakingServices.methods.collectRewards(poolId).call({
+    await StakingServices.methods.collectRewards(poolId).send({
       from: address,
     });
 
@@ -190,8 +188,13 @@ export const harvestReward = async (poolId) => {
         from: address,
       });
 
-    return afterBalance - beforeBalance;
+    const diff = afterBalance - beforeBalance;
+    if (diff > 0) {
+      return true;
+    }
+    return false;
   } catch (err) {
+    console.log(err.message);
     return false;
   }
 };
@@ -199,19 +202,74 @@ export const harvestReward = async (poolId) => {
 // Cập nhật thông tin phần thưởng trong pool
 export const updatePoolRewards = async (poolId) => {
   try {
-    // const address = await getAccountAddress();
+    const address = await getAccountAddress();
+    const rewards = await StakingServices.methods.getRewardsInfor(poolId).call({
+      from: address,
+    });
+    return rewards;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+};
 
-    const beforeStakerInfor = await getStakerInfo(poolId);
+// cho biết giá trị ARP của một pool có poolId tương ứng
+export const getGlobalARP = async (poolId) => {
+  try {
+    const { farmMultiplier, totalTokenStaked } = await getPoolInfor(poolId);
+    const totalMultiplier = await StakingServices.methods
+      .getTotalMultiplier()
+      .call();
+    const poolWeight = farmMultiplier / totalMultiplier;
+    const rewardTokenPerBlock = await StakingServices.methods
+      .getRewardTokenPerBlock()
+      .call();
+    const rewardTokenPerBlockForPool = poolWeight * rewardTokenPerBlock;
 
-    await StakingServices.methods.updatePoolRewards(poolId).call();
+    const globalARP =
+      (rewardTokenPerBlockForPool * NUMBEROFBLOCKPERDAY * 365 * 100) /
+      totalTokenStaked;
 
-    const afterStakerInfor = await getStakerInfo(poolId);
+    return globalARP;
+  } catch (err) {
+    return false;
+  }
+};
 
-    if (beforeStakerInfor.rewards <= afterStakerInfor) {
-      return true;
-    } else {
-      return false;
-    }
+// Cho biết có bao nhiêu phần token sẽ được trả về 1 block cho 1 pool tương ứng với poolId
+export const getPoolMultifier = async (poolId) => {
+  try {
+    const { farmMultiplier } = await getPoolInfor(poolId);
+    const totalMultiplier = await StakingServices.methods
+      .getTotalMultiplier()
+      .call();
+    const poolMultifier = (farmMultiplier * 1000) / totalMultiplier;
+
+    return poolMultifier;
+  } catch (err) {
+    return false;
+  }
+};
+
+//Tính toán ARP của một cá nhân khi staking một số lượng token vào một farm nhất định.
+export const predictInvidualARP = async (numberOfTokenStack, poolId) => {
+  try {
+    const rewardTokenPerBlock = await StakingServices.methods
+      .getRewardTokenPerBlock()
+      .call();
+    const poolMultifier = await getPoolMultifier(poolId);
+    const rewardTokenPerBlockForPool = poolMultifier * rewardTokenPerBlock;
+    const { totalTokenStaked } = await getPoolInfor(poolId);
+    const assetPartion =
+      (numberOfTokenStack * rewardTokenPerBlockForPool) / totalTokenStaked;
+    const invidualARP =
+      (assetPartion *
+        rewardTokenPerBlockForPool *
+        NUMBEROFBLOCKPERDAY *
+        365 *
+        100) /
+      totalTokenStaked;
+    return invidualARP;
   } catch (err) {
     return false;
   }

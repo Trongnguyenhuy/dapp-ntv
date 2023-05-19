@@ -31,7 +31,7 @@ export const HomeBody = () => {
             openInforCard={openInforCard}
             setOpenInforCard={setOpenInforCard}
           />
-          <FarmingCard
+          {/* <FarmingCard
             isHome={true}
             openInforCard={openInforCard}
             setOpenInforCard={setOpenInforCard}
@@ -40,7 +40,7 @@ export const HomeBody = () => {
             isHome={true}
             openInforCard={openInforCard}
             setOpenInforCard={setOpenInforCard}
-          />
+          /> */}
 
         </div>
       </div>
@@ -53,9 +53,9 @@ export const HomeBody = () => {
 
         <div className={`flex flex-col justify-between h-sceen px-16 gap-6`}>
 
+          {/* <PoolCard/>
           <PoolCard/>
-          <PoolCard/>
-          <PoolCard/>
+          <PoolCard/> */}
 
 
         </div>
