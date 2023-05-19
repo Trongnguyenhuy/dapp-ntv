@@ -3,6 +3,9 @@
 import { Modal } from "antd";
 import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
+import React, { useState } from 'react';
+import { Slider } from 'antd';
+import 'antd/dist/reset.css';
 import {
   setHarvestingToken,
   setMessage,
@@ -22,6 +25,12 @@ import {
 
 const ModalContract = (props) => {
   const { modalOpen, setModalOpen, account } = props;
+  const [quantity, setQuantity] = useState(0);
+
+  const handleSliderChange = (value) => {
+    setQuantity(value);
+    amountOfToken.current=value;
+  };
   const dispatch = useDispatch();
 
   const amountOfToken = useRef(0);
@@ -71,24 +80,28 @@ const ModalContract = (props) => {
 
   const handleCancel = () => {
     setModalOpen(false);
-    amountOfToken.current = 0;
+    // amountOfToken.current = 0;
   };
 
   const handleChange = (e) => {
     const { value } = e.target;
     amountOfToken.current = value;
+    setQuantity(value);
+    // else setQuantity(0);
   };
 
   return (
     <Modal
+    
       title={
 
         <div className="flex flex-row justify-center">
           <h2 className="p-4 font-bold uppercase text-xl">
-            Số Lượng Muốn Nạp
+            Thêm thanh khoản
           </h2>
         </div>
       }
+      
       bodyStyle={{ padding: 20 }}
       open={modalOpen}
       onOk={handleConfirm}
@@ -97,27 +110,68 @@ const ModalContract = (props) => {
         <button
           key="back"
           onClick={handleCancel}
-          className="text-xl w-1/4 font-poppins p-4 text-white bg-[rgb(28,23,41)] rounded-md"
+          className="text-lg text-[#091227] font-poppins font-medium w-1/3 p-4 bg-[#A7AABA] hover:bg-[rgb(81,59,143)] hover:text-white rounded-lg me-3"
         >
           Quay Về
         </button>,
         <button
           key="submit"
           onClick={handleConfirm}
-          className="text-xl font-poppins p-4 text-white bg-[rgb(127,82,255)] w-1/4 rounded-md ml-4"
+          className="text-lg text-white font-poppins font-medium w-1/3 p-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg"
         >
           Nạp
         </button>,
       ]}
     >
-      <input
-        type="number"
-        id="amountOfToke"
-        name="amountOfToke"
-        className="w-full p-2 border-2 boder-black rounded-xl text-xl"
-        placeholder="Nhập Vào Số Lượng Muốn Nạp"
-        onChange={handleChange}
-      />
+
+      <div className="flex flex-col justify-between gap-4">
+        <div>
+          <h2 className="w-full text-center text-[#222b42] text-5xl font-poppins font-bold">{quantity? quantity:0}</h2>
+          <h2 className="w-full text-center text-[#222b42] text-1xl font-poppins font-bold">TVNSC</h2>
+        </div>
+        <div>
+          <h2 className="py-4 text-base font-poppins font-semibold">Nhập số lượng</h2>
+
+          <input
+            type="number"
+            id="amountOfToke"
+            name="amountOfToke"
+            className="w-full p-2 border-2 boder-black rounded-md text-lg outline-gray-400 focus: outline-none"
+            placeholder="Nhập số lượng muốn nạp"
+            onChange={handleChange}
+            value={quantity}
+          />
+        </div>
+
+
+        <div >
+
+          <Slider
+
+            min={0}
+            max={100}
+            value={quantity}
+            onChange={handleSliderChange}
+            trackStyle={{
+              backgroundColor: '#091227',
+            }}
+            railStyle={{
+              backgroundColor: '#A7AABA',
+            }}
+          />
+        </div>
+
+
+        <div className="flex flex-row justify-between py-2">
+          <p className="py-2 text-base font-poppins font-semibold">Tổng phần thưởng dự kiến</p>
+          <h2 className="py-2 text-base font-poppins font-medium">24,000 TVNSC</h2>
+        </div>
+        <div className="flex flex-row justify-between pb-6">
+          <p className="py-2 text-base font-poppins font-semibold">Phần thưởng dự kiến theo ngày</p>
+          <h2 className="py-2 text-base font-poppins font-medium">1,200 TVNSC</h2>
+        </div>
+
+      </div>
     </Modal>
   );
 };

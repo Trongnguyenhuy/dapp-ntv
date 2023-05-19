@@ -16,7 +16,7 @@ export const Footer = () => {
                 <div className="flex flex-col">
                     <h1 className="font-sans font-bold text-xl uppercase py-1">Thông tin liên hệ</h1>
                     <h2 className="font-sans font-medium text-md">Số điện thoại: (+84) 395741398</h2>
-                    <h2 className="font-sans font-medium text-md">Địa chỉ: 71, Khu dân cư 91B, phường Xuân Khánh, quận Ninh Kiều, TP. Cần Thơ</h2>
+                    <h2 className="font-sans font-medium text-md">Địa chỉ: 81, Khu dân cư 91B, phường Xuân Khánh, quận Ninh Kiều, TP. Cần Thơ</h2>
 
                 </div>
             </div>
