@@ -31,21 +31,24 @@ export const Header = () => {
   return (
     <div className="border-b-2 border-gray-800 py-1 fixed w-full bg-[#091227] z-20">
       <div className="flex flex-row justify-between font-sans">
-        <ul className="flex flex-row justify-center ml-8 gap-2 font-medium text-lg">
+        <ul className="flex flex-row justify-between ml-8 gap-8 font-medium text-lg">
           <li>
             <img src={logo} alt="logo" width={65} height={65} />
           </li>
-          <div className="grid grid-cols-3 justify-items-start content-center gap-6 ps-8">
-            <li className="cursor-pointer hover:text-[#1CE6EC]">
+          {/* <div className="grid grid-cols-3 justify-items-start content-center gap-6 ps-8"> */}
+            <li className="my-auto cursor-pointer hover:text-[#1CE6EC]">
               <Link to="/">Trang chủ</Link>
             </li>
-            <li className="cursor-pointer hover:text-[#1CE6EC]">
+            <li className="my-auto cursor-pointer hover:text-[#1CE6EC]">
               <Link to="/farm">Farms</Link>
             </li>
-            <li className="cursor-pointer hover:text-[#1CE6EC]">
+            <li className="my-auto cursor-pointer hover:text-[#1CE6EC]">
               <Link to="/pool">Pools</Link>
             </li>
-          </div>
+            <li className="my-auto cursor-pointer hover:text-[#1CE6EC]">
+              <Link to="/admin">Admin</Link>
+            </li>
+          {/* </div> */}
         </ul>
         <ul className="flex flex-row justify-start items-center gap-8 mr-8">
           {account.walletAddress.length > 0 ? (
