@@ -71,7 +71,7 @@ export const depositTokenToPool = async (poolId, numberOfToken) => {
     const address = await getAccountAddress();
     const wei = web3.utils.toWei(`${numberOfToken}`, "ether");
     const allowance = await checkAllowance();
-    
+
     if (allowance == false) {
       await approveStakingPool(numberOfToken);
     }
@@ -113,8 +113,7 @@ export const getStakerInfo = async (poolId) => {
 export const unStakingToken = async (poolId, numberOfToken) => {
   try {
     const address = await getAccountAddress();
-    const wei = web3.utils.toWei(`${numberOfToken}`, "ether");
-    await StakingServices.methods.withdraw(poolId, wei).send({
+    await StakingServices.methods.withdraw(poolId, numberOfToken).send({
       from: address,
     });
     return true;
@@ -215,15 +214,12 @@ export const updatePoolRewards = async (poolId) => {
 // cho biết giá trị ARP của một pool có poolId tương ứng
 export const getGlobalARP = async (poolId) => {
   try {
-    const { farmMultiplier, totalTokenStaked } = await getPoolInfor(poolId);
-    const totalMultiplier = await StakingServices.methods
-      .getTotalMultiplier()
-      .call();
-    const poolWeight = farmMultiplier / totalMultiplier;
+    const { totalTokenStaked } = await getPoolInfor(poolId);
+    const poolWeight = await getPoolMultifier(poolId);
     const rewardTokenPerBlock = await StakingServices.methods
       .getRewardTokenPerBlock()
       .call();
-    const rewardTokenPerBlockForPool = poolWeight * rewardTokenPerBlock;
+    const rewardTokenPerBlockForPool = poolWeight * rewardTokenPerBlock*1e12;
 
     const globalARP =
       (rewardTokenPerBlockForPool * NUMBEROFBLOCKPERDAY * 365 * 100) /
@@ -231,6 +227,7 @@ export const getGlobalARP = async (poolId) => {
 
     return globalARP;
   } catch (err) {
+    console.log(err.message);
     return false;
   }
 };
@@ -242,7 +239,7 @@ export const getPoolMultifier = async (poolId) => {
     const totalMultiplier = await StakingServices.methods
       .getTotalMultiplier()
       .call();
-    const poolMultifier = (farmMultiplier * 1000) / totalMultiplier;
+    const poolMultifier = (farmMultiplier) / totalMultiplier;
 
     return poolMultifier;
   } catch (err) {
@@ -253,14 +250,15 @@ export const getPoolMultifier = async (poolId) => {
 //Tính toán ARP của một cá nhân khi staking một số lượng token vào một farm nhất định.
 export const predictInvidualARP = async (numberOfTokenStack, poolId) => {
   try {
+    const wei = web3.utils.toWei(`${numberOfTokenStack}`, "ether");
     const rewardTokenPerBlock = await StakingServices.methods
       .getRewardTokenPerBlock()
       .call();
     const poolMultifier = await getPoolMultifier(poolId);
-    const rewardTokenPerBlockForPool = poolMultifier * rewardTokenPerBlock;
+    const rewardTokenPerBlockForPool = poolMultifier * rewardTokenPerBlock*1e12;
     const { totalTokenStaked } = await getPoolInfor(poolId);
     const assetPartion =
-      (numberOfTokenStack * rewardTokenPerBlockForPool) / totalTokenStaked;
+      (wei) / totalTokenStaked;
     const invidualARP =
       (assetPartion *
         rewardTokenPerBlockForPool *

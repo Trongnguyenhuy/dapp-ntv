@@ -5,9 +5,9 @@ import PoolCard from "../../Components/Card/PoolCard";
 
 export const HomeBody = () => {
   const farmingCard = [
-    { id: 1, isHome: true },
-    { id: 2, isHome: true },
-    { id: 3, isHome: true },
+    { id: 1, isHome: true, duration: 30 },
+    { id: 2, isHome: true, duration: 60 },
+    { id: 3, isHome: true, duration: 90 },
   ];
   const poolCard = [
     { id: 1, isHome: true },
@@ -41,7 +41,12 @@ export const HomeBody = () => {
 
         <div className={`flex flex-row justify-between h-sceen px-16 gap-12`}>
           {farmingCard.map((item) => (
-            <FarmingCard key={item.id} id={item.id} isHome={item.isHome} />
+            <FarmingCard
+              key={item.id}
+              id={item.id}
+              isHome={item.isHome}
+              duration={item.duration}
+            />
           ))}
         </div>
       </div>

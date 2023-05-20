@@ -1,28 +1,63 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { getStakerInfo } from "../../Services/StakingServices/FarmingServices";
+import {
+  getStakerInfo,
+  harvestReward,
+  unStakingToken,
+  getGlobalARP,
+} from "../../Services/StakingServices/FarmingServices";
 import ModalContract from "../Modals/ModalContract";
 import { useParams } from "react-router-dom";
+import { LoadingOutlined } from "@ant-design/icons";
+import RewardLiveUpdate from "../LiveUpdate/RewardLiveUpdate";
 
 const FarmingInforCard = () => {
   const [modalOpen, setModalOpen] = useState(false);
-  const [staker, setStaker] = useState({});
+  const [loading, setLoading] = useState("");
+  const [globalAPR, setGlobalAPR] = useState(0);
+  const [staker, setStaker] = useState({
+    amountOfStakeTokenOnPool: 0,
+    depositStartTime: 0,
+    rewards: 0,
+    startBlock: 0,
+    currentBlock: 0,
+  });
   const { account } = useSelector((state) => state.farmingReducer);
   const { id } = useParams();
+  const poolId = id - 1;
+  const amountOfStake = staker.amountOfStakeTokenOnPool / 1e18;
 
   useEffect(() => {
     (async () => {
-      const poolId = id - 1;
       const staker = await getStakerInfo(poolId);
+      const APR = await getGlobalARP(poolId);
+      setGlobalAPR(APR);
       setStaker(staker);
     })();
-  }, [id]);
-
-  console.log(staker);
+  }, []);
 
   const handleModal = () => {
     setModalOpen(true);
+  };
+
+  const handleHarvest = async () => {
+    setLoading("harvest");
+    await harvestReward(poolId);
+    const newStaker = await getStakerInfo(poolId);
+    setStaker(newStaker);
+    setLoading("");
+  };
+
+  const handleUnstaking = async () => {
+    setLoading("unstaking");
+    const amount = staker.amountOfStakeTokenOnPool / 1e18;
+    const unstaking = await unStakingToken(poolId, amount);
+    console.log(unstaking);
+    const newStaker = await getStakerInfo(poolId);
+    setStaker(newStaker);
+    setLoading("");
   };
 
   return (
@@ -42,7 +77,7 @@ const FarmingInforCard = () => {
                 alt="MIA"
               />
             </div>
-            <h2 className="text-2xl font-bold">Nạp BSC nhận BRC</h2>
+            <h2 className="text-2xl font-bold">Nạp TVNSC nhận TVNRC</h2>
           </div>
         </div>
         <div className="w-2/3 flex flex-row gap-6">
@@ -54,14 +89,21 @@ const FarmingInforCard = () => {
               <div className="w-full flex flex-col items-center p-4 py-12 text-1xl">
                 <p className="flex flex-col items-center gap-2 font-bold">
                   <span className="text-4xl text-gray-400">
-                    {staker ? staker.amountOfStakeTokenOnPool / 1e18 : 0}
+                    {amountOfStake.toFixed(5)}
                   </span>
                   <span className="text-xl">TVNRC</span>
                 </p>
               </div>
             </div>
-            <button className="w-full p-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg">
-              Kết thúc
+            <button
+              onClick={handleUnstaking}
+              className="w-full p-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg"
+            >
+              {loading === "unstaking" ? (
+                <LoadingOutlined className="text-2xl font-bold" />
+              ) : (
+                "Kết Thúc"
+              )}
             </button>
           </div>
           <div className="w-1/2 flex flex-col items-center gap-4">
@@ -71,45 +113,34 @@ const FarmingInforCard = () => {
               </div>
               <div className="w-full flex flex-col items-center p-4 py-12 text-1xl">
                 <p className="flex flex-col items-center gap-2 font-bold">
-                  <span className="text-4xl text-gray-400">
-                    {staker ? staker.rewards / 1e18 : 0}
-                  </span>
+                  <RewardLiveUpdate poolId={poolId} />
                   <span className="text-xl">TVNSC</span>
                 </p>
               </div>
             </div>
-            <button className="w-full p-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg">
-              Thu hoạch
+            <button
+              onClick={handleHarvest}
+              className="w-full p-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg"
+            >
+              {loading === "harvest" ? (
+                <LoadingOutlined className="text-2xl font-bold" />
+              ) : (
+                "Thu Hoạch"
+              )}
             </button>
           </div>
         </div>
-        {/* <div className="flex flex-row justify-start relative px-2">
-          <img
-            className="w-14 h-14"
-            src="https://miaswap-img-s3.s3.ap-northeast-1.amazonaws.com/busd.png"
-            alt="BUSDT"
-          />
-          <img
-            className="w-8 h-8 absolute left-12 bottom-9 bg-white rounded-full p-1"
-            src="https://miaswap-img-s3.s3.ap-northeast-1.amazonaws.com/busd.png"
-            alt="MIA"
-          />
-        </div>
-        <h2 className="text-3xl font-bold">Nạp VNDC</h2>
-        <button className="p-1 border-2 border-[rgb(124,77,255)] text-[rgb(124,77,255)] hover:text-white hover:bg-[rgb(124,77,255)] rounded-lg shadow-lg">
-          Auto Renew
-        </button> */}
       </div>
       <div className="flex flex-row justify-around items-center mt-8">
         <div className="w-full border-2 border-gray-800 rounded-md px-8">
           <div className="flex flex-col">
             <p className="flex flex-row justify-between py-6">
-              <span>APY</span>
-              <span>283.11%</span>
+              <span>APR</span>
+              <span>{`${globalAPR.toFixed(2)} %`}</span>
             </p>
             <p className="flex flex-row justify-between py-6">
               <span>Tổng số thanh khoản đã được đặt cọc</span>
-              <span>10,000,000 BSC</span>
+              <span>10,000,000 TVNSC</span>
             </p>
             <p className="flex flex-row justify-between py-6">
               <span>Chu kỳ trả thưởng</span>
@@ -118,7 +149,6 @@ const FarmingInforCard = () => {
           </div>
         </div>
       </div>
-
       <div className="flex flex-col items-center gap-8 w-full rounded-md cursor-pointer py-6">
         <span className="underline">Xem hợp đồng</span>
         <button
@@ -128,11 +158,11 @@ const FarmingInforCard = () => {
           Thêm thanh khoản
         </button>
       </div>
-
       <ModalContract
         modalOpen={modalOpen}
         setModalOpen={setModalOpen}
         account={account}
+        poolId={poolId}
       />
     </div>
   );

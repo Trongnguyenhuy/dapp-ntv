@@ -4,7 +4,7 @@ import ModalContract from "../Modals/ModalContract";
 import { useSelector } from "react-redux";
 import { useHistory } from 'react-router-dom';
 const FarmingCard = (props) => {
-  const { id, isHome } = props;
+  const { id, isHome,duration } = props;
   const history = useHistory();
   const [modalOpen, setModalOpen] = useState(false);
   const { account } = useSelector((state) => state.farmingReducer);
@@ -36,7 +36,7 @@ const FarmingCard = (props) => {
             alt="MIA"
           />
         </div>
-        <h2 className="text-2xl font-bold mt-3">Nạp BSC nhận BRC</h2>
+        <h2 className="text-2xl font-bold mt-3">Nạp TVNSC nhận TVNRC</h2>
 
       </div>
       <div className="grid grid-col-4 content-center rounded-lg p-2 mt-4 text-lg w-full">
@@ -49,7 +49,7 @@ const FarmingCard = (props) => {
 
           <p className="flex flex-row justify-between py-4">
             <span>Chu Kỳ</span>
-            <span className="font-bold">30 ngày</span>
+            <span className="font-bold">{`${duration} Ngày`}</span>
           </p>
           <div className="flex flex-col items-center pt-8">
             <button
