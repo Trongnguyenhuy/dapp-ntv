@@ -79,6 +79,7 @@ const FarmingCard = (props) => {
         setModalOpen={setModalOpen}
         account={account}
         poolId={id - 1}
+        duration={duration}
       />
     </div>
   );

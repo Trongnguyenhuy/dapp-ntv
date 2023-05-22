@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
@@ -7,6 +8,8 @@ import {
   harvestReward,
   unStakingToken,
   getGlobalARP,
+  getAllStakingTimeInfo,
+  totalReward,
 } from "../../Services/StakingServices/FarmingServices";
 import ModalContract from "../Modals/ModalContract";
 import { useParams } from "react-router-dom";
@@ -27,13 +30,27 @@ const FarmingInforCard = () => {
   const { account } = useSelector((state) => state.farmingReducer);
   const { id } = useParams();
   const poolId = id - 1;
-  const amountOfStake = staker.amountOfStakeTokenOnPool / 1e18;
+  const amountOfStake = staker.totalTokenStake / 1e18;
 
   useEffect(() => {
     (async () => {
       const staker = await getStakerInfo(poolId);
-      const APR = await getGlobalARP(poolId);
-      setGlobalAPR(APR);
+      console.log("staker:", staker);
+      const allStakingTime = await getAllStakingTimeInfo(
+        poolId,
+        staker.firstStakeTime,
+        staker.finalStakeTime
+      );
+
+      console.log("allStakingTime:", allStakingTime);
+      const reward = await totalReward(
+        poolId,
+        staker.firstStakeTime,
+        staker.finalStakeTime
+      );
+      console.log("reward:", reward);
+      // const APR = await getGlobalARP(poolId);
+      // setGlobalAPR(APR);
       setStaker(staker);
     })();
   }, []);
