@@ -1,7 +1,7 @@
 import web3 from "../Web3/Web3";
 import stakeTokenABI from "../ABI/MumbaiABI/RewardToken.json";
 
-const rewardTokenAddress = "0xBA54c44a800822eb2FE59AfDE6e6Bda929D18b99";
+const rewardTokenAddress = "0x74c8b048f359BbF935fD394Dd573827BC190ACf3";
 
 export default new web3.eth.Contract(stakeTokenABI.abi, rewardTokenAddress);
 
