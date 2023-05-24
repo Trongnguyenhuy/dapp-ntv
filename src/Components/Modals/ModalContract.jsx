@@ -155,7 +155,7 @@ const ModalContract = (props) => {
             Tổng phần thưởng dự kiến
           </p>
           <h2 className="py-2 text-base font-poppins font-medium">
-            {`${(predictAPR/1e18).toFixed(5)} TVNSC`}
+            {`${(predictAPR/1e18).toFixed(5)} TVN-LP`}
           </h2>
         </div>
         <div className="flex flex-row justify-between pb-6">
@@ -163,7 +163,7 @@ const ModalContract = (props) => {
             Phần thưởng dự kiến theo ngày
           </p>
           <h2 className="py-2 text-base font-poppins font-medium">
-            {`${(predictAPR / 30 / 1e18).toFixed(5)} TVNSC`}
+            {`${(predictAPR / 30 / 1e18).toFixed(5)} TVN-LP`}
           </h2>
         </div>
       </div>

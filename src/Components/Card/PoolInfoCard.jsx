@@ -1,21 +1,7 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import {
-    getStakerInfo,
-    harvestReward,
-    unStakingToken,
-    getGlobalARP,
-    getAllStakingTimeInfo,
-    getPoolInfor,
-    totalReward,
-} from "../../Services/StakingServices/FarmingServices";
-import ModalContract from "../Modals/ModalContract";
 import { useParams } from "react-router-dom";
-import { LoadingOutlined } from "@ant-design/icons";
-import RewardLiveUpdate from "../LiveUpdate/RewardLiveUpdate";
+import logoCoinLP from "../../assets/logo-coin-lp.png";
+import logoCoinTVN from "../../assets/logo-coin-tvn.png";
 
 const PoolInforCard = () => {
     const { id } = useParams();
@@ -34,7 +20,7 @@ const PoolInforCard = () => {
             if (value_1 < 100) setValue_1(value_1 + 1);
         }
         else if (value_2 < 100) setValue_2(value_2 + 1);
-      
+
     };
 
     return (
@@ -49,7 +35,7 @@ const PoolInforCard = () => {
 
 
                 <div className="flex flex-col justify-between p-8">
-                    <span className="font-light text-sm">Tổng số TVNSC</span>
+                    <span className="font-light text-sm">Tổng số TVN-LP</span>
                     <span className="font-bold font-poppins text-2xl text-gray-300 py-2">9.000.000</span>
                 </div>
 
@@ -75,11 +61,11 @@ const PoolInforCard = () => {
                     <div className="flex flex-row items-center gap-2">
                         <div className="font-bold font-poppins text-2xl text-gray-300 px-4">
                             <img
-                                className="w-14 h-9"
-                                src="https://miaswap-img-s3.s3.ap-northeast-1.amazonaws.com/busd.png"
-                                alt="BUSDT"
+                                className="w-14 h-12 rounded-full"
+                                src={logoCoinLP}
+                                alt="TVNA"
                             />
-                            <span className="font-light text-sm">TVNSC</span>
+                            <span className="font-light text-sm">TVNA</span>
                         </div>
                         <div className="flex flex-col w-full">
                             <div className="flex flex-row items-center gap-2 py-2">
@@ -112,18 +98,18 @@ const PoolInforCard = () => {
                                     </button>
                                 </div>
                             </div>
-                            <h2 className="text-xs text-left text-gray-400 font-medium px-1">Số TVNSC hiện có: 10</h2>
+                            <h2 className="text-xs text-left text-gray-400 font-medium px-1">Số TVN-LP hiện có: 10</h2>
                         </div>
                     </div>
                     <div className="flex flex-row items-center gap-2">
 
                         <div className="font-bold font-poppins text-2xl text-gray-300 px-4">
                             <img
-                                className="w-14 h-9"
-                                src="https://miaswap-img-s3.s3.ap-northeast-1.amazonaws.com/busd.png"
-                                alt="BUSDT"
+                                className="w-14 h-12 rounded-full"
+                                src={logoCoinTVN}
+                                alt="TVNB"
                             />
-                            <span className="font-light text-sm">TVNSC</span>
+                            <span className="font-light text-sm">TVNB</span>
                         </div>
                         <div className="flex flex-col w-full">
                             <div className="flex flex-row items-center gap-2 py-2">

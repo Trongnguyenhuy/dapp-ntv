@@ -13,6 +13,8 @@ import ModalContract from "../Modals/ModalContract";
 import { useParams } from "react-router-dom";
 import { LoadingOutlined } from "@ant-design/icons";
 import RewardLiveUpdate from "../LiveUpdate/RewardLiveUpdate";
+import logoCoinLP from "../../assets/logo-coin-lp.png";
+import logoCoinTVN from "../../assets/logo-coin-tvn.png";
 
 const FarmingInforCard = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -94,13 +96,13 @@ const FarmingInforCard = () => {
             <div className="flex flex-row justify-start relative px-2">
               <img
                 className="w-20 h-20"
-                src="https://miaswap-img-s3.s3.ap-northeast-1.amazonaws.com/busd.png"
-                alt="BUSDT"
+                src={logoCoinTVN}
+                alt="TVN"
               />
               <img
-                className="w-12 h-12 absolute left-12 bottom-6 bg-white rounded-full p-1"
-                src="https://miaswap-img-s3.s3.ap-northeast-1.amazonaws.com/busd.png"
-                alt="MIA"  
+                className="w-12 h-12 absolute left-14 bottom-8 rounded-full p-1"
+                src={logoCoinLP}
+                alt="TVN-LP"  
               />
             </div>
             <h2 className="text-2xl font-bold">Nạp TVN-LP nhận TVN</h2>
