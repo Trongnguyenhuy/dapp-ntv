@@ -4,7 +4,7 @@ import rewardTokenServices from "./RewardTokenServices";
 import StakeTokenServices from "./StakeTokenServices";
 import StakingServices from "./StakingServices";
 
-const NUMBEROFBLOCKPERDAY = 43000;
+const NUMBEROFBLOCKPERDAY = 84000 / 13;
 
 // Lấy địa chỉ ví của người dùng.
 export const getAccountAddress = async () => {
@@ -22,31 +22,25 @@ export const getBalanceOfStakeToken = async () => {
   try {
     const address = await getAccountAddress();
     const balance = await StakeTokenServices.methods.balanceOf(address).call();
-
     return balance;
   } catch (err) {
+    console.log(err.message);
     return false;
   }
 };
 
 // Lấy thông tin về pool muốn staking !!!
 export const getPoolInfor = async (poolId) => {
-  console.log("xxxx", StakeTokenServices.methods);
   const owner = await StakingServices.methods.owner().call();
-  console.log("swwf", owner);
   const poolFromContract = await StakingServices.methods.pools(poolId).call();
-
   const stakedToken = await StakeTokenServices.methods.symbol().call();
-
 
   return {
     owner: owner, //nguoi so huu
-    StakedToken: stakedToken, 
+    StakedToken: stakedToken,
     totalTokenStaked: poolFromContract.tokensStaked,
     endStakeTime: poolFromContract.endStakeTime, //thoi gian cuoi
     farmMultiplier: poolFromContract.farmMultiplier, //ti trong
-    poolSize: poolFromContract.poolSize, //
-    open: !poolFromContract.open,
   };
 };
 
@@ -134,7 +128,6 @@ export const getStakingTimeInfo = async (poolId, time) => {
         stakingTimeInfor.depositStartTime
       ),
       amount: stakingTimeInfor.amount,
-      rewardRate: stakingTimeInfor.rewardRate / 1e14,
       reward: reward,
     };
   } catch (err) {
@@ -189,10 +182,10 @@ export const getAllStakingTimeInfo = async (poolId, start, end) => {
 };
 
 // Thực hiện thao tác Unstake lấy token từ pool về lại tài khoản
-export const unStakingToken = async (poolId, numberOfToken) => {
+export const unStakingToken = async (poolId, numberOfToken, time) => {
   try {
     const address = await getAccountAddress();
-    await StakingServices.methods.withdraw(poolId, numberOfToken).send({
+    await StakingServices.methods.withdraw(poolId, numberOfToken, time).send({
       from: address,
     });
     return true;
@@ -246,7 +239,7 @@ export const checkAllowance = async () => {
 };
 
 // Thu nhận token thưởng từ pool
-export const harvestReward = async (poolId) => {
+export const harvestReward = async (poolId, time) => {
   try {
     const address = await getAccountAddress();
     const beforeBalance = await rewardTokenServices.methods
@@ -255,7 +248,7 @@ export const harvestReward = async (poolId) => {
         from: address,
       });
 
-    await StakingServices.methods.collectRewards(poolId).send({
+    await StakingServices.methods.collectRewards(poolId, time).send({
       from: address,
     });
 
@@ -298,7 +291,7 @@ export const getGlobalARP = async (poolId) => {
     const rewardTokenPerBlock = await StakingServices.methods
       .getRewardTokenPerBlock()
       .call();
-    const rewardTokenPerBlockForPool = poolWeight * rewardTokenPerBlock * 1e12;
+    const rewardTokenPerBlockForPool = poolWeight * rewardTokenPerBlock;
 
     const globalARP =
       (rewardTokenPerBlockForPool * NUMBEROFBLOCKPERDAY * 365 * 100) /
@@ -334,18 +327,12 @@ export const predictInvidualARP = async (numberOfTokenStack, poolId) => {
       .getRewardTokenPerBlock()
       .call();
     const poolMultifier = await getPoolMultifier(poolId);
-    const rewardTokenPerBlockForPool =
-      poolMultifier * rewardTokenPerBlock * 1e12;
+    const rewardTokenPerBlockForPool = poolMultifier * rewardTokenPerBlock;
     const { totalTokenStaked } = await getPoolInfor(poolId);
     const assetPartion = wei / totalTokenStaked;
     const invidualARP =
-      (assetPartion *
-        rewardTokenPerBlockForPool *
-        NUMBEROFBLOCKPERDAY *
-        365 *
-        100) /
-      totalTokenStaked;
-    return invidualARP;
+      assetPartion * rewardTokenPerBlockForPool * NUMBEROFBLOCKPERDAY;
+    return invidualARP / 1e18;
   } catch (err) {
     return false;
   }

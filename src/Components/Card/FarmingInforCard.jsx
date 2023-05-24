@@ -41,16 +41,9 @@ const FarmingInforCard = () => {
         staker.firstStakeTime,
         staker.finalStakeTime
       );
-
       console.log("allStakingTime:", allStakingTime);
-      const reward = await totalReward(
-        poolId,
-        staker.firstStakeTime,
-        staker.finalStakeTime
-      );
-      console.log("reward:", reward);
-      // const APR = await getGlobalARP(poolId);
-      // setGlobalAPR(APR);
+      const globalAPR = await getGlobalARP(poolId);
+      setGlobalAPR(globalAPR);
       setStaker(staker);
     })();
   }, []);
@@ -94,7 +87,7 @@ const FarmingInforCard = () => {
                 alt="MIA"
               />
             </div>
-            <h2 className="text-2xl font-bold">Nạp TVNSC nhận TVNRC</h2>
+            <h2 className="text-2xl font-bold">Nạp TVN-LP nhận TVN</h2>
           </div>
         </div>
         <div className="w-2/3 flex flex-row gap-6">
@@ -108,7 +101,7 @@ const FarmingInforCard = () => {
                   <span className="text-4xl text-gray-400">
                     {amountOfStake.toFixed(5)}
                   </span>
-                  <span className="text-xl">TVNRC</span>
+                  <span className="text-xl">TVN-LP</span>
                 </p>
               </div>
             </div>
@@ -131,7 +124,7 @@ const FarmingInforCard = () => {
               <div className="w-full flex flex-col items-center p-4 py-12 text-1xl">
                 <p className="flex flex-col items-center gap-2 font-bold">
                   <RewardLiveUpdate poolId={poolId} />
-                  <span className="text-xl">TVNSC</span>
+                  <span className="text-xl">TVN</span>
                 </p>
               </div>
             </div>

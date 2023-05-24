@@ -1,58 +1,52 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import { Modal } from "antd";
-import { useEffect, useRef } from "react";
+import { Modal, Slider } from "antd";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
-import React, { useState } from "react";
-import { Slider } from "antd";
-import "antd/dist/reset.css";
 import {
   setHarvestingToken,
   setMessage,
 } from "../../Redux/Reducers/FarmingReducer";
 import {
-  depositTokenToPool,
   getBalanceOfStakeToken,
   predictInvidualARP,
-  getPoolInfor,
+  depositTokenToPool,
 } from "../../Services/StakingServices/FarmingServices";
-import { LoadingOutlined } from "@ant-design/icons";
 
 const ModalContract = (props) => {
-  const { modalOpen, setModalOpen, account, poolId } = props;
+  const { modalOpen, setModalOpen, poolId } = props;
   const [quantity, setQuantity] = useState(0);
-  const [max, setMax] = useState(100);
-  const [duration, setDuration] = useState(0);
   const [predictAPR, setPredictAPR] = useState(0);
-  const [loading, setLoading] = useState("");
+  const [max, setMax] = useState(0);
   const dispatch = useDispatch();
+
   const amountOfToken = useRef(0);
 
   useEffect(() => {
     (async () => {
-      let maxAmount = await getBalanceOfStakeToken();
-      const pool = await getPoolInfor(poolId);
-      let duration = pool.endStakeTime;
-      duration = duration / 2592000;
-      setDuration(duration);
-      maxAmount = maxAmount / 1e18;
-      setMax(maxAmount);
+      try {
+        let max = await getBalanceOfStakeToken();
+        max = max / 1e18;
+        setMax(max);
+      } catch (err) {
+        console.log("message", err.message);
+      }
     })();
   }, []);
 
   const handleSliderChange = async (value) => {
-    let predictAmount = await calculateAPR(value);
-    predictAmount = predictAmount * value * 2592000 * (poolId + 1);
+    let predictAmount = await predictInvidualARP(value, poolId);
+    predictAmount = predictAmount * 30 * (poolId + 1);
+    console.log(predictAmount);
     setPredictAPR(predictAmount);
     setQuantity(value);
     amountOfToken.current = value;
   };
 
   const handleConfirm = async () => {
-    setLoading("deposit");
     await depositTokenToPool(poolId, amountOfToken.current);
     setModalOpen(false);
-    setLoading("");
     const setHarvestingTokenAction = setHarvestingToken(amountOfToken.current);
     const setMessageAction = setMessage({
       type: "confirm",
@@ -60,33 +54,29 @@ const ModalContract = (props) => {
     });
     dispatch(setHarvestingTokenAction);
     dispatch(setMessageAction);
+    window.location.reload();
   };
 
   const handleCancel = () => {
     setModalOpen(false);
+    amountOfToken.current = 0;
   };
 
   const handleChange = async (e) => {
     const { value } = e.target;
-    let predictAmount = await calculateAPR(value);
-    predictAmount = predictAmount * value * 2592000 * (poolId + 1);
+    let predictAmount = await predictInvidualARP(value, poolId);
+    predictAmount = predictAmount * 30 * (poolId + 1);
     setPredictAPR(predictAmount);
     amountOfToken.current = value;
     setQuantity(value);
   };
 
-  const calculateAPR = async (value) => {
-    let invidualAPR = await predictInvidualARP(value, poolId);
-    invidualAPR = invidualAPR / (12 * 2592000);
-    return invidualAPR;
-  };
-
   return (
     <Modal
       title={
-        <div className="flex flex-row justify-center">
-          <h2 className="p-4 font-bold uppercase text-xl">Thêm thanh khoản</h2>
-        </div>
+        <h2 className="p-4 font-bold text-3xl border-b-2 border-gray-700">
+          Số Lượng Muốn Nạp
+        </h2>
       }
       bodyStyle={{ padding: 20 }}
       open={modalOpen}
@@ -96,20 +86,16 @@ const ModalContract = (props) => {
         <button
           key="back"
           onClick={handleCancel}
-          className="text-lg text-[#091227] font-poppins font-medium w-1/3 p-4 bg-[#A7AABA] hover:bg-[rgb(81,59,143)] hover:text-white rounded-lg me-3"
+          className="text-xl w-1/4 font-poppins p-4 text-white bg-[rgb(28,23,41)] rounded-md"
         >
           Quay Về
         </button>,
         <button
           key="submit"
           onClick={handleConfirm}
-          className="text-lg text-white font-poppins font-medium w-1/3 p-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg"
+          className="text-xl font-poppins p-4 text-white bg-[rgb(127,82,255)] w-1/4 rounded-md ml-4"
         >
-          {loading === "deposit" ? (
-            <LoadingOutlined className="text-2xl font-bold" />
-          ) : (
-            "Nạp"
-          )}
+          Nạp
         </button>,
       ]}
     >
@@ -119,7 +105,7 @@ const ModalContract = (props) => {
             {quantity ? quantity : 0}
           </h2>
           <h2 className="w-full text-center text-[#222b42] text-1xl font-poppins font-bold">
-            TVNSC
+            TVN-LP
           </h2>
         </div>
         <div>
@@ -159,7 +145,7 @@ const ModalContract = (props) => {
             Tổng phần thưởng dự kiến
           </p>
           <h2 className="py-2 text-base font-poppins font-medium">
-            {`${predictAPR.toFixed(6)} TVNSC`}
+            {`${predictAPR ? predictAPR.toFixed(8) : 0} TVN`}
           </h2>
         </div>
         <div className="flex flex-row justify-between pb-6">
@@ -167,7 +153,9 @@ const ModalContract = (props) => {
             Phần thưởng dự kiến theo ngày
           </p>
           <h2 className="py-2 text-base font-poppins font-medium">
-            {`${(predictAPR / 30).toFixed(6)} TVNSC`}
+            {`${
+              predictAPR ? (predictAPR / (30 * (poolId + 1))).toFixed(8) : 0
+            } TVN`}
           </h2>
         </div>
       </div>

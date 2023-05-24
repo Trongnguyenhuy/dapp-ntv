@@ -1,5 +1,5 @@
 import web3 from "../Web3/Web3";
-import stakeTokenABI from "../ABI/MumbaiABI/StakeToken.json";
+import stakeTokenABI from "../ABI/SepoliaABI/DynamicAPRABI/StakeToken.json";
 
 const stakeTokenAddress = "0xDeFAdf7357933EE32b5983D6Ee87A31E29eED7c0";
 
