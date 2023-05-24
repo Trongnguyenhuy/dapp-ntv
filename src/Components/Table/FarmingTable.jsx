@@ -46,6 +46,10 @@ const FarmingTable = () => {
         staker.finalStakeTime
       );
       console.log(allStakingTime);
+      allStakingTime.map(item =>{
+        item.amount=(item.amount/1e18).toFixed(5);
+        item.reward=(item.reward/1e18).toFixed(5);
+      })
       setFilteredData(allStakingTime);
       setData(allStakingTime);
       setAllStakingTime(allStakingTime);
@@ -81,16 +85,22 @@ const FarmingTable = () => {
 
   const handleSearchChange = (event) => {
     const value = event.target.value;
+
+    // console.log("SEARCH TEXT",value);
     setSearchText(value);
   };
   const handleSearchClick = () => {
+    console.log("FILTER DATA",filteredData);
+    console.log("SEARCH TEXT",searchText);
     if (searchText) {
       const filtered = filteredData.filter(item =>
         Object.values(item).some(value =>
           String(value).toLowerCase().includes(searchText.toLowerCase())
         )
       );
+
       setFilteredData(filtered);
+
     }
     else setFilteredData(data);
   };
@@ -112,9 +122,9 @@ const FarmingTable = () => {
       return (
         <tr className='border-b-2 border-b-gray-300' key={index}>
           <td className='py-4 px-4' >{index + 1}</td>
-          <td className='py-4'>{(key.amount / 1e18).toFixed(5)} TVN-LP</td>
+          <td className='py-4'>{key.amount} TVN-LP</td>
           <td className='py-4'>{key.depositStartTime}</td>
-          <td className='py-4'>{(key.reward / 1e18).toFixed(5)} TVN</td>
+          <td className='py-4'>{key.reward} TVN</td>
           <td className='py-4 operation'>
             <div className='flex flex-row justify-between gap-4 text-white'>
               <button
