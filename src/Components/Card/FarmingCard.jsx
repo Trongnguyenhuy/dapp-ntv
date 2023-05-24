@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import { useState } from "react";
 import ModalContract from "../Modals/ModalContract";
 import { useSelector } from "react-redux";
@@ -17,12 +16,10 @@ const FarmingCard = (props) => {
   const handleModal = () => {
     setModalOpen(true);
   };
-
   return (
     <div
       style={{ background: "#fff", color: "#091227" }}
-      className="p-10 w-full rounded-xl mt-2 lg:mt-4 font-poppins"
-    >
+      className="p-8 w-full rounded-xl mt-2 lg:mt-4 font-poppins">
       <div className="flex flex-col justify-around items-center">
         <div className="flex flex-row justify-around items-center relative">
           <img
@@ -37,10 +34,8 @@ const FarmingCard = (props) => {
           />
         </div>
         <h2 className="text-2xl font-bold mt-3">Nạp TVNSC nhận TVNRC</h2>
-
       </div>
       <div className="grid grid-col-4 content-center rounded-lg p-2 mt-4 text-lg w-full">
-
         <div className="grid grid-col-4 content-center rounded-lg p-2 mt-4 text-lg w-full divide-y divide-gray-600">
           <p className="flex flex-row justify-between py-6">
             <span>APY</span>
@@ -63,7 +58,6 @@ const FarmingCard = (props) => {
             className={`${isHome == true ? "hidden" : ""} underline cursor-pointer`}>Xem chi tiết</span>
           </div>
         </div>
-
         <div className={`flex flex-row justify-center py-4 ${isHome == true ? "hidden" : ""}`}>
           <button
             onClick={handleModal}
@@ -72,7 +66,6 @@ const FarmingCard = (props) => {
             Nạp
           </button>
         </div>
-
       </div>
       <ModalContract
         modalOpen={modalOpen}

@@ -1,15 +1,10 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
 import { Modal } from "antd";
 import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import React, { useState } from "react";
 import { Slider } from "antd";
 import "antd/dist/reset.css";
-import {
-  setHarvestingToken,
-  setMessage,
-} from "../../Redux/Reducers/FarmingReducer";
+import { setHarvestingToken, setMessage} from "../../Redux/Reducers/FarmingReducer";
 import {
   depositTokenToPool,
   getBalanceOfStakeToken,
@@ -60,6 +55,7 @@ const ModalContract = (props) => {
     });
     dispatch(setHarvestingTokenAction);
     dispatch(setMessageAction);
+    window.location.reload();
   };
 
   const handleCancel = () => {
@@ -119,7 +115,7 @@ const ModalContract = (props) => {
             {quantity ? quantity : 0}
           </h2>
           <h2 className="w-full text-center text-[#222b42] text-1xl font-poppins font-bold">
-            TVNSC
+            TVN-LP
           </h2>
         </div>
         <div>
@@ -159,7 +155,7 @@ const ModalContract = (props) => {
             Tổng phần thưởng dự kiến
           </p>
           <h2 className="py-2 text-base font-poppins font-medium">
-            {`${predictAPR.toFixed(6)} TVNSC`}
+            {`${(predictAPR/1e18).toFixed(5)} TVNSC`}
           </h2>
         </div>
         <div className="flex flex-row justify-between pb-6">
@@ -167,7 +163,7 @@ const ModalContract = (props) => {
             Phần thưởng dự kiến theo ngày
           </p>
           <h2 className="py-2 text-base font-poppins font-medium">
-            {`${(predictAPR / 30).toFixed(6)} TVNSC`}
+            {`${(predictAPR / 30 / 1e18).toFixed(5)} TVNSC`}
           </h2>
         </div>
       </div>
