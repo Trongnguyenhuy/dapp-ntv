@@ -29,25 +29,28 @@ export const getBalanceOfStakeToken = async () => {
   }
 };
 
-// Lấy thông tin về pool muốn staking
+// Lấy thông tin về pool muốn staking !!!
 export const getPoolInfor = async (poolId) => {
+  console.log("xxxx", StakeTokenServices.methods);
   const owner = await StakingServices.methods.owner().call();
+  console.log("swwf", owner);
   const poolFromContract = await StakingServices.methods.pools(poolId).call();
 
   const stakedToken = await StakeTokenServices.methods.symbol().call();
 
+
   return {
-    owner: owner,
-    StakedToken: stakedToken,
+    owner: owner, //nguoi so huu
+    StakedToken: stakedToken, 
     totalTokenStaked: poolFromContract.tokensStaked,
-    endStakeTime: poolFromContract.endStakeTime,
-    farmMultiplier: poolFromContract.farmMultiplier,
-    poolSize: poolFromContract.poolSize,
+    endStakeTime: poolFromContract.endStakeTime, //thoi gian cuoi
+    farmMultiplier: poolFromContract.farmMultiplier, //ti trong
+    poolSize: poolFromContract.poolSize, //
     open: !poolFromContract.open,
   };
 };
 
-// Khởi tạo pool muốn staking và approve số lượng token stake vào.
+// Khởi tạo pool muốn staking và approve số lượng token stake vào. !!!
 export const createStakingToken = async (depositDuration, farmMultiplier) => {
   try {
     const address = await getAccountAddress();
