@@ -1,7 +1,6 @@
-// import { useState } from "react";
 import logo from "../../assets/home-image.png";
-import FarmingCard from "../../Components/Card/FarmingCard";
-import PoolCard from "../../Components/Card/PoolCard";
+import { FarmingBody } from "../Farming/FarmingBody";
+import { PoolBody } from "../Pool/PoolBody";
 
 export const HomeBody = () => {
   const farmingCard = [
@@ -31,40 +30,8 @@ export const HomeBody = () => {
         </div>
       </div>
 
-      <div className="flex flex-col justify-center py-16">
-        <div className="flex flex-col justify-around items-center py-8">
-          <h1 className="font-poppins font-bold text-4xl uppercase ">FARMS</h1>
-          <h2 className="font-sans font-medium text-3xl py-2">
-            Cấp thanh khoản để nhận thưởng
-          </h2>
-        </div>
-
-        <div className={`flex flex-row justify-between h-sceen px-16 gap-12`}>
-          {farmingCard.map((item) => (
-            <FarmingCard
-              key={item.id}
-              id={item.id}
-              isHome={item.isHome}
-              duration={item.duration}
-            />
-          ))}
-        </div>
-      </div>
-
-      <div className="flex flex-col justify-center py-10">
-        <div className="flex flex-col justify-around items-center py-8">
-          <h1 className="font-poppins font-bold text-4xl uppercase ">POOLS</h1>
-          <h2 className="font-sans font-medium text-3xl py-2">
-            Gửi tiết kiệm đầu tư không rủi ro
-          </h2>
-        </div>
-
-        <div className={`flex flex-col justify-between h-sceen px-16 gap-6`}>
-          {poolCard.map((item) => (
-            <PoolCard key={item.id} id={item.id} isHome={item.isHome} />
-          ))}
-        </div>
-      </div>
+      <FarmingBody />
+      <PoolBody />
     </div>
   );
 };

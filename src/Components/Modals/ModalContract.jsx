@@ -1,13 +1,10 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
-import { Modal, Slider } from "antd";
-import { useEffect, useRef, useState } from "react";
+import { Modal } from "antd";
+import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
-import {
-  setHarvestingToken,
-  setMessage,
-} from "../../Redux/Reducers/FarmingReducer";
+import React, { useState } from "react";
+import { Slider } from "antd";
+import "antd/dist/reset.css";
+import { setHarvestingToken, setMessage} from "../../Redux/Reducers/FarmingReducer";
 import {
   getBalanceOfStakeToken,
   predictInvidualARP,

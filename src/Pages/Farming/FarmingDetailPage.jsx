@@ -5,13 +5,13 @@ import { Header } from "../../Templates/HomeTepmplate/Header"
 import { useParams } from 'react-router-dom';
 
 export default function Home() {
-    const { id } = useParams(); // Nhận giá trị của param
+    const { id } = useParams();
 
     return (
         <>
             <Header />
             <FarmingInforCard />
-            <FarmingTable />
+            <FarmingTable/>
             <Footer />
             {/* <h1>Giá trị của param: {id}</h1> */}
         </>

@@ -182,10 +182,10 @@ export const getAllStakingTimeInfo = async (poolId, start, end) => {
 };
 
 // Thực hiện thao tác Unstake lấy token từ pool về lại tài khoản
-export const unStakingToken = async (poolId, numberOfToken, time) => {
+export const unStakingToken = async (poolId, numberOfToken,time) => {
   try {
     const address = await getAccountAddress();
-    await StakingServices.methods.withdraw(poolId, numberOfToken, time).send({
+    await StakingServices.methods.withdraw(poolId, numberOfToken,time).send({
       from: address,
     });
     return true;
@@ -239,7 +239,7 @@ export const checkAllowance = async () => {
 };
 
 // Thu nhận token thưởng từ pool
-export const harvestReward = async (poolId, time) => {
+export const harvestReward = async (poolId,time) => {
   try {
     const address = await getAccountAddress();
     const beforeBalance = await rewardTokenServices.methods
@@ -248,7 +248,7 @@ export const harvestReward = async (poolId, time) => {
         from: address,
       });
 
-    await StakingServices.methods.collectRewards(poolId, time).send({
+    await StakingServices.methods.collectRewards(poolId,time).send({
       from: address,
     });
 
