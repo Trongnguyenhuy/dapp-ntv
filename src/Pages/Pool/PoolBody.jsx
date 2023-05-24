@@ -7,7 +7,7 @@ export const PoolBody = () => {
         { id: 3, totalLiquidity: 20000000 }
     ]
     return (
-        <div className="container mx-auto flex flex-col justify-center py-10">
+        <div className="container mx-auto h-screen flex flex-col justify-center py-10">
             <div className="flex flex-col justify-around items-center py-16">
                 <h1 className="font-poppins font-bold text-4xl uppercase ">POOLS</h1>
                 <h2 className="font-sans font-medium text-3xl py-2">Cung cấp thanh khoản cho thị trường và nhận phí hoán đổi từ mỗi giao dịch</h2>
