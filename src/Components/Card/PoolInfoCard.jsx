@@ -55,7 +55,7 @@ const PoolInforCard = () => {
 
 
                 <div className="flex flex-col justify-between p-8">
-                    <span className="font-light text-sm">Tổng số TVNRC</span>
+                    <span className="font-light text-sm">Tổng số TVN</span>
                     <span className="font-bold font-poppins text-2xl text-gray-300 py-2">1.000.000</span>
                 </div>
 
@@ -155,7 +155,7 @@ const PoolInforCard = () => {
                                     </button>
                                 </div>
                             </div>
-                            <h2 className="text-xs text-left text-gray-400 font-medium px-1">Số TVNRC hiện có: 0</h2>
+                            <h2 className="text-xs text-left text-gray-400 font-medium px-1">Số TVN hiện có: 0</h2>
                         </div>
                     </div>
                     <button

@@ -114,7 +114,7 @@ const FarmingTable = () => {
           <td className='py-4 px-4' >{index + 1}</td>
           <td className='py-4'>{(key.amount / 1e18).toFixed(5)} TVN-LP</td>
           <td className='py-4'>{key.depositStartTime}</td>
-          <td className='py-4'>{(key.reward / 1e18).toFixed(5)} TVNRC</td>
+          <td className='py-4'>{(key.reward / 1e18).toFixed(5)} TVN</td>
           <td className='py-4 operation'>
             <div className='flex flex-row justify-between gap-4 text-white'>
               <button

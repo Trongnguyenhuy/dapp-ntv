@@ -26,7 +26,7 @@ const PoolCard = (props) => {
           />
         </div>
         <div className="flex flex-col pb-12">
-          <h2 className="text-xl font-bold">TVNSC . TVNRC</h2>
+          <h2 className="text-xl font-bold">TVNSC . TVN</h2>
         </div>
         <div className="w-full border-t-2 bg-white rounded-b-md border-gray-600 py-6">
           <div className="flex flex-row justify-between px-6 text-black font-poppins">

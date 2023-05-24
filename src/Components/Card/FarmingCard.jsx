@@ -33,7 +33,7 @@ const FarmingCard = (props) => {
             alt="MIA"
           />
         </div>
-        <h2 className="text-2xl font-bold mt-3">Nạp TVNSC nhận TVNRC</h2>
+        <h2 className="text-2xl font-bold mt-3">Nạp TVNSC nhận TVN</h2>
       </div>
       <div className="grid grid-col-4 content-center rounded-lg p-2 mt-4 text-lg w-full">
         <div className="grid grid-col-4 content-center rounded-lg p-2 mt-4 text-lg w-full divide-y divide-gray-600">

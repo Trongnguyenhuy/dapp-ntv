@@ -103,7 +103,7 @@ const FarmingInforCard = () => {
                 alt="MIA"  
               />
             </div>
-            <h2 className="text-2xl font-bold">Nạp TVN-LP nhận TVNRC</h2>
+            <h2 className="text-2xl font-bold">Nạp TVN-LP nhận TVN</h2>
           </div>
         </div>
         <div className="w-2/3 flex flex-row gap-6">
@@ -131,7 +131,7 @@ const FarmingInforCard = () => {
               <div className="w-full flex flex-col items-center p-4 py-12 text-1xl">
                 <p className="flex flex-col items-center gap-2 font-bold">
                   <RewardLiveUpdate poolId={poolId} />
-                  <span className="text-xl">TVNRC</span>
+                  <span className="text-xl">TVN</span>
                 </p>
               </div>
             </div>
