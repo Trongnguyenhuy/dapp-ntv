@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import { Modal } from "antd";
@@ -59,6 +60,7 @@ const ModalContract = (props) => {
     })();
   }, []);
 
+<<<<<<< Updated upstream
   useEffect(() => {
     const interval = setInterval(async () => {
       await updatePoolRewards(0);
@@ -68,6 +70,16 @@ const ModalContract = (props) => {
       console.log("stakerInfo startBlock", stakerInfo.startBlock);
       console.log("stakerInfo rewards", stakerInfo.rewards);
     }, 30000); 
+=======
+  const handleSliderChange = async (value) => {
+    let predictAmount = await predictInvidualARP(value, poolId);
+    predictAmount = predictAmount * (poolId + 1);
+    console.log(predictAmount);
+    setPredictAPR(predictAmount);
+    setQuantity(value);
+    amountOfToken.current = value;
+  };
+>>>>>>> Stashed changes
 
     return () => {
       clearInterval(interval);
@@ -83,9 +95,13 @@ const ModalContract = (props) => {
     });
     dispatch(setHarvestingTokenAction);
     dispatch(setMessageAction);
+<<<<<<< Updated upstream
     console.log(`amountOfToken: ${amountOfToken.current}`);
     console.log(`Address: ${account.walletAddress}`);
     console.log(`Balance: ${account.balance}`);
+=======
+    window.location.reload();
+>>>>>>> Stashed changes
   };
 
   const handleCancel = () => {
@@ -95,7 +111,15 @@ const ModalContract = (props) => {
 
   const handleChange = (e) => {
     const { value } = e.target;
+<<<<<<< Updated upstream
     amountOfToken.current = value;
+=======
+    let predictAmount = await predictInvidualARP(value, poolId);
+    predictAmount = predictAmount * 30 * (poolId + 1);
+    setPredictAPR(predictAmount);
+    amountOfToken.current = value;
+    setQuantity(value);
+>>>>>>> Stashed changes
   };
 
   return (
@@ -126,6 +150,7 @@ const ModalContract = (props) => {
         </button>,
       ]}
     >
+<<<<<<< Updated upstream
       <input
         type="number"
         id="amountOfToke"
@@ -134,6 +159,66 @@ const ModalContract = (props) => {
         placeholder="Nhập Vào Số Lượng Muốn Nạp"
         onChange={handleChange}
       />
+=======
+      <div className="flex flex-col justify-between gap-4">
+        <div>
+          <h2 className="w-full text-center text-[#222b42] text-5xl font-poppins font-bold">
+            {quantity ? quantity : 0}
+          </h2>
+          <h2 className="w-full text-center text-[#222b42] text-1xl font-poppins font-bold">
+            TVN-LP
+          </h2>
+        </div>
+        <div>
+          <h2 className="py-4 text-base font-poppins font-semibold">
+            Nhập số lượng
+          </h2>
+
+          <input
+            type="number"
+            min="0"
+            id="amountOfToke"
+            name="amountOfToke"
+            className="w-full p-2 border-2 boder-black rounded-md text-lg outline-gray-400 focus: outline-none"
+            placeholder="Nhập số lượng muốn nạp"
+            onChange={handleChange}
+            value={quantity}
+          />
+        </div>
+
+        <div>
+          <Slider
+            min={0}
+            max={max.toFixed(0)}
+            value={quantity}
+            onChange={handleSliderChange}
+            trackStyle={{
+              backgroundColor: "#091227",
+            }}
+            railStyle={{
+              backgroundColor: "#A7AABA",
+            }}
+          />
+        </div>
+
+        <div className="flex flex-row justify-between py-2">
+          <p className="py-2 text-base font-poppins font-semibold">
+            Tổng phần thưởng dự kiến
+          </p>
+          <h2 className="py-2 text-base font-poppins font-medium">
+            {`${predictAPR ? predictAPR.toFixed(8) : 0} TVN`}
+          </h2>
+        </div>
+        <div className="flex flex-row justify-between pb-6">
+          <p className="py-2 text-base font-poppins font-semibold">
+            Phần thưởng dự kiến theo ngày
+          </p>
+          <h2 className="py-2 text-base font-poppins font-medium">
+            {`${predictAPR ? (predictAPR / (30 * (poolId + 1))).toFixed(8) : 0} TVN`}
+          </h2>
+        </div>
+      </div>
+>>>>>>> Stashed changes
     </Modal>
   );
 };

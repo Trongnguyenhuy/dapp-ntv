@@ -3,6 +3,11 @@ import rewardTokenServices from "./RewardTokenServices";
 import StakeTokenServices from "./StakeTokenServices";
 import StakingServices from "./StakingServices";
 
+<<<<<<< Updated upstream
+=======
+const NUMBEROFBLOCKPERDAY = 7095;
+
+>>>>>>> Stashed changes
 // Lấy địa chỉ ví của người dùng.
 export const getAccountAddress = async () => {
   try {
@@ -36,8 +41,13 @@ export const getPoolInfor = async (poolId) => {
     owner: owner,
     StakedToken: stakedToken,
     totalTokenStaked: poolFromContract.tokensStaked,
+<<<<<<< Updated upstream
     lastRewardedBlock: poolFromContract.lastRewardedBlock,
     accumulatedRewardsPerShare: poolFromContract.accumulatedRewardsPerShare,
+=======
+    endStakeTime: poolFromContract.endStakeTime,
+    farmMultiplier: poolFromContract.farmMultiplier,
+>>>>>>> Stashed changes
   };
 };
 
@@ -109,17 +119,98 @@ export const getStakerInfo = async (poolId) => {
   }
 };
 
-// Thực hiện thao tác Unstake lấy token từ pool về lại tài khoản
-export const unStakingToken = async (poolId, numberOfToken) => {
+<<<<<<< Updated upstream
+=======
+// Lấy thông tin về người dùng đã stake token vào.
+export const getStakingTimeInfo = async (poolId, time) => {
   try {
     const address = await getAccountAddress();
+    const stakingTimeInfor = await StakingServices.methods
+      .stakingTimeInfo(poolId, address, time)
+      .call();
+    const currentBlock = await StakingServices.methods.getCurrentBlock().call();
+
+    const reward = await StakingServices.methods
+      .getRewardsInfor(poolId, time)
+      .call({
+        from: address,
+      });
+
+    return {
+      currentBlock: currentBlock,
+      startBlock: stakingTimeInfor.startBlock,
+      depositStartTime: convertSecondsToDateTime(
+        stakingTimeInfor.depositStartTime
+      ),
+      amount: stakingTimeInfor.amount,
+      reward: reward,
+    };
+  } catch (err) {
+    return false;
+  }
+};
+
+// Lấy ra tổng số reward của tất cả các lần nạp
+export const totalReward = async (poolId, start, end) => {
+  try {
+    const stakingTimeArr = await getAllStakingTimeInfo(poolId, start, end);
+
+    if (stakingTimeArr.length == 1) {
+      return stakingTimeArr[0].reward;
+    }
+
+    const totalAmount = stakingTimeArr.reduce(
+      (reward, item) => reward + +item.reward,
+      0
+    );
+    return totalAmount;
+  } catch (err) {
+    return false;
+  }
+};
+
+// Lấy tất cả thông tin về những lần staking vào pool
+export const getAllStakingTimeInfo = async (poolId, start, end) => {
+  let arr = [];
+  let stakingTimeInfo = [];
+
+  try {
+    if (start === end) {
+      const stakingTime = await getStakingTimeInfo(poolId, end);
+      stakingTimeInfo.push(stakingTime);
+      return stakingTimeInfo;
+    }
+
+    for (let i = start; i <= end; i++) {
+      arr.push(i);
+    }
+
+    for (const item of arr) {
+      const stakingTime = await getStakingTimeInfo(poolId, item);
+      stakingTimeInfo.push(stakingTime);
+    }
+
+    return stakingTimeInfo;
+  } catch (err) {
+    return false;
+  }
+};
+
+>>>>>>> Stashed changes
+// Thực hiện thao tác Unstake lấy token từ pool về lại tài khoản
+export const unStakingToken = async (poolId, numberOfToken, time) => {
+  try {
+    const address = await getAccountAddress();
+<<<<<<< Updated upstream
     const wei = web3.utils.toWei(`${numberOfToken}`, "ether");
     await StakingServices.methods.withdraw(poolId, wei).send({
+=======
+    await StakingServices.methods.withdraw(poolId, numberOfToken, time).send({
+>>>>>>> Stashed changes
       from: address,
     });
     return true;
   } catch (err) {
-    console.log(err.message);
     return false;
   }
 };
@@ -127,7 +218,6 @@ export const unStakingToken = async (poolId, numberOfToken) => {
 export const getAllPools = async () => {
   try {
     const pools = await StakingServices.methods.getAllPool().call();
-
     return pools;
   } catch (err) {
     return false;
@@ -171,7 +261,7 @@ export const checkAllowance = async () => {
 };
 
 // Thu nhận token thưởng từ pool
-export const harvestReward = async (poolId) => {
+export const harvestReward = async (poolId, time) => {
   try {
     const address = await getAccountAddress();
     const beforeBalance = await rewardTokenServices.methods
@@ -180,7 +270,11 @@ export const harvestReward = async (poolId) => {
         from: address,
       });
 
+<<<<<<< Updated upstream
     await StakingServices.methods.collectRewards(poolId).call({
+=======
+    await StakingServices.methods.collectRewards(poolId, time).send({
+>>>>>>> Stashed changes
       from: address,
     });
 
@@ -197,8 +291,9 @@ export const harvestReward = async (poolId) => {
 };
 
 // Cập nhật thông tin phần thưởng trong pool
-export const updatePoolRewards = async (poolId) => {
+export const updatePoolRewards = async (poolId, time) => {
   try {
+<<<<<<< Updated upstream
     // const address = await getAccountAddress();
 
     const beforeStakerInfor = await getStakerInfo(poolId);
@@ -212,6 +307,71 @@ export const updatePoolRewards = async (poolId) => {
     } else {
       return false;
     }
+=======
+    const address = await getAccountAddress();
+    const rewards = await StakingServices.methods
+      .getRewardsInfor(poolId, time)
+      .call({
+        from: address,
+      });
+    return rewards;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+};
+
+// cho biết giá trị ARP của một pool có poolId tương ứng
+export const getGlobalARP = async (poolId) => {
+  try {
+    const { totalTokenStaked } = await getPoolInfor(poolId);
+    const poolWeight = await getPoolMultifier(poolId);
+    const rewardTokenPerBlock = await StakingServices.methods
+      .getRewardTokenPerBlock()
+      .call();
+    const rewardTokenPerBlockForPool = poolWeight * rewardTokenPerBlock;
+    const globalARP =
+      (rewardTokenPerBlockForPool * NUMBEROFBLOCKPERDAY * 365 * 100) / totalTokenStaked;
+    return globalARP;
+  } catch (err) {
+    return false;
+  }
+};
+
+// Cho biết có bao nhiêu phần token sẽ được trả về 1 block cho 1 pool tương ứng với poolId
+export const getPoolMultifier = async (poolId) => {
+  try {
+    const { farmMultiplier } = await getPoolInfor(poolId);
+    const totalMultiplier = await StakingServices.methods
+      .getTotalMultiplier()
+      .call();
+    const poolMultifier = farmMultiplier / totalMultiplier;
+
+    return poolMultifier;
+  } catch (err) {
+    return false;
+  }
+};
+
+//Tính toán ARP của một cá nhân trong 1 ngày khi staking một số lượng token vào một farm nhất định.
+export const predictInvidualARP = async (numberOfTokenStack, poolId) => {
+  try {
+    const wei = web3.utils.toWei(`${numberOfTokenStack}`, "ether");
+
+    const rewardTokenPerBlock = await StakingServices.methods
+      .getRewardTokenPerBlock()
+      .call();
+    const poolMultifier = await getPoolMultifier(poolId);
+
+    const { totalTokenStaked } = await getPoolInfor(poolId);
+    const rewardTokenPerBlockForPool = poolMultifier * rewardTokenPerBlock;
+    const assetPartion = wei / totalTokenStaked;
+
+    const rewardRate = assetPartion * rewardTokenPerBlockForPool;
+
+    const predict = rewardRate * NUMBEROFBLOCKPERDAY;
+    return predict / 1e18;
+>>>>>>> Stashed changes
   } catch (err) {
     return false;
   }
