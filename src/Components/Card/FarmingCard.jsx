@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
 import ModalContract from "../Modals/ModalContract";
 import { useSelector } from "react-redux";
