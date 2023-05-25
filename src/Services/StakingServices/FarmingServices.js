@@ -164,9 +164,10 @@ export const getAllStakingTimeInfo = async (poolId, start, end) => {
       const stakingTime = await getStakingTimeInfo(poolId, end);
 
       if (stakingTime.startBlock != 0) {
+        stakingTime.unStakingTime = 1;
         stakingTimeInfo.push(stakingTime);
       }
-      
+
       return stakingTimeInfo;
     }
 
@@ -176,6 +177,7 @@ export const getAllStakingTimeInfo = async (poolId, start, end) => {
 
     for (const item of arr) {
       const stakingTime = await getStakingTimeInfo(poolId, item);
+      stakingTime.unStakingTime = item;
       stakingTimeInfo.push(stakingTime);
     }
 

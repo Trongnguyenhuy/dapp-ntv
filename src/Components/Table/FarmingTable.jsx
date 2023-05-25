@@ -16,7 +16,6 @@ const FarmingTable = () => {
   const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState("");
 
-
   const { id } = useParams();
   const poolId = id - 1;
 
@@ -114,13 +113,13 @@ const FarmingTable = () => {
             <td className="py-4 operation">
               <div className="flex flex-row justify-between gap-4 text-white">
                 <button
-                  onClick={() => handleUnstaking(index + 1, key.amount)}
+                  onClick={() => handleUnstaking(key.unStakingTime, key.amount)}
                   className="w-1/2 py-4 bg-white text-[#091227] hover:text-white hover:bg-[rgb(81,59,143)] rounded-lg"
                 >
                   Kết thúc
                 </button>
                 <button
-                  onClick={() => handleHarvest(index + 1)}
+                  onClick={() => handleHarvest(key.unStakingTime)}
                   className="w-1/2 py-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg"
                 >
                   Thu hoạch
