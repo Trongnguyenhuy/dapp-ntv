@@ -5,7 +5,7 @@ const PoolCard = (props) => {
   const { id, totalLiquidity } = props;
   const history = useHistory();
   const handleClick = () => {
-    history.push(`/pool-detail/${id}`);
+    history.push(`/pool-detail/${id}`); //get params
   };
 
   return (
