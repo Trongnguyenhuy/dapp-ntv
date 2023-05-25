@@ -4,7 +4,6 @@ import { getPoolInfor } from "../../Services/StakingServices/FarmingServices";
 import { useEffect, useState } from "react";
 
 const AdminFarmingCard = (props) => {
-  const [opens, setOpen] = useState(true);
   const { id, duration } = props;
   // const poolId = 0;
   const [farmMultiplier, setfarmMultiplier] = useState(0);
@@ -13,7 +12,6 @@ const AdminFarmingCard = (props) => {
     const x = async () => {
       const pool = await getPoolInfor(0);
       console.log("pool:", pool);
-      setOpen(pool.open);
       // const multi = await getPoolInfor(0);
       // console.log("multi:", multi);
       setfarmMultiplier(pool.farmMultiplier);
@@ -53,10 +51,10 @@ const AdminFarmingCard = (props) => {
             <span className="font-bold">{`${duration} Ngày`}</span>
           </p>
 
-          <p className="flex flex-row justify-between py-4">
+          {/* <p className="flex flex-row justify-between py-4">
             <span>Trạng Thái</span>
             <span className="font-bold">{`${opens}`}</span>
-          </p>
+          </p> */}
 
           <p className="flex flex-row justify-between py-4">
             <span>Tỉ Trọng</span>
@@ -64,7 +62,7 @@ const AdminFarmingCard = (props) => {
           </p>
         </div>
       </div>
-      <ModalContract opens={opens} poolId={id - 1} duration={duration} />
+      <ModalContract poolId={id - 1} duration={duration} />
     </div>
   );
 };
