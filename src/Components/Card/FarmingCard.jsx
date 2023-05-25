@@ -1,17 +1,34 @@
-/* eslint-disable react/prop-types */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ModalContract from "../Modals/ModalContract";
 import { useSelector } from "react-redux";
 import { useHistory } from 'react-router-dom';
 import logoCoinLP from "../../assets/logo-coin-lp.png";
 import logoCoinTVN from "../../assets/logo-coin-tvn.png";
+import {
+  getStakerInfo,
+  harvestReward,
+  unStakingToken,
+  getGlobalARP,
+  getAllStakingTimeInfo,
+  getPoolInfor,
+  totalReward,
+} from "../../Services/StakingServices/FarmingServices";
 const FarmingCard = (props) => {
-  const { id, isHome, duration } = props;
+  const { id, apr, isHome, duration } = props;
   const history = useHistory();
   const [modalOpen, setModalOpen] = useState(false);
   const { account } = useSelector((state) => state.farmingReducer);
+  const [globalAPR, setGlobalAPR] = useState([]);
+  
+  useEffect(() => {
+    (async () => {
+      console.log(id);
+      const APR = await getGlobalARP(id-1);
+      
+      setGlobalAPR(APR.toFixed(2));
 
-
+    })();
+  }, []);
   const handleClick = () => {
     history.push(`/farm-detail/${id}`); // Chuyển đến đường dẫn với param
   };
@@ -41,13 +58,13 @@ const FarmingCard = (props) => {
       <div className="grid grid-col-4 content-center rounded-lg p-2 mt-4 text-lg w-full">
         <div className="grid grid-col-4 content-center rounded-lg p-2 mt-4 text-lg w-full divide-y divide-gray-600">
           <p className="flex flex-row justify-between py-6">
-            <span>APY</span>
-            <span className="font-bold">283.11%</span>
+            <span>APR</span>
+            <span className="font-bold">{globalAPR} %</span>
           </p>
 
           <p className="flex flex-row justify-between py-4">
             <span>Chu Kỳ</span>
-            <span className="font-bold">{`${duration} Ngày`}</span>
+            <span className="font-bold">30 ngày</span>
           </p>
           <div className="flex flex-col items-center pt-8">
             <button
