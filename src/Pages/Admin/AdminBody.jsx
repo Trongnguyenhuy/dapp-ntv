@@ -3,8 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { setMessage } from "../../Redux/Reducers/FarmingReducer";
 import AdminFarmingCard from "../../Components/Card/AdminFarmingCard";
 import { useState } from "react";
-
+import logo from "../../assets/logo.png";
 import { useHistory } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 export const AdminBody = () => {
     const { account } = useSelector((state) => state.farmingReducer);
@@ -29,7 +30,6 @@ export const AdminBody = () => {
         }
     };
 
-
     const farmingCard = [
         { id: 1, isHome: true, duration: 30 },
         { id: 2, isHome: true, duration: 60 },
@@ -45,7 +45,6 @@ export const AdminBody = () => {
     const submit = () => {
         console.log("skjksfs: " + depositDuration);
         console.log("skjksfs: " + farmMultiplier);
-
         history.goBack();
     }
 
@@ -57,18 +56,24 @@ export const AdminBody = () => {
         <div className="sidebar-header flex items-center justify-center py-4">
             <div className="inline-flex">
             <a href="#" className="inline-flex flex-row items-center">
-                <span className="leading-10 text-gray-100 text-2xl font-bold ml-1 uppercase">NTV</span>
+                <img src={logo} alt="logo" width={65} height={65} />
             </a>
             </div>
         </div>
         <div className="sidebar-content px-4 py-6">
             <li className="my-px">
-                <a
-                href="#"
-                className="flex flex-row items-center h-10 px-3 rounded-lg text-gray-700 bg-gray-100"
-                >
+                <a href="#" className="flex flex-row items-center h-10 px-3 rounded-lg text-gray-700 bg-gray-100">
                 <span className="ml-3">Dashboard</span>
                 </a>
+            </li>
+            <li className="my-px">
+                <Link className="text-white" to="/">Trang chủ</Link>
+            </li>
+            <li className="my-px">
+                <Link className="text-white" to="/farm">Farm</Link>
+            </li>
+            <li className="my-px">
+                <Link className="text-white" to="/pool">Pool</Link>
             </li>
         </div>
         </aside>
