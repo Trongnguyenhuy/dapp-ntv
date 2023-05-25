@@ -162,7 +162,12 @@ export const getAllStakingTimeInfo = async (poolId, start, end) => {
   try {
     if (start === end) {
       const stakingTime = await getStakingTimeInfo(poolId, end);
-      stakingTimeInfo.push(stakingTime);
+
+      if (stakingTime.startBlock != 0) {
+        stakingTime.unStakingTime = 1;
+        stakingTimeInfo.push(stakingTime);
+      }
+
       return stakingTimeInfo;
     }
 
@@ -172,6 +177,7 @@ export const getAllStakingTimeInfo = async (poolId, start, end) => {
 
     for (const item of arr) {
       const stakingTime = await getStakingTimeInfo(poolId, item);
+      stakingTime.unStakingTime = item;
       stakingTimeInfo.push(stakingTime);
     }
 
@@ -182,10 +188,14 @@ export const getAllStakingTimeInfo = async (poolId, start, end) => {
 };
 
 // Thực hiện thao tác Unstake lấy token từ pool về lại tài khoản
-export const unStakingToken = async (poolId, numberOfToken,time) => {
+export const unStakingToken = async (poolId, numberOfToken, time) => {
   try {
     const address = await getAccountAddress();
-    await StakingServices.methods.withdraw(poolId, numberOfToken,time).send({
+    const wei = web3.utils.toWei(`${numberOfToken}`, "ether");
+    console.log("wei", wei);
+    console.log("poolId", poolId);
+    console.log("time:", time);
+    await StakingServices.methods.withdraw(poolId, wei, time).send({
       from: address,
     });
     return true;
@@ -239,7 +249,7 @@ export const checkAllowance = async () => {
 };
 
 // Thu nhận token thưởng từ pool
-export const harvestReward = async (poolId,time) => {
+export const harvestReward = async (poolId, time) => {
   try {
     const address = await getAccountAddress();
     const beforeBalance = await rewardTokenServices.methods
@@ -248,7 +258,7 @@ export const harvestReward = async (poolId,time) => {
         from: address,
       });
 
-    await StakingServices.methods.collectRewards(poolId,time).send({
+    await StakingServices.methods.collectRewards(poolId, time).send({
       from: address,
     });
 

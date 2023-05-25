@@ -3,16 +3,6 @@ import { FarmingBody } from "../Farming/FarmingBody";
 import { PoolBody } from "../Pool/PoolBody";
 
 export const HomeBody = () => {
-  const farmingCard = [
-    { id: 1, isHome: true, duration: 30 },
-    { id: 2, isHome: true, duration: 60 },
-    { id: 3, isHome: true, duration: 90 },
-  ];
-  const poolCard = [
-    { id: 1, isHome: true },
-    { id: 2, isHome: true },
-    { id: 3, isHome: true },
-  ];
 
   return (
     <div className={`p-1 md:p-2`}>
@@ -22,7 +12,7 @@ export const HomeBody = () => {
             NTV Group
           </h1>
           <h2 className="font-sans font-medium text-4xl py-4">
-            Sàn giao dịch phi tập trung trên nền tảng Blockchain
+            Sàn giao dịch phi tập trung trên nền tảng Ethereum Sepolia
           </h2>
         </div>
         <div className={`justify-items-end pe-16`}>

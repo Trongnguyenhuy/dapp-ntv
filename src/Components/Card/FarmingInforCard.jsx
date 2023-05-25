@@ -60,8 +60,8 @@ const FarmingInforCard = () => {
         staker.finalStakeTime
       );
       console.log("reward:", reward);
-      // const APR = await getGlobalARP(poolId);
-      // setGlobalAPR(APR);
+      const APR = await getGlobalARP(poolId);
+      setGlobalAPR(APR);
       setStaker(staker);
     })();
   }, []);
@@ -150,7 +150,7 @@ const FarmingInforCard = () => {
             </p>
             <p className="flex flex-row justify-between py-6">
               <span>Tổng số thanh khoản đã được đặt cọc</span>
-              <span>{(pool.poolSize/1e18).toFixed(5)}</span>
+              <span>{(pool.totalTokenStaked/1e18).toFixed(5)}</span>
             </p>
             <p className="flex flex-row justify-between py-6">
               <span>Chu kỳ trả thưởng</span>
