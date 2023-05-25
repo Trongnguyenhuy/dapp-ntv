@@ -1,18 +1,25 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
 import { Modal } from "antd";
 import { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import React, { useState } from "react";
 import { Slider } from "antd";
 import "antd/dist/reset.css";
-import { setHarvestingToken, setMessage} from "../../Redux/Reducers/FarmingReducer";
+import {
+  setHarvestingToken,
+  setMessage,
+} from "../../Redux/Reducers/FarmingReducer";
 import {
   getBalanceOfStakeToken,
   predictInvidualARP,
   depositTokenToPool,
 } from "../../Services/StakingServices/FarmingServices";
+import Loading from "../Button/loadingButton";
 
 const ModalContract = (props) => {
   const { modalOpen, setModalOpen, poolId } = props;
+  const [loading, setLoading] = useState(0);
   const [quantity, setQuantity] = useState(0);
   const [predictAPR, setPredictAPR] = useState(0);
   const [max, setMax] = useState(0);
@@ -41,7 +48,9 @@ const ModalContract = (props) => {
   };
 
   const handleConfirm = async () => {
+    setLoading(1);
     await depositTokenToPool(poolId, amountOfToken.current);
+    setLoading(0);
     setModalOpen(false);
     const setHarvestingTokenAction = setHarvestingToken(amountOfToken.current);
     const setMessageAction = setMessage({
@@ -91,7 +100,7 @@ const ModalContract = (props) => {
           onClick={handleConfirm}
           className="text-xl font-poppins p-4 text-white bg-[rgb(127,82,255)] w-1/4 rounded-md ml-4"
         >
-          Nạp
+          <Loading index={1} loading={loading} text={"Nạp"} />
         </button>,
       ]}
     >

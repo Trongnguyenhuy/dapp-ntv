@@ -71,7 +71,7 @@ export const depositTokenToPool = async (poolId, numberOfToken) => {
   try {
     const address = await getAccountAddress();
     const wei = web3.utils.toWei(`${numberOfToken}`, "ether");
-    const allowance = await checkAllowance();
+    const allowance = await checkAllowance(wei);
 
     if (allowance == false) {
       await approveStakingPool(numberOfToken);
@@ -233,7 +233,7 @@ export const approveStakingPool = async (numberOfToken) => {
 };
 
 // Kiểm tra allowance giữa hai địa chỉ
-export const checkAllowance = async () => {
+export const checkAllowance = async (numberOfToken) => {
   try {
     const address = await getAccountAddress();
     const poolAddress = await StakingServices.options.address;
@@ -241,7 +241,11 @@ export const checkAllowance = async () => {
       .allowance(address, poolAddress)
       .call();
 
-    return allowanceNumber;
+    if (allowanceNumber >= numberOfToken) {
+      return true;
+    }
+
+    return false;
   } catch (err) {
     console.log(err.message);
     return false;
@@ -303,11 +307,15 @@ export const getGlobalARP = async (poolId) => {
       .call();
     const rewardTokenPerBlockForPool = poolWeight * rewardTokenPerBlock;
 
-    const globalARP =
-      (rewardTokenPerBlockForPool * NUMBEROFBLOCKPERDAY * 365 * 100) /
-      totalTokenStaked;
+    if (totalTokenStaked == 0) {
+      return 0;
+    } else {
+      const globalARP =
+        (rewardTokenPerBlockForPool * NUMBEROFBLOCKPERDAY * 365 * 100) /
+        totalTokenStaked;
 
-    return globalARP;
+      return globalARP;
+    }
   } catch (err) {
     console.log(err.message);
     return false;
