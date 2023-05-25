@@ -60,8 +60,8 @@ const FarmingInforCard = () => {
         staker.finalStakeTime
       );
       console.log("reward:", reward);
-      // const APR = await getGlobalARP(poolId);
-      // setGlobalAPR(APR);
+      const APR = await getGlobalARP(poolId);
+      setGlobalAPR(APR);
       setStaker(staker);
     })();
   }, []);

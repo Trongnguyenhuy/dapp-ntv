@@ -35,7 +35,6 @@ const ModalContract = (props) => {
   const handleSliderChange = async (value) => {
     let predictAmount = await predictInvidualARP(value, poolId);
     predictAmount = predictAmount * 30 * (poolId + 1);
-    console.log(predictAmount);
     setPredictAPR(predictAmount);
     setQuantity(value);
     amountOfToken.current = value;
