@@ -57,15 +57,15 @@ const FarmingTable = () => {
     setSearchText(value);
   };
   const handleSearchClick = () => {
-    console.log("FILTER DATA", filteredData);
-    console.log("SEARCH TEXT", searchText);
     if (searchText) {
-      const filtered = filteredData.filter((item) =>
-        Object.values(item).some((value) =>
-          String(value).toLowerCase().includes(searchText.toLowerCase())
+      const filtered = filteredData.filter((item) => {
+        return (
+          item.amount.toLowerCase().includes(searchText.toLowerCase())
+          || item.reward.toLowerCase().includes(searchText.toLowerCase())
+          || item.depositStartTime.toLowerCase().includes(searchText.toLowerCase())
         )
+      }
       );
-
       setFilteredData(filtered);
     } else setFilteredData(data);
   };
@@ -128,6 +128,7 @@ const FarmingTable = () => {
     <div className="container px-32 mx-auto py-8">
       <div className="flex flex-row justify-between py-6 gap-4">
         <input
+          type="text"
           className="w-full py-2 px-4 bg-[#060d20] border-b-2 border-gray-800 focus:outline-none rounded-md"
           placeholder="Search"
           value={searchText || ""}
