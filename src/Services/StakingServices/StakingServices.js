@@ -1,7 +1,7 @@
 import web3 from "../Web3/Web3";
-import stakingABI from "../ABI/SepoliaABI/DynamicAPRABI/DynamicARPFarmingPool.json";
+import stakingABI from "../ABI/SepoliaABI/DynamicAPRABI/TestABI/DynamicARPFarmingPool.json";
 
-const contractAdress = "0xE66eaBeb8c1ad4263b28B79829e7819D360ABc31";
+const contractAdress = "0x446D5222e78C3C870B2E7d25e25C8d4e9a32f7Aa";
 
 export default new web3.eth.Contract(stakingABI.abi, contractAdress);
 
