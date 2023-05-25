@@ -303,12 +303,17 @@ export const getGlobalARP = async (poolId) => {
       .call();
     const rewardTokenPerBlockForPool = poolWeight * rewardTokenPerBlock;
 
-    const globalARP =
-      (rewardTokenPerBlockForPool * NUMBEROFBLOCKPERDAY * 365 * 100) /
-      totalTokenStaked;
+    if (totalTokenStaked == 0) {
+      return 0;
+    } else {
+      const globalARP =
+        (rewardTokenPerBlockForPool * NUMBEROFBLOCKPERDAY * 365 * 100) /
+        totalTokenStaked;
 
-    return globalARP;
-  } catch (err) {
+      return globalARP;
+    }
+  }
+  catch (err) {
     console.log(err.message);
     return false;
   }
