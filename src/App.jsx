@@ -98,11 +98,8 @@ function App() {
       style={{ backgroundColor: "#091227", color: "white" }}
       className="h-max font-poppins leading-loose relative"
     >
-      {/* <Header />
-      <HomeBody />
-      <Footer /> */}
       <Router />
-      <div className="flex flex-col items-start justify-center gap-2 absolute left-0 md:bottom-14 w-1/4">
+      {/* <div className="flex flex-col items-start justify-center gap-2 absolute left-0 md:bottom-14 w-1/4">
         {message.map((item, index) => {
           return (
             <div key={index}>
@@ -110,7 +107,7 @@ function App() {
             </div>
           );
         })}
-      </div>
+      </div> */}
     </div>
   );
 }

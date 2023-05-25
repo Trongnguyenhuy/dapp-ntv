@@ -2,11 +2,16 @@ import { Link } from 'react-router-dom';
 import logo from "../../assets/logo.png";
 import WalletInforCard from "../../Components/Card/WalletInforCard";
 import { useDispatch, useSelector } from "react-redux";
-import { setMessage } from "../../Redux/Reducers/FarmingReducer";
-
+import {
+  deleteMessage,
+  getWalletInfor,
+  setMessage,
+  // setNetwork,
+} from "../../Redux/Reducers/FarmingReducer";
+import ModalInfo from "../../Components/Modals/ModalInfo";
 
 export const Header = () => {
-  const { account } = useSelector((state) => state.farmingReducer);
+  const { account, message } = useSelector((state) => state.farmingReducer);
   const dispatch = useDispatch();
 
   const connectWalletHandler = async () => {
@@ -66,6 +71,15 @@ export const Header = () => {
             </li>
           )}
         </ul>
+      </div>
+      <div className="flex flex-col w-1/3 px-16 justify-center gap-2 absolute left-1/3 top-16 md:top-14">
+        {message.map((item, index) => {
+          return (
+            <div key={index}>
+              <ModalInfo message={item} />
+            </div>
+          );
+        })}
       </div>
     </div>
   );
