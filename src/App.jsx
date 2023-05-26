@@ -12,13 +12,9 @@ import {
   getPoolAPRAPI,
   getWalletInfor,
   setMessage,
-  // setNetwork,
 } from "./Redux/Reducers/FarmingReducer";
 import { useDispatch, useSelector } from "react-redux";
-import ModalInfo from "./Components/Modals/ModalInfo";
 import { checkNetwork } from "./Ultis/NetworkCheck/NetworkCheck";
-// import { getAllGlobalAPRPool } from "./Services/StakingServices/FarmingServices";
-// import background from "../src/assets/background.jpg";
 
 function App() {
   const { message } = useSelector((state) => state.farmingReducer);
@@ -107,7 +103,7 @@ function App() {
   return (
     <div
       style={{ color: "white" }}
-      className="h-max font-poppins leading-loose relative backgroundRadius"
+      className="h-max font-poppins leading-loose relative bg-[#091227]"
     >
       <Router />
       {/* <div className="flex flex-col items-start justify-center gap-2 absolute left-0 md:bottom-14 w-1/4">

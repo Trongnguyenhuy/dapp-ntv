@@ -3,10 +3,7 @@ import logo from "../../assets/logo.png";
 import WalletInforCard from "../../Components/Card/WalletInforCard";
 import { useDispatch, useSelector } from "react-redux";
 import {
-  deleteMessage,
-  getWalletInfor,
   setMessage,
-  // setNetwork,
 } from "../../Redux/Reducers/FarmingReducer";
 import ModalInfo from "../../Components/Modals/ModalInfo";
 
