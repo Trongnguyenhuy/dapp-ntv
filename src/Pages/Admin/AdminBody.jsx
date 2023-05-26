@@ -4,8 +4,10 @@ import { setMessage } from "../../Redux/Reducers/FarmingReducer";
 import AdminFarmingCard from "../../Components/Card/AdminFarmingCard";
 import { useState } from "react";
 import logo from "../../assets/logo.png";
-import { useHistory } from "react-router-dom";
 import { Link } from 'react-router-dom';
+import { createStakingToken, getAllPools } from "../../Services/StakingServices/FarmingServices";
+import { useEffect } from "react";
+
 
 export const AdminBody = () => {
     const { account } = useSelector((state) => state.farmingReducer);
@@ -30,22 +32,27 @@ export const AdminBody = () => {
         }
     };
 
-    const farmingCard = [
-        { id: 1, isHome: true, duration: 30 },
-        { id: 2, isHome: true, duration: 60 },
-        { id: 3, isHome: true, duration: 90 },
-    ];
+    const [allPool, setAllPool] = useState([]);
+
+    useEffect(() => {
+        (async () => {
+            const a = await getAllPools();
+            console.log("Pools: ", a);
+            setAllPool(a);
+        })();
+    }, [])
 
     const [depositDuration, setDepositDuration] = useState(0);
     const [farmMultiplier, setFarmMultiplier] = useState(0);
     const [showForm, setShowForm] = useState(false);
 
-    const history = useHistory();
 
-    const submit = () => {
-        console.log("skjksfs: " + depositDuration);
-        console.log("skjksfs: " + farmMultiplier);
-        history.goBack();
+    const submit = async() => {
+        console.log("depositDuration: " + depositDuration);
+        console.log("farmMultiplier: " + farmMultiplier);
+        await createStakingToken(depositDuration, farmMultiplier);
+        const pools = await getAllPools();
+        console.log("pools: ", pools);
     }
 
   return (
@@ -55,16 +62,16 @@ export const AdminBody = () => {
         >
         <div className="sidebar-header flex items-center justify-center py-4">
             <div className="inline-flex">
-            <a href="#" className="inline-flex flex-row items-center">
+            <Link to="/" className="inline-flex flex-row items-center">
                 <img src={logo} alt="logo" width={65} height={65} />
-            </a>
+            </Link>
             </div>
         </div>
         <div className="sidebar-content px-4 py-6">
             <li className="my-px">
-                <a href="#" className="flex flex-row items-center h-10 px-3 rounded-lg text-gray-700 bg-gray-100">
+                <Link to="/" className="flex flex-row items-center h-10 px-3 rounded-lg text-gray-700 bg-gray-100">
                 <span className="ml-3">Dashboard</span>
-                </a>
+                </Link>
             </li>
             <li className="my-px">
                 <Link className="text-white" to="/">Trang chủ</Link>
@@ -92,7 +99,7 @@ export const AdminBody = () => {
                 </div>
             </form>
             <div className="flex ml-auto">
-                <a href className="flex flex-row items-center">
+                <a className="flex flex-row items-center">
                 <ul className="flex flex-row justify-start items-center gap-8 mr-8">
                     {account.walletAddress.length > 0 ? (
                         <li>
@@ -121,7 +128,7 @@ export const AdminBody = () => {
                     <div role="alert" className="container mx-auto w-11/12 md:w-2/3 max-w-lg">
                         <div className="relative py-8 px-5 md:px-10 bg-white shadow-md rounded border border-gray-400">
                             <div className="w-full flex justify-start text-gray-600 mb-3">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-wallet" width={52} height={52} viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-wallet" width={52} height={52} viewBox="0 0 24 24" strokeWidth={1} stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round" >
                                     <path stroke="none" d="M0 0h24v24H0z" />
                                     <path d="M17 8v-3a1 1 0 0 0 -1 -1h-10a2 2 0 0 0 0 4h12a1 1 0 0 1 1 1v3m0 4v3a1 1 0 0 1 -1 1h-12a2 2 0 0 1 -2 -2v-12" />
                                     <path d="M20 12v4h-4a2 2 0 0 1 0 -4h4" />
@@ -144,8 +151,8 @@ export const AdminBody = () => {
                                     Cancel
                                 </button>
                             </div>
-                            <div className="cursor-pointer absolute top-0 right-0 mt-4 mr-5 text-gray-400 hover:text-gray-600 transition duration-150 ease-in-out"  onClick={() => setShowForm(true)}>
-                                <svg xmlns="http://www.w3.org/2000/svg" aria-label="Close" className="icon icon-tabler icon-tabler-x" width={20} height={20} viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">
+                            <div className="cursor-pointer absolute top-0 right-0 mt-4 mr-5 text-gray-400 hover:text-gray-600 transition duration-150 ease-in-out"  onClick={() => setShowForm(false)}>
+                                <svg xmlns="http://www.w3.org/2000/svg" aria-label="Close" className="icon icon-tabler icon-tabler-x" width={20} height={20} viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round" >
                                     <path stroke="none" d="M0 0h24v24H0z" />
                                     <line x1={18} y1={6} x2={6} y2={18} />
                                     <line x1={6} y1={6} x2={18} y2={18} />
@@ -162,12 +169,11 @@ export const AdminBody = () => {
             </div>
             <div className="flex flex-col flex-grow border-4 border-gray-400 border-dashed bg-white rounded mt-4">
                 <div className={`flex flex-row justify-between h-sceen px-16 gap-12`}>
-                    {farmingCard.map((item) => (
+                    {allPool.map((item,index) => (
                         <AdminFarmingCard
-                        key={item.id}
-                        id={item.id}
-                        isHome={item.isHome}
-                        duration={item.duration}
+                        key={index}
+                        id={index}
+                        pool={allPool[index]}
                         />
                     ))}
                 </div>
