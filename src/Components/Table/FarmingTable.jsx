@@ -42,9 +42,6 @@ const FarmingTable = () => {
     })();
   }, []);
 
-  console.log("stakerInfo:", stakerInfo);
-  console.log("allStakingTime:", allStakingTime);
-
   const handleHarvest = async (time, index) => {
     setLoading("harvest" + index);
     await harvestReward(poolId, time);
@@ -105,14 +102,14 @@ const FarmingTable = () => {
 
   const renderBody = () => {
     return (
-      allStakingTime &&
-      allStakingTime.map((key, index) => {
+      allStakingTime.length > 0 &&
+      allStakingTime[poolId].stakingTime.map((key, index) => {
         return (
           <tr className="border-t-2 border-gray-600 p-4" key={index}>
             <td className="py-4 px-4">{index + 1}</td>
-            <td className="py-4">{(key.amount/1e18).toFixed(8)} TVN-LP</td>
+            <td className="py-4">{(key.amount / 1e18).toFixed(8)} TVN-LP</td>
             <td className="py-4">{key.depositStartTime}</td>
-            <td className="py-4">{(key.reward/1e18).toFixed(8)} TVN</td>
+            <td className="py-4">{(key.reward / 1e18).toFixed(8)} TVN</td>
             <td className="py-4 operation">
               <div className="flex flex-row justify-between gap-4 text-white">
                 <button

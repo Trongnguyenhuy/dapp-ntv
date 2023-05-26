@@ -3,19 +3,21 @@ import { createSlice } from "@reduxjs/toolkit";
 import {
   getAllGlobalAPRPool,
   getAllPools,
+  getAllStakerInfo,
+  getAllStakingTimeForPoolInfo,
   getAllStakingTimeInfo,
-  getStakerInfo,
 } from "../../Services/StakingServices/FarmingServices";
 
 const initialState = {
   account: {
     walletAddress: "",
     balance: 0,
+    balanceOfStakeToken: 0,
     network: "",
   },
   message: [],
   pools: [],
-  stakerInfo: {},
+  stakerInfo: [],
   allStakingTime: [],
   poolAPR: [],
 };
@@ -25,9 +27,10 @@ const FarmingReducer = createSlice({
   initialState,
   reducers: {
     getWalletInfor: (state, action) => {
-      const { account, balance, network } = action.payload;
+      const { account, balance, balanceOfStakeToken, network } = action.payload;
       state.account.walletAddress = account;
       state.account.balance = balance;
+      state.account.balanceOfStakeToken = balanceOfStakeToken;
       state.account.network = network;
     },
     setMessage: (state, action) => {
@@ -82,10 +85,10 @@ export const getAllProductApi = () => {
 };
 
 // Lấy thông tin Staker theo poolId
-export const getStakerInfoApi = (poolId) => {
+export const getStakerInfoApi = () => {
   return async (dispatch, getState) => {
     try {
-      const staker = await getStakerInfo(poolId);
+      const staker = await getAllStakerInfo();
       const action = getStakerInforAction(staker);
       dispatch(action);
     } catch (err) {
@@ -95,10 +98,10 @@ export const getStakerInfoApi = (poolId) => {
 };
 
 // Lấy thông tin những lần stake theo của staker trong Pool
-export const getStakingTimeInfoApi = (poolId, start, end) => {
+export const getStakingTimeInfoApi = () => {
   return async (dispatch, getState) => {
     try {
-      const stakingTimeInfo = await getAllStakingTimeInfo(poolId, start, end);
+      const stakingTimeInfo = await getAllStakingTimeForPoolInfo();
       const action = getStakingTimeInforAction(stakingTimeInfo);
       dispatch(action);
     } catch (err) {

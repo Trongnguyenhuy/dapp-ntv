@@ -355,7 +355,7 @@ export const predictInvidualARP = async (numberOfTokenStack, poolId) => {
   }
 };
 
-//
+//Lấy APR từng Pool, format dạng array và đẩy lên Redux store
 export const getAllGlobalAPRPool = async () => {
   const globalAPRs = [];
   const arr = [];
@@ -378,6 +378,82 @@ export const getAllGlobalAPRPool = async () => {
     }
 
     return globalAPRs;
+  } catch (err) {
+    return false;
+  }
+};
+
+//Lấy thông tin staking từng Pool, format dạng array và đẩy lên Redux store
+export const getAllStakerInfo = async () => {
+  const stakerInfo = [];
+  const arr = [];
+  try {
+    const pools = await getAllPools();
+    const length = pools.length;
+
+    if (length > 1) {
+      for (let i = 0; i <= length - 1; i++) {
+        arr.push(i);
+      }
+
+      for (const item of arr) {
+        const statker = await getStakerInfo(item);
+        stakerInfo.push(statker);
+      }
+    } else if (length == 1) {
+      const statker = await getStakerInfo(0);
+      stakerInfo.push(statker);
+    }
+
+    return stakerInfo;
+  } catch (err) {
+    return false;
+  }
+};
+
+//Lấy thông tin những lần staking cho mỗi Staker  vào từng Pool, format dạng array và đẩy lên Redux store
+export const getAllStakingTimeForPoolInfo = async () => {
+  const allStakingTimeInfo = [];
+  const arr = [];
+  try {
+    const pools = await getAllPools();
+    const length = pools.length;
+
+    if (length > 1) {
+      for (let i = 0; i <= length - 1; i++) {
+        arr.push(i);
+      }
+
+      for (const item of arr) {
+        const staker = await getStakerInfo(item);
+        const stakingTimeInfo = await getAllStakingTimeInfo(
+          item,
+          staker.firstStakeTime,
+          staker.finalStakeTime
+        );
+
+        allStakingTimeInfo.push({
+          poolId: item,
+          staker: staker,
+          stakingTime: stakingTimeInfo,
+        });
+      }
+    } else if (length == 1) {
+      const staker = await getStakerInfo(0);
+      const stakingTimeInfo = await getAllStakingTimeInfo(
+        0,
+        staker.firstStakeTime,
+        staker.finalStakeTime
+      );
+
+      allStakingTimeInfo.push({
+        poolId: 0,
+        staker: staker,
+        stakingTime: stakingTimeInfo,
+      });
+    }
+
+    return allStakingTimeInfo;
   } catch (err) {
     return false;
   }

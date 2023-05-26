@@ -1,13 +1,31 @@
-import { Link } from 'react-router-dom';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { Link } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import WalletInforCard from "../../Components/Card/WalletInforCard";
 import { useDispatch, useSelector } from "react-redux";
-import { setMessage } from "../../Redux/Reducers/FarmingReducer";
-
+import {
+  getAllProductApi,
+  getPoolAPRAPI,
+  getStakerInfoApi,
+  getStakingTimeInfoApi,
+  setMessage,
+} from "../../Redux/Reducers/FarmingReducer";
+import { useEffect } from "react";
 
 export const Header = () => {
   const { account } = useSelector((state) => state.farmingReducer);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const allPools = getAllProductApi();
+    const globalAPR = getPoolAPRAPI();
+    const stakerInfo = getStakerInfoApi();
+    const stakingTimeInfo = getStakingTimeInfoApi();
+    dispatch(stakingTimeInfo);
+    dispatch(allPools);
+    dispatch(stakerInfo);
+    dispatch(globalAPR);
+  }, []);
 
   const connectWalletHandler = async () => {
     if (window.ethereum && window.ethereum.isMetaMask) {
@@ -36,18 +54,18 @@ export const Header = () => {
             <img src={logo} alt="logo" width={65} height={65} />
           </li>
           {/* <div className="grid grid-cols-3 justify-items-start content-center gap-6 ps-8"> */}
-            <li className="my-auto cursor-pointer hover:text-[#1CE6EC]">
-              <Link to="/">Trang chủ</Link>
-            </li>
-            <li className="my-auto cursor-pointer hover:text-[#1CE6EC]">
-              <Link to="/farm">Farms</Link>
-            </li>
-            <li className="my-auto cursor-pointer hover:text-[#1CE6EC]">
-              <Link to="/pool">Pools</Link>
-            </li>
-            <li className="my-auto cursor-pointer hover:text-[#1CE6EC]">
-              <Link to="/admin">Admin</Link>
-            </li>
+          <li className="my-auto cursor-pointer hover:text-[#1CE6EC]">
+            <Link to="/">Trang chủ</Link>
+          </li>
+          <li className="my-auto cursor-pointer hover:text-[#1CE6EC]">
+            <Link to="/farm">Farms</Link>
+          </li>
+          <li className="my-auto cursor-pointer hover:text-[#1CE6EC]">
+            <Link to="/pool">Pools</Link>
+          </li>
+          <li className="my-auto cursor-pointer hover:text-[#1CE6EC]">
+            <Link to="/admin">Admin</Link>
+          </li>
           {/* </div> */}
         </ul>
         <ul className="flex flex-row justify-start items-center gap-8 mr-8">

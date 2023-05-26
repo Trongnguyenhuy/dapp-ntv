@@ -1,24 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react";
-// import { HomeBody } from "./Pages/Home/HomeBody";
-// import { Header } from "./Templates/HomeTepmplate/Header";
-// import { Footer } from "./Templates/HomeTepmplate/Footer";
 import "./App.css";
-import web3 from "./Services/Web3/Web3";
 import { Router } from "./Components/Router/Router";
-import {
-  deleteMessage,
-  getAllProductApi,
-  getPoolAPRAPI,
-  getWalletInfor,
-  setMessage,
-  // setNetwork,
-} from "./Redux/Reducers/FarmingReducer";
+import { deleteMessage, setMessage } from "./Redux/Reducers/FarmingReducer";
 import { useDispatch, useSelector } from "react-redux";
 import ModalInfo from "./Components/Modals/ModalInfo";
-import { checkNetwork } from "./Ultis/NetworkCheck/NetworkCheck";
-// import { getAllGlobalAPRPool } from "./Services/StakingServices/FarmingServices";
-// import background from "../src/assets/background.jpg";
+import { addWalletInfo } from "./Services/WalletServices/WalletServices";
 
 function App() {
   const { message } = useSelector((state) => state.farmingReducer);
@@ -27,17 +14,17 @@ function App() {
     (async () => {
       if (window.ethereum) {
         try {
-          await addWalletInfo();
+          await addWalletInfo(dispatch);
         } catch (error) {
           console.error(error);
         }
 
         window.ethereum.on("chainChanged", async () => {
-          await addWalletInfo();
+          await addWalletInfo(dispatch);
           window.location.reload();
         });
         window.ethereum.on("accountsChanged", async () => {
-          await addWalletInfo();
+          await addWalletInfo(dispatch);
           window.location.reload();
         });
       } else {
@@ -72,37 +59,6 @@ function App() {
       clearTimeout();
     };
   }, [message]);
-
-  useEffect(() => {
-    const allPools = getAllProductApi();
-    dispatch(allPools);
-    const globalAPR = getPoolAPRAPI();
-    dispatch(globalAPR);
-  }, []);
-
-  const addWalletInfo = async () => {
-    const accounts = await web3.eth.getAccounts();
-    if (accounts.length > 0) {
-      const balance = await web3.eth.getBalance(accounts[0]);
-      const chainId = await web3.eth.getChainId();
-
-      const network = checkNetwork(chainId);
-
-      const walletInfor = {
-        account: accounts[0],
-        balance: web3.utils.fromWei(balance, "ether"),
-        network: network,
-      };
-
-      const getWalletInforAction = getWalletInfor(walletInfor);
-      const connectAction = setMessage({
-        type: "infor",
-        message: "Connect to MetaMask success!",
-      });
-      dispatch(getWalletInforAction);
-      dispatch(connectAction);
-    }
-  };
 
   return (
     <div
