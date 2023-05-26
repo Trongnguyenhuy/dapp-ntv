@@ -57,6 +57,8 @@ const FarmingTable = () => {
   const handleUnstaking = async (time, amount, index) => {
     setLoading("unstaking" + index);
     await unStakingToken(poolId, amount, time);
+    const allStakingTime = getStakingTimeInfoApi();
+    dispatch(allStakingTime);
     setLoading("");
   };
 

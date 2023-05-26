@@ -9,13 +9,15 @@ import logoCoinTVN from "../../assets/logo-coin-tvn.png";
 
 const FarmingInforCard = () => {
   const [modalOpen, setModalOpen] = useState(false);
-  const { account, stakerInfo, poolAPR, pools } = useSelector(
+  const { account, poolAPR, pools, allStakingTime } = useSelector(
     (state) => state.farmingReducer
   );
   const { id } = useParams();
   const poolId = id - 1;
   const amountOfStake =
-    stakerInfo.length > 0 ? stakerInfo[poolId].totalTokenStake / 1e18 : 0;
+    allStakingTime.length > 0
+      ? allStakingTime[poolId].staker.totalTokenStake / 1e18
+      : 0;
 
   const handleModal = () => {
     setModalOpen(true);

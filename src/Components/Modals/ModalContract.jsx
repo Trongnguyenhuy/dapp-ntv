@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import React, { useState } from "react";
 import { Slider } from "antd";
 import "antd/dist/reset.css";
-import { setMessage } from "../../Redux/Reducers/FarmingReducer";
+import { getStakingTimeInfoApi, setMessage } from "../../Redux/Reducers/FarmingReducer";
 import { depositTokenToPool } from "../../Services/StakingServices/FarmingServices";
 import Loading from "../Button/loadingButton";
 const NUMBEROFBLOCKPERDAY = 84000 / 13;
@@ -47,6 +47,8 @@ const ModalContract = (props) => {
   const handleConfirm = async () => {
     setLoading(1);
     await depositTokenToPool(poolId, amountOfToken.current);
+    const allStakingTime = getStakingTimeInfoApi();
+    dispatch(allStakingTime);
     setLoading(0);
     setModalOpen(false);
     const setMessageAction = setMessage({
