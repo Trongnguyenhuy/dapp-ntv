@@ -7,7 +7,7 @@ export const Footer = () => {
             NTV GROUP
           </h1>
           <h2 className="font-sans font-medium text-md">
-            Sàn giao dịch phi tập trung trên nền tảng Blockchain
+          Sàn giao dịch phi tập trung trên nền tảng Ethereum Sepolia
           </h2>
         </div>
         <div className="flex flex-col">

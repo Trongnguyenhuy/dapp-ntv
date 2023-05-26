@@ -4,7 +4,6 @@ import "./App.css";
 import { Router } from "./Components/Router/Router";
 import { deleteMessage, setMessage } from "./Redux/Reducers/FarmingReducer";
 import { useDispatch, useSelector } from "react-redux";
-import ModalInfo from "./Components/Modals/ModalInfo";
 import { addWalletInfo } from "./Services/WalletServices/WalletServices";
 
 function App() {
@@ -63,13 +62,10 @@ function App() {
   return (
     <div
       style={{ color: "white" }}
-      className="h-max font-poppins leading-loose relative backgroundRadius"
+      className="h-max font-poppins leading-loose relative bg-[#091227]"
     >
-      {/* <Header />
-      <HomeBody />
-      <Footer /> */}
       <Router />
-      <div className="flex flex-col items-start justify-center gap-2 absolute left-0 md:bottom-14 w-1/4">
+      {/* <div className="flex flex-col items-start justify-center gap-2 absolute left-0 md:bottom-14 w-1/4">
         {message.map((item, index) => {
           return (
             <div key={index}>
@@ -77,7 +73,7 @@ function App() {
             </div>
           );
         })}
-      </div>
+      </div> */}
     </div>
   );
 }
