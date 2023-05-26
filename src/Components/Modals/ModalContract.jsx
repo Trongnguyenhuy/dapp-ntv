@@ -7,7 +7,6 @@ import React, { useState } from "react";
 import { Slider } from "antd";
 import "antd/dist/reset.css";
 import {
-  setHarvestingToken,
   setMessage,
 } from "../../Redux/Reducers/FarmingReducer";
 import {
@@ -52,12 +51,10 @@ const ModalContract = (props) => {
     await depositTokenToPool(poolId, amountOfToken.current);
     setLoading(0);
     setModalOpen(false);
-    const setHarvestingTokenAction = setHarvestingToken(amountOfToken.current);
     const setMessageAction = setMessage({
       type: "confirm",
       message: `${amountOfToken.current} tokens have been confirmed!`,
     });
-    dispatch(setHarvestingTokenAction);
     dispatch(setMessageAction);
     window.location.reload();
   };

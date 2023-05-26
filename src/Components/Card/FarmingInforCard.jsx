@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   getStakerInfo,
   getGlobalARP,
@@ -11,6 +11,10 @@ import { useParams } from "react-router-dom";
 import RewardLiveUpdate from "../LiveUpdate/RewardLiveUpdate";
 import logoCoinLP from "../../assets/logo-coin-lp.png";
 import logoCoinTVN from "../../assets/logo-coin-tvn.png";
+import {
+  getStakerInfoApi,
+  getStakingTimeInfoApi,
+} from "../../Redux/Reducers/FarmingReducer";
 
 const FarmingInforCard = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -23,10 +27,11 @@ const FarmingInforCard = () => {
     startBlock: 0,
     currentBlock: 0,
   });
-  const { account } = useSelector((state) => state.farmingReducer);
+  const { account, stakerInfo, allStakingTime } = useSelector((state) => state.farmingReducer);
   const { id } = useParams();
   const poolId = id - 1;
   const amountOfStake = staker.totalTokenStake / 1e18;
+  const dispatch = useDispatch();
 
   useEffect(() => {
     (async () => {
@@ -37,14 +42,25 @@ const FarmingInforCard = () => {
       setGlobalAPR(APR);
       setStaker(staker);
     })();
+    const stakerOnReducer = getStakerInfoApi(poolId);
+    const allStakingOnReducer = getStakingTimeInfoApi(
+      poolId,
+      stakerInfo.firstStakeTime,
+      stakerInfo.finalStakeTime
+    );
+    dispatch(stakerOnReducer);
+    dispatch(allStakingOnReducer);
   }, []);
+
+  console.log(stakerInfo);
+  console.log(allStakingTime);
 
   const handleModal = () => {
     setModalOpen(true);
   };
 
   return (
-    <div className="container px-32 mx-auto flex flex-col gap-4 pt-24 h-full py-12">
+    <div className="container px-32 mx-auto flex flex-col gap-4 pt-32 h-full py-12">
       <div className="flex flex-row justify-around items-center gap-4">
         <div className="w-1/3">
           <div className="flex flex-col gap-4 items-center">

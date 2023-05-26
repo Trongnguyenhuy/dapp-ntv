@@ -3,3 +3,92 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+* {
+  scroll-behavior: smooth;
+}
+
+.backgroundLinear {
+  background: linear-gradient(
+    69deg,
+    rgba(222, 2, 254, 1) 10%,
+    rgba(61, 18, 186, 1) 70%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.backgroundRadius {
+  /* ff 3.6+ */
+  background: -moz-radial-gradient(
+    circle at 8% 57%,
+    rgba(77, 58, 117, 1) 0%,
+    rgba(9, 18, 39, 1) 46%
+  );
+
+  /* safari 5.1+,chrome 10+ */
+  background: -webkit-radial-gradient(
+    circle at 8% 57%,
+    rgba(77, 58, 117, 1) 0%,
+    rgba(9, 18, 39, 1) 46%
+  );
+
+  /* opera 11.10+ */
+  background: -o-radial-gradient(
+    circle at 8% 57%,
+    rgba(77, 58, 117, 1) 0%,
+    rgba(9, 18, 39, 1) 46%
+  );
+
+  /* ie 10+ */
+  background: -ms-radial-gradient(
+    circle at 8% 57%,
+    rgba(77, 58, 117, 1) 0%,
+    rgba(9, 18, 39, 1) 46%
+  );
+
+  /* global 92%+ browsers support */
+  background: radial-gradient(
+    circle at 8% 57%,
+    rgba(77, 58, 117, 1) 0%,
+    rgba(9, 18, 39, 1) 46%
+  );
+}
+
+.walletCard {
+  /* ff 3.6+ */
+  background: -moz-radial-gradient(
+    circle at 0% 97%,
+    rgba(222, 2, 254, 1) 10%,
+    rgba(61, 18, 186, 1) 70%
+  );
+
+  /* safari 5.1+,chrome 10+ */
+  background: -webkit-radial-gradient(
+    circle at 0% 97%,
+    rgba(222, 2, 254, 1) 10%,
+    rgba(61, 18, 186, 1) 70%
+  );
+
+  /* opera 11.10+ */
+  background: -o-radial-gradient(
+    circle at 0% 97%,
+    rgba(222, 2, 254, 1) 10%,
+    rgba(61, 18, 186, 1) 70%
+  );
+
+  /* ie 10+ */
+  background: -ms-radial-gradient(
+    circle at 0% 97%,
+    rgba(222, 2, 254, 1) 10%,
+    rgba(61, 18, 186, 1) 70%
+  );
+
+  /* global 92%+ browsers support */
+  background: radial-gradient(
+    circle at 0% 97%,
+    rgba(222, 2, 254, 1) 10%,
+    rgba(61, 18, 186, 1) 70%
+  );
+}

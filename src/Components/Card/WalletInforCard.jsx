@@ -48,7 +48,7 @@ const WalletInforCard = () => {
     <div className="pe-4 w-full">
       <div
         onClick={handleAccountCard}
-        className="flex flex-row justify-between gap-4 items-center p-2 text-[#091227] bg-[#fff] rounded-md"
+        className="flex flex-row justify-between gap-4 items-center p-2 text-white walletCard rounded-md"
       >
         <img
           src="https://picsum.photos/id/134/200"
@@ -64,7 +64,7 @@ const WalletInforCard = () => {
       </div>
       {accountCard && (
         <div
-          className="rounded-md absolute top-20 right-12 bg-white text-[#091227]"
+          className="rounded-md absolute top-20 right-12  text-white walletCard"
           
           ref={dropdownRef}
         >
