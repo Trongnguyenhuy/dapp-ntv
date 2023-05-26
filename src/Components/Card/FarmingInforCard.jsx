@@ -1,24 +1,23 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
   getStakerInfo,
-  harvestReward,
-  unStakingToken,
   getGlobalARP,
-  getAllStakingTimeInfo,
   getPoolInfor,
-  totalReward,
 } from "../../Services/StakingServices/FarmingServices";
 import ModalContract from "../Modals/ModalContract";
 import { useParams } from "react-router-dom";
-import { LoadingOutlined } from "@ant-design/icons";
 import RewardLiveUpdate from "../LiveUpdate/RewardLiveUpdate";
 import logoCoinLP from "../../assets/logo-coin-lp.png";
 import logoCoinTVN from "../../assets/logo-coin-tvn.png";
+import {
+  getStakerInfoApi,
+  getStakingTimeInfoApi,
+} from "../../Redux/Reducers/FarmingReducer";
 
 const FarmingInforCard = () => {
   const [modalOpen, setModalOpen] = useState(false);
-  const [loading, setLoading] = useState("");
   const [globalAPR, setGlobalAPR] = useState(0);
   const [pool, setPool] = useState({});
   const [staker, setStaker] = useState({
@@ -28,81 +27,49 @@ const FarmingInforCard = () => {
     startBlock: 0,
     currentBlock: 0,
   });
-  const [allStaking, setAllStakingTime] = useState({
-    amount: 0,
-    currentBlock:0,
-    depositStartTime:0,
-    reward:0,
-    rewardRate:0,
-    startBlock:0,
-  })
-  const { account } = useSelector((state) => state.farmingReducer);
+  const { account, stakerInfo, allStakingTime } = useSelector((state) => state.farmingReducer);
   const { id } = useParams();
   const poolId = id - 1;
   const amountOfStake = staker.totalTokenStake / 1e18;
+  const dispatch = useDispatch();
 
   useEffect(() => {
     (async () => {
       const staker = await getStakerInfo(poolId);
-      console.log("staker:", staker);
-      const allStakingTime = await getAllStakingTimeInfo(
-        poolId,
-        staker.firstStakeTime,
-        staker.finalStakeTime
-      );
       const pool = await getPoolInfor(poolId);
-      console.log(pool);
       setPool(pool);
-      setAllStakingTime(allStakingTime);
-      const reward = await totalReward(
-        poolId,
-        staker.firstStakeTime,
-        staker.finalStakeTime
-      );
-      console.log("reward:", reward);
       const APR = await getGlobalARP(poolId);
       setGlobalAPR(APR);
       setStaker(staker);
     })();
+    const stakerOnReducer = getStakerInfoApi(poolId);
+    const allStakingOnReducer = getStakingTimeInfoApi(
+      poolId,
+      stakerInfo.firstStakeTime,
+      stakerInfo.finalStakeTime
+    );
+    dispatch(stakerOnReducer);
+    dispatch(allStakingOnReducer);
   }, []);
+
+  console.log(stakerInfo);
+  console.log(allStakingTime);
 
   const handleModal = () => {
     setModalOpen(true);
   };
 
-  const handleHarvest = async () => {
-    setLoading("harvest");
-    await harvestReward(poolId);
-    const newStaker = await getStakerInfo(poolId);
-    setStaker(newStaker);
-    setLoading("");
-  };
-
-  const handleUnstaking = async () => {
-    setLoading("unstaking");
-    const amount = staker.amountOfStakeTokenOnPool / 1e18;
-    const unstaking = await unStakingToken(poolId, amount);
-    console.log(unstaking);
-    const newStaker = await getStakerInfo(poolId);
-    setStaker(newStaker);
-    setLoading("");
-  };
-
   return (
-    <div className="container px-32 mx-auto flex flex-col gap-4 pt-24 h-full py-12">
+    <div className="container px-32 mx-auto flex flex-col gap-4 pt-32 h-full py-12">
       <div className="flex flex-row justify-around items-center gap-4">
         <div className="w-1/3">
           <div className="flex flex-col gap-4 items-center">
             <div className="flex flex-row justify-start relative px-2">
-              <img
-                className="w-20 h-20"
-                src={logoCoinTVN}
-                alt="TVN"
-              />
+              <img className="w-20 h-20" src={logoCoinTVN} alt="TVN" />
               <img
                 className="w-12 h-12 absolute left-14 bottom-8 rounded-full p-1"
                 src={logoCoinLP}
-                alt="TVN-LP"  
+                alt="TVN-LP"
               />
             </div>
             <h2 className="text-2xl font-bold">Nạp TVN-LP nhận TVN</h2>
@@ -123,7 +90,6 @@ const FarmingInforCard = () => {
                 </p>
               </div>
             </div>
-            
           </div>
           <div className="w-1/2 flex flex-col items-center gap-4">
             <div className="w-full flex flex-col items-center gap-4 border-2 border-gray-600 rounded-md">
@@ -137,7 +103,6 @@ const FarmingInforCard = () => {
                 </p>
               </div>
             </div>
-            
           </div>
         </div>
       </div>
@@ -150,7 +115,7 @@ const FarmingInforCard = () => {
             </p>
             <p className="flex flex-row justify-between py-6">
               <span>Tổng số thanh khoản đã được đặt cọc</span>
-              <span>{(pool.totalTokenStaked/1e18).toFixed(5)}</span>
+              <span>{(pool.totalTokenStaked / 1e18).toFixed(5)}</span>
             </p>
             <p className="flex flex-row justify-between py-6">
               <span>Chu kỳ trả thưởng</span>

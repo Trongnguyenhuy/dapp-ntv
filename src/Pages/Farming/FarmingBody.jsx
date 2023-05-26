@@ -1,6 +1,28 @@
+import { useEffect, useState } from "react";
 import FarmingCard from "../../Components/Card/FarmingCard";
-
+import {
+  getStakerInfo,
+  harvestReward,
+  unStakingToken,
+  getGlobalARP,
+  getAllPools,
+  getAllStakingTimeInfo,
+  getPoolInfor,
+  totalReward,
+} from "../../Services/StakingServices/FarmingServices";
 export const FarmingBody = () => {
+
+  const [allPool, setAllPool] = useState([]);
+
+  // const poolId = id - 1;
+  useEffect(() => {
+    (async () => {
+
+      const allPools = await getAllPools();
+      setAllPool(allPools);
+
+    })();
+  }, []);
   const farmingCard = [
     { id: 1, isHome: false, duration: 30 },
     { id: 2, isHome: false, duration: 60 },
@@ -16,12 +38,13 @@ export const FarmingBody = () => {
       </div>
 
       <div className={`flex flex-row justify-between h-sceen px-16 gap-8`}>
-        {farmingCard.map((item) => (
+        {allPool.map((item, id) => (
           <FarmingCard
-            key={item.id}
-            id={item.id}
-            isHome={item.isHome}
-            duration={item.duration}
+            key={id}
+            id={id + 1}
+            // apr={globalAPR[id]}
+            isHome={false}
+            duration={item.endStakeTime}
           />
         ))}
       </div>

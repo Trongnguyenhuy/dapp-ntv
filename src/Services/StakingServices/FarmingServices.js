@@ -71,7 +71,7 @@ export const depositTokenToPool = async (poolId, numberOfToken) => {
   try {
     const address = await getAccountAddress();
     const wei = web3.utils.toWei(`${numberOfToken}`, "ether");
-    const allowance = await checkAllowance();
+    const allowance = await checkAllowance(wei);
 
     if (allowance == false) {
       await approveStakingPool(numberOfToken);
@@ -208,7 +208,6 @@ export const unStakingToken = async (poolId, numberOfToken, time) => {
 export const getAllPools = async () => {
   try {
     const pools = await StakingServices.methods.getAllPool().call();
-
     return pools;
   } catch (err) {
     return false;
@@ -233,7 +232,7 @@ export const approveStakingPool = async (numberOfToken) => {
 };
 
 // Kiểm tra allowance giữa hai địa chỉ
-export const checkAllowance = async () => {
+export const checkAllowance = async (numberOfToken) => {
   try {
     const address = await getAccountAddress();
     const poolAddress = await StakingServices.options.address;
@@ -241,7 +240,11 @@ export const checkAllowance = async () => {
       .allowance(address, poolAddress)
       .call();
 
-    return allowanceNumber;
+    if (allowanceNumber >= numberOfToken) {
+      return true;
+    }
+
+    return false;
   } catch (err) {
     console.log(err.message);
     return false;
@@ -303,11 +306,15 @@ export const getGlobalARP = async (poolId) => {
       .call();
     const rewardTokenPerBlockForPool = poolWeight * rewardTokenPerBlock;
 
-    const globalARP =
-      (rewardTokenPerBlockForPool * NUMBEROFBLOCKPERDAY * 365 * 100) /
-      totalTokenStaked;
+    if (totalTokenStaked == 0) {
+      return 0;
+    } else {
+      const globalARP =
+        (rewardTokenPerBlockForPool * NUMBEROFBLOCKPERDAY * 365 * 100) /
+        totalTokenStaked;
 
-    return globalARP;
+      return globalARP;
+    }
   } catch (err) {
     console.log(err.message);
     return false;
@@ -343,6 +350,34 @@ export const predictInvidualARP = async (numberOfTokenStack, poolId) => {
     const invidualARP =
       assetPartion * rewardTokenPerBlockForPool * NUMBEROFBLOCKPERDAY;
     return invidualARP / 1e18;
+  } catch (err) {
+    return false;
+  }
+};
+
+//
+export const getAllGlobalAPRPool = async () => {
+  const globalAPRs = [];
+  const arr = [];
+  try {
+    const pools = await getAllPools();
+    const length = pools.length;
+
+    if (length > 1) {
+      for (let i = 0; i <= length - 1; i++) {
+        arr.push(i);
+      }
+
+      for (const item of arr) {
+        const APR = await getGlobalARP(item);
+        globalAPRs.push(APR.toFixed(4));
+      }
+    } else if (length == 1) {
+      const APR = await getGlobalARP(0);
+      globalAPRs.push(APR);
+    }
+
+    return globalAPRs;
   } catch (err) {
     return false;
   }

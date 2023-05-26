@@ -7,10 +7,16 @@ import {
   harvestReward,
   unStakingToken,
   getAllStakingTimeInfo,
-  totalReward,
 } from "../../Services/StakingServices/FarmingServices";
+import Loading from "../Button/loadingButton";
+import { useDispatch, useSelector } from "react-redux";
+import { getStakingTimeInfoApi } from "../../Redux/Reducers/FarmingReducer";
 
 const FarmingTable = () => {
+  const { stakerInfo, allStakingTime } = useSelector(
+    (state) => state.farmingReducer
+  );
+  const dispatch = useDispatch();
   const [searchText, setSearchText] = useState("");
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
@@ -27,41 +33,38 @@ const FarmingTable = () => {
         staker.firstStakeTime,
         staker.finalStakeTime
       );
-      console.log(allStakingTime);
       allStakingTime.map((item) => {
         item.amount = (item.amount / 1e18).toFixed(5);
         item.reward = (item.reward / 1e18).toFixed(5);
       });
       setFilteredData(allStakingTime);
       setData(allStakingTime);
-
-      const reward = await totalReward(
-        poolId,
-        staker.firstStakeTime,
-        staker.finalStakeTime
-      );
-      console.log("reward:", reward);
     })();
   }, []);
 
-  const handleHarvest = async (index) => {
-    setLoading("harvest");
-    await harvestReward(poolId, index);
+  console.log("stakerInfo:", stakerInfo);
+  console.log("allStakingTime:", allStakingTime);
+
+  const handleHarvest = async (time, index) => {
+    setLoading("harvest" + index);
+    await harvestReward(poolId, time);
+    const allStakingtimeInfo = getStakingTimeInfoApi(
+      poolId,
+      stakerInfo.firstStakeTime,
+      stakerInfo.finalStakeTime
+    );
+    dispatch(allStakingtimeInfo);
     setLoading("");
-    window.location.reload();
   };
 
-  const handleUnstaking = async (index, amount) => {
-    setLoading("unstaking");
-    await unStakingToken(poolId, amount, index);
+  const handleUnstaking = async (time, amount, index) => {
+    setLoading("unstaking" + index);
+    await unStakingToken(poolId, amount, time);
     setLoading("");
-    // window.location.reload();
   };
 
   const handleSearchChange = (event) => {
     const value = event.target.value;
-
-    // console.log("SEARCH TEXT",value);
     setSearchText(value);
   };
   const handleSearchClick = () => {
@@ -102,27 +105,37 @@ const FarmingTable = () => {
 
   const renderBody = () => {
     return (
-      filteredData &&
-      filteredData.map((key, index) => {
+      allStakingTime &&
+      allStakingTime.map((key, index) => {
         return (
-          <tr className="border-b-2 border-b-gray-300" key={index}>
+          <tr className="border-t-2 border-gray-600 p-4" key={index}>
             <td className="py-4 px-4">{index + 1}</td>
-            <td className="py-4">{key.amount} TVN-LP</td>
+            <td className="py-4">{(key.amount/1e18).toFixed(8)} TVN-LP</td>
             <td className="py-4">{key.depositStartTime}</td>
-            <td className="py-4">{key.reward} TVN</td>
+            <td className="py-4">{(key.reward/1e18).toFixed(8)} TVN</td>
             <td className="py-4 operation">
               <div className="flex flex-row justify-between gap-4 text-white">
                 <button
-                  onClick={() => handleUnstaking(key.unStakingTime, key.amount)}
+                  onClick={() =>
+                    handleUnstaking(key.unStakingTime, key.amount, index)
+                  }
                   className="w-1/2 py-4 bg-white text-[#091227] hover:text-white hover:bg-[rgb(81,59,143)] rounded-lg"
                 >
-                  Kết thúc
+                  <Loading
+                    index={"unstaking" + index}
+                    loading={loading}
+                    text={"Kết thúc"}
+                  />
                 </button>
                 <button
-                  onClick={() => handleHarvest(key.unStakingTime)}
+                  onClick={() => handleHarvest(key.unStakingTime, index)}
                   className="w-1/2 py-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg"
                 >
-                  Thu hoạch
+                  <Loading
+                    index={"harvest" + index}
+                    loading={loading}
+                    text={"Thu Hoạch"}
+                  />
                 </button>
               </div>
             </td>
@@ -154,7 +167,7 @@ const FarmingTable = () => {
         </div>
       ) : (
         <table className="w-full">
-          <thead className="border-b-2 border-b-gray-300">
+          <thead className="border-b-2 border-gray-600">
             <tr>{renderHeader()}</tr>
           </thead>
           <tbody>{renderBody()}</tbody>
