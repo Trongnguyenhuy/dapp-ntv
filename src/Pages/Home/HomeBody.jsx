@@ -3,12 +3,11 @@ import { FarmingBody } from "../Farming/FarmingBody";
 import { PoolBody } from "../Pool/PoolBody";
 
 export const HomeBody = () => {
-
   return (
     <div className={`p-1 md:p-2`}>
       <div className={`flex flex-row justify-between mt-20`}>
         <div className={`flex flex-col justify-center ps-16`}>
-          <h1 className="font-poppins font-bold text-8xl uppercase ">
+          <h1 className="font-poppins font-bold text-8xl uppercase titleLinear backgroundLinear">
             NTV Group
           </h1>
           <h2 className="font-sans font-medium text-4xl py-4">

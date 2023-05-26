@@ -3,10 +3,13 @@ import { useEffect } from "react";
 // import { HomeBody } from "./Pages/Home/HomeBody";
 // import { Header } from "./Templates/HomeTepmplate/Header";
 // import { Footer } from "./Templates/HomeTepmplate/Footer";
+import "./App.css";
 import web3 from "./Services/Web3/Web3";
 import { Router } from "./Components/Router/Router";
 import {
   deleteMessage,
+  getAllProductApi,
+  getPoolAPRAPI,
   getWalletInfor,
   setMessage,
   // setNetwork,
@@ -14,6 +17,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import ModalInfo from "./Components/Modals/ModalInfo";
 import { checkNetwork } from "./Ultis/NetworkCheck/NetworkCheck";
+// import { getAllGlobalAPRPool } from "./Services/StakingServices/FarmingServices";
 // import background from "../src/assets/background.jpg";
 
 function App() {
@@ -69,6 +73,13 @@ function App() {
     };
   }, [message]);
 
+  useEffect(() => {
+    const allPools = getAllProductApi();
+    dispatch(allPools);
+    const globalAPR = getPoolAPRAPI();
+    dispatch(globalAPR);
+  }, []);
+
   const addWalletInfo = async () => {
     const accounts = await web3.eth.getAccounts();
     if (accounts.length > 0) {
@@ -95,8 +106,8 @@ function App() {
 
   return (
     <div
-      style={{ backgroundColor: "#091227", color: "white" }}
-      className="h-max font-poppins leading-loose relative"
+      style={{ color: "white" }}
+      className="h-max font-poppins leading-loose relative backgroundRadius"
     >
       <Router />
       {/* <div className="flex flex-col items-start justify-center gap-2 absolute left-0 md:bottom-14 w-1/4">

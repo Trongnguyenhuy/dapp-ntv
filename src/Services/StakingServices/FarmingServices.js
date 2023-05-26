@@ -208,7 +208,6 @@ export const unStakingToken = async (poolId, numberOfToken, time) => {
 export const getAllPools = async () => {
   try {
     const pools = await StakingServices.methods.getAllPool().call();
-
     return pools;
   } catch (err) {
     return false;
@@ -351,6 +350,34 @@ export const predictInvidualARP = async (numberOfTokenStack, poolId) => {
     const invidualARP =
       assetPartion * rewardTokenPerBlockForPool * NUMBEROFBLOCKPERDAY;
     return invidualARP / 1e18;
+  } catch (err) {
+    return false;
+  }
+};
+
+//
+export const getAllGlobalAPRPool = async () => {
+  const globalAPRs = [];
+  const arr = [];
+  try {
+    const pools = await getAllPools();
+    const length = pools.length;
+
+    if (length > 1) {
+      for (let i = 0; i <= length - 1; i++) {
+        arr.push(i);
+      }
+
+      for (const item of arr) {
+        const APR = await getGlobalARP(item);
+        globalAPRs.push(APR.toFixed(4));
+      }
+    } else if (length == 1) {
+      const APR = await getGlobalARP(0);
+      globalAPRs.push(APR);
+    }
+
+    return globalAPRs;
   } catch (err) {
     return false;
   }

@@ -34,7 +34,7 @@ export const Header = () => {
   };
 
   return (
-    <div className="border-b-2 border-gray-800 py-1 fixed w-full bg-[#091227] z-20">
+    <div className="border-b-2 border-gray-600 py-4 fixed w-full bg-[#091227] z-20">
       <div className="flex flex-row justify-between font-sans">
         <ul className="flex flex-row justify-between ml-8 gap-8 font-medium text-lg">
           <li>
