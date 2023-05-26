@@ -1,47 +1,45 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import { Modal } from "antd";
-import { useEffect, useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import React, { useState } from "react";
 import { Slider } from "antd";
 import "antd/dist/reset.css";
-import {
-  setMessage,
-} from "../../Redux/Reducers/FarmingReducer";
-import {
-  getBalanceOfStakeToken,
-  predictInvidualARP,
-  depositTokenToPool,
-} from "../../Services/StakingServices/FarmingServices";
+import { setMessage } from "../../Redux/Reducers/FarmingReducer";
+import { depositTokenToPool } from "../../Services/StakingServices/FarmingServices";
 import Loading from "../Button/loadingButton";
+const NUMBEROFBLOCKPERDAY = 84000 / 13;
 
 const ModalContract = (props) => {
   const { modalOpen, setModalOpen, poolId } = props;
+  const { account, pools, rewardTokenPerBlock, totalMultiflier } = useSelector(
+    (state) => state.farmingReducer
+  );
   const [loading, setLoading] = useState(0);
   const [quantity, setQuantity] = useState(0);
   const [predictAPR, setPredictAPR] = useState(0);
-  const [max, setMax] = useState(0);
   const dispatch = useDispatch();
 
   const amountOfToken = useRef(0);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        let max = await getBalanceOfStakeToken();
-        max = max / 1e18;
-        setMax(max);
-      } catch (err) {
-        console.log("message", err.message);
-      }
-    })();
-  }, []);
+  const calculateInvidualAPR = (numberOfToken) => {
+    const assetRatio = (numberOfToken * 1e18) / pools[poolId].tokensStaked;
+    const poolWeight = pools[poolId].farmMultiplier / totalMultiflier;
+    const rewardPerBlockForPool = poolWeight * rewardTokenPerBlock;
+    const invidualAPRPerDay =
+      assetRatio * poolWeight * rewardPerBlockForPool * NUMBEROFBLOCKPERDAY;
+
+    return invidualAPRPerDay / 1e18;
+  };
 
   const handleSliderChange = async (value) => {
-    let predictAmount = await predictInvidualARP(value, poolId);
-    predictAmount = predictAmount * 30 * (poolId + 1);
-    setPredictAPR(predictAmount);
+    if (pools.length > 0) {
+      const invidualToken = calculateInvidualAPR(value);
+      setPredictAPR(invidualToken);
+    } else {
+      setPredictAPR(0);
+    }
     setQuantity(value);
     amountOfToken.current = value;
   };
@@ -56,7 +54,6 @@ const ModalContract = (props) => {
       message: `${amountOfToken.current} tokens have been confirmed!`,
     });
     dispatch(setMessageAction);
-    window.location.reload();
   };
 
   const handleCancel = () => {
@@ -66,9 +63,12 @@ const ModalContract = (props) => {
 
   const handleChange = async (e) => {
     const { value } = e.target;
-    let predictAmount = await predictInvidualARP(value, poolId);
-    predictAmount = predictAmount * 30 * (poolId + 1);
-    setPredictAPR(predictAmount);
+    if (pools.length > 0) {
+      const invidualToken = calculateInvidualAPR(value);
+      setPredictAPR(invidualToken);
+    } else {
+      setPredictAPR(0);
+    }
     amountOfToken.current = value;
     setQuantity(value);
   };
@@ -130,7 +130,7 @@ const ModalContract = (props) => {
         <div>
           <Slider
             min={0}
-            max={max.toFixed(0)}
+            max={account.balanceOfStakeToken}
             value={quantity}
             onChange={handleSliderChange}
             trackStyle={{
@@ -147,7 +147,7 @@ const ModalContract = (props) => {
             Tổng phần thưởng dự kiến
           </p>
           <h2 className="py-2 text-base font-poppins font-medium">
-            {`${predictAPR ? predictAPR.toFixed(8) : 0} TVN`}
+            {`${(predictAPR * 30 * (poolId + 1)).toFixed(8)} TVN`}
           </h2>
         </div>
         <div className="flex flex-row justify-between pb-6">
@@ -155,9 +155,7 @@ const ModalContract = (props) => {
             Phần thưởng dự kiến theo ngày
           </p>
           <h2 className="py-2 text-base font-poppins font-medium">
-            {`${
-              predictAPR ? (predictAPR / (30 * (poolId + 1))).toFixed(8) : 0
-            } TVN`}
+            {`${predictAPR.toFixed(8)} TVN`}
           </h2>
         </div>
       </div>

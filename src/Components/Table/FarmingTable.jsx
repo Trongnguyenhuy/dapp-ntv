@@ -68,12 +68,11 @@ const FarmingTable = () => {
     if (searchText) {
       const filtered = filteredData.filter((item) => {
         return (
-          item.amount.toLowerCase().includes(searchText.toLowerCase())
-          || item.reward.toLowerCase().includes(searchText.toLowerCase())
-          || item.depositStartTime.toLowerCase().includes(searchText.toLowerCase())
-        )
-      }
-      );
+          item.amount.toLowerCase().includes(searchText.toLowerCase()) ||
+          item.reward.toLowerCase().includes(searchText.toLowerCase()) ||
+          item.depositStartTime.toLowerCase().includes(searchText.toLowerCase())
+        );
+      });
       setFilteredData(filtered);
     } else setFilteredData(data);
   };

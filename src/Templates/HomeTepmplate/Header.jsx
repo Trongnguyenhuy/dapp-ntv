@@ -4,9 +4,16 @@ import logo from "../../assets/logo.png";
 import WalletInforCard from "../../Components/Card/WalletInforCard";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  getAllProductApi,
+  getPoolAPRAPI,
+  getRewardTokenPerBlockApi,
+  getStakerInfoApi,
+  getStakingTimeInfoApi,
+  getTotalMultiflierApi,
   setMessage,
 } from "../../Redux/Reducers/FarmingReducer";
 import ModalInfo from "../../Components/Modals/ModalInfo";
+import { useEffect } from "react";
 
 export const Header = () => {
   const { account, message } = useSelector((state) => state.farmingReducer);
@@ -17,7 +24,11 @@ export const Header = () => {
     const globalAPR = getPoolAPRAPI();
     const stakerInfo = getStakerInfoApi();
     const stakingTimeInfo = getStakingTimeInfoApi();
+    const rewardTokenPerBlock = getRewardTokenPerBlockApi();
+    const totalMultiflier = getTotalMultiflierApi();
+    dispatch(totalMultiflier);
     dispatch(stakingTimeInfo);
+    dispatch(rewardTokenPerBlock);
     dispatch(allPools);
     dispatch(stakerInfo);
     dispatch(globalAPR);

@@ -6,6 +6,8 @@ import {
   getAllStakerInfo,
   getAllStakingTimeForPoolInfo,
   getAllStakingTimeInfo,
+  getRewardTokenPerBlock,
+  getTotalMultiflier,
 } from "../../Services/StakingServices/FarmingServices";
 
 const initialState = {
@@ -20,6 +22,8 @@ const initialState = {
   stakerInfo: [],
   allStakingTime: [],
   poolAPR: [],
+  rewardTokenPerBlock: 0,
+  totalMultiflier: 0,
 };
 
 const FarmingReducer = createSlice({
@@ -54,6 +58,12 @@ const FarmingReducer = createSlice({
     getPoolAPRAction: (state, action) => {
       state.poolAPR = action.payload;
     },
+    getRewardTokenPerBlockAction: (state, action) => {
+      state.rewardTokenPerBlock = action.payload;
+    },
+    getTotalMultiflierAction: (state, action) => {
+      state.totalMultiflier = action.payload;
+    },
   },
 });
 
@@ -65,6 +75,8 @@ export const {
   getStakerInforAction,
   getStakingTimeInforAction,
   getPoolAPRAction,
+  getRewardTokenPerBlockAction,
+  getTotalMultiflierAction,
 } = FarmingReducer.actions;
 
 export default FarmingReducer.reducer;
@@ -77,6 +89,32 @@ export const getAllProductApi = () => {
       const pools = await getAllPools();
 
       const action = getAllPoolsAction(pools);
+      dispatch(action);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+};
+
+// Lấy số token thưởng 1 block và đẩy lên store.
+export const getRewardTokenPerBlockApi = () => {
+  return async (dispatch, getState) => {
+    try {
+      const reward = await getRewardTokenPerBlock();
+      const action = getRewardTokenPerBlockAction(reward);
+      dispatch(action);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+};
+
+// Lấy số token thưởng 1 block và đẩy lên store.
+export const getTotalMultiflierApi = () => {
+  return async (dispatch, getState) => {
+    try {
+      const totalMultiflier = await getTotalMultiflier();
+      const action = getTotalMultiflierAction(totalMultiflier);
       dispatch(action);
     } catch (err) {
       console.log(err.message);
