@@ -11,11 +11,10 @@ import {
 import Loading from "../Button/loadingButton";
 import { useDispatch, useSelector } from "react-redux";
 import { getStakingTimeInfoApi } from "../../Redux/Reducers/FarmingReducer";
+import { setMessage } from "../../Redux/Reducers/MessageReducer";
 
 const FarmingTable = () => {
-  const { stakerInfo, allStakingTime } = useSelector(
-    (state) => state.farmingReducer
-  );
+  const { allStakingTime } = useSelector((state) => state.farmingReducer);
   const dispatch = useDispatch();
   const [searchText, setSearchText] = useState("");
   const [data, setData] = useState([]);
@@ -45,12 +44,13 @@ const FarmingTable = () => {
   const handleHarvest = async (time, index) => {
     setLoading("harvest" + index);
     await harvestReward(poolId, time);
-    const allStakingtimeInfo = getStakingTimeInfoApi(
-      poolId,
-      stakerInfo.firstStakeTime,
-      stakerInfo.finalStakeTime
-    );
-    dispatch(allStakingtimeInfo);
+    const allStakingTime = getStakingTimeInfoApi();
+    dispatch(allStakingTime);
+    const setMessageAction = setMessage({
+      type: "confirm",
+      message: `Thu hoạch Token hoàn tất!`,
+    });
+    dispatch(setMessageAction);
     setLoading("");
   };
 
@@ -59,6 +59,11 @@ const FarmingTable = () => {
     await unStakingToken(poolId, amount, time);
     const allStakingTime = getStakingTimeInfoApi();
     dispatch(allStakingTime);
+    const setMessageAction = setMessage({
+      type: "confirm",
+      message: `Thu hồi vốn hoàn tất!`,
+    });
+    dispatch(setMessageAction);
     setLoading("");
   };
 

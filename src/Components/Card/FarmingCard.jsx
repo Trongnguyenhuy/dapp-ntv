@@ -88,6 +88,7 @@ const FarmingCard = (props) => {
         account={account}
         poolId={id - 1}
         duration={duration}
+        isInfoCard={false}
       />
     </div>
   );

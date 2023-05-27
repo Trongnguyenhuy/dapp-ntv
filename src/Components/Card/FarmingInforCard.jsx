@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import ModalContract from "../Modals/ModalContract";
 import { useParams } from "react-router-dom";
@@ -13,6 +13,11 @@ const FarmingInforCard = () => {
     (state) => state.farmingReducer
   );
   const { id } = useParams();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const poolId = id - 1;
   const amountOfStake =
     allStakingTime.length > 0
@@ -106,6 +111,7 @@ const FarmingInforCard = () => {
         setModalOpen={setModalOpen}
         account={account}
         poolId={poolId}
+        isInfoCard={true}
       />
     </div>
   );

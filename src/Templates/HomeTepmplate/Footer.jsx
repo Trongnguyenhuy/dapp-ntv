@@ -20,7 +20,7 @@ export const Footer = () => {
           </h2>
           <h2 className="font-sans font-medium text-md">
             <span className="text-gray-400">Địa chỉ: </span>
-            Số 81 - Khu dân cư 91B - Phường Xuân Khánh - Quận Ninh Kiều - TP.
+            Số 81 - Khu dân cư 91B - Phường An Khánh - Quận Ninh Kiều - TP.
             Cần Thơ
           </h2>
         </div>

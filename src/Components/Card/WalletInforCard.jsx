@@ -5,7 +5,7 @@ import { HiViewfinderCircle } from "react-icons/hi2";
 import { IoCopyOutline } from "react-icons/io5";
 import { MdAccountBalanceWallet } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import { setMessage } from "../../Redux/Reducers/FarmingReducer";
+import { setMessage } from "../../Redux/Reducers/MessageReducer";
 import { checkNetworkToken } from "../../Ultis/NetworkCheck/NetworkCheck";
 import logoCoinLP from "../../assets/logo-coin-lp.png";
 
@@ -39,8 +39,8 @@ const WalletInforCard = () => {
   const copyToClipboard = () => {
     navigator.clipboard.writeText(account.walletAddress);
     const action = setMessage({
-      type: "info",
-      message: "Sao chép thành công !",
+      type: "confirm",
+      message: "Sao chép thành công!",
     });
     dispatch(action);
   };

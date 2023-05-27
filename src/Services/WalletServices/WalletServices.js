@@ -1,4 +1,12 @@
-import { getWalletInfor, setMessage } from "../../Redux/Reducers/FarmingReducer";
+import {
+  getStakingTimeInfoApi,
+  getWalletInfor,
+} from "../../Redux/Reducers/FarmingReducer";
+import {
+  deleteWarming,
+  setMessage,
+  setWarming,
+} from "../../Redux/Reducers/MessageReducer";
 import { checkNetwork } from "../../Ultis/NetworkCheck/NetworkCheck";
 import { getBalanceOfStakeToken } from "../StakingServices/FarmingServices";
 import web3 from "../Web3/Web3";
@@ -26,9 +34,45 @@ export const addWalletInfo = async (dispatch) => {
     const getWalletInforAction = getWalletInfor(walletInfor);
     const connectAction = setMessage({
       type: "infor",
-      message: "Connect to MetaMask success!",
+      message: "Kết nối với ví MetaMask thành công!",
     });
+    const allStakingTime = getStakingTimeInfoApi();
+    const warmingAction = deleteWarming();
+    dispatch(allStakingTime);
     dispatch(getWalletInforAction);
     dispatch(connectAction);
+    dispatch(warmingAction);
+  } else {
+    const warmingAction = setWarming({
+      type: "instruct",
+      header: "Chưa kết nối!",
+      message: "Xin vui lòng kết nối với tài khoản MetaMask của bạn!",
+    });
+    dispatch(warmingAction);
+  }
+};
+
+export const checkChainId = async (dispatch) => {
+  try {
+    const chainId = await web3.eth.getChainId();
+    const network = checkNetwork(chainId);
+    if (network == "Ethereum Sepolia") {
+      await addWalletInfo(dispatch);
+    } else {
+      const warmingAction = setWarming({
+        type: "warming",
+        header: "Sai Network!",
+        message: "Làm ơn sử dụng mạng Sepolia Ethereum để kết nối!",
+      });
+      dispatch(warmingAction);
+    }
+  } catch (err) {
+    console.log("Connect Error: ", err.message);
+    const warmingAction = setWarming({
+      type: "warming",
+      header: "Xuất hiện lỗi!",
+      message: "Có lỗi phát sinh trong lúc kiểm tra network!",
+    });
+    dispatch(warmingAction);
   }
 };

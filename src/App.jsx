@@ -2,34 +2,36 @@
 import { useEffect } from "react";
 import "./App.css";
 import { Router } from "./Components/Router/Router";
-import { deleteMessage, setMessage } from "./Redux/Reducers/FarmingReducer";
+import { deleteMessage, setWarming } from "./Redux/Reducers/MessageReducer";
 import { useDispatch, useSelector } from "react-redux";
-import { addWalletInfo } from "./Services/WalletServices/WalletServices";
+import {
+  addWalletInfo,
+  checkChainId,
+} from "./Services/WalletServices/WalletServices";
+import ModalWarming from "./Components/Modals/ModalWarming";
 
 function App() {
-  const { message } = useSelector((state) => state.farmingReducer);
+  const { message, warming } = useSelector((state) => state.messageReducer);
   const dispatch = useDispatch();
   useEffect(() => {
     (async () => {
       if (window.ethereum) {
         try {
-          await addWalletInfo(dispatch);
+          await checkChainId(dispatch);
         } catch (error) {
           console.error(error);
         }
-
         window.ethereum.on("chainChanged", async () => {
-          await addWalletInfo(dispatch);
-          window.location.reload();
+          await checkChainId(dispatch);
         });
         window.ethereum.on("accountsChanged", async () => {
           await addWalletInfo(dispatch);
-          window.location.reload();
         });
       } else {
-        const warmingAction = setMessage({
-          type: "warming",
-          message: "Please Connect to your MetaMask Wallet!",
+        const warmingAction = setWarming({
+          type: "instruct",
+          header: "Chưa Cài Đặt!",
+          message: "Làm ơn cài đặt ví MetaMask!",
         });
         dispatch(warmingAction);
       }
@@ -64,16 +66,8 @@ function App() {
       style={{ color: "white" }}
       className="h-max font-poppins leading-loose relative bg-[#091227]"
     >
-      <Router />
-      {/* <div className="flex flex-col items-start justify-center gap-2 absolute left-0 md:bottom-14 w-1/4">
-        {message.map((item, index) => {
-          return (
-            <div key={index}>
-              <ModalInfo message={item} />
-            </div>
-          );
-        })}
-      </div> */}
+      <ModalWarming />
+      {Object.keys(warming).length === 0 && <Router />}
     </div>
   );
 }

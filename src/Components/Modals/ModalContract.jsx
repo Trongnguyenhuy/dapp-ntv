@@ -6,13 +6,18 @@ import { useDispatch, useSelector } from "react-redux";
 import React, { useState } from "react";
 import { Slider } from "antd";
 import "antd/dist/reset.css";
-import { getStakingTimeInfoApi, setMessage } from "../../Redux/Reducers/FarmingReducer";
+import {
+  getStakingTimeInfoApi,
+  updateBalanceOfTokenApi,
+} from "../../Redux/Reducers/FarmingReducer";
+import { setMessage } from "../../Redux/Reducers/MessageReducer";
 import { depositTokenToPool } from "../../Services/StakingServices/FarmingServices";
 import Loading from "../Button/loadingButton";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 const NUMBEROFBLOCKPERDAY = 84000 / 13;
 
 const ModalContract = (props) => {
-  const { modalOpen, setModalOpen, poolId } = props;
+  const { modalOpen, setModalOpen, poolId, isInfoCard } = props;
   const { account, pools, rewardTokenPerBlock, totalMultiflier } = useSelector(
     (state) => state.farmingReducer
   );
@@ -20,6 +25,7 @@ const ModalContract = (props) => {
   const [quantity, setQuantity] = useState(0);
   const [predictAPR, setPredictAPR] = useState(0);
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const amountOfToken = useRef(0);
 
@@ -47,15 +53,23 @@ const ModalContract = (props) => {
   const handleConfirm = async () => {
     setLoading(1);
     await depositTokenToPool(poolId, amountOfToken.current);
-    const allStakingTime = getStakingTimeInfoApi();
-    dispatch(allStakingTime);
     setLoading(0);
     setModalOpen(false);
     const setMessageAction = setMessage({
       type: "confirm",
-      message: `${amountOfToken.current} tokens have been confirmed!`,
+      message: `${amountOfToken.current} tokens đã được ký gửi!`,
     });
     dispatch(setMessageAction);
+
+    if (!isInfoCard) {
+      history.push(`/farm-detail/${poolId + 1}`);
+    } else {
+      const allStakingTime = getStakingTimeInfoApi();
+      dispatch(allStakingTime);
+    }
+
+    const balanceOfToken = updateBalanceOfTokenApi();
+    dispatch(balanceOfToken);
   };
 
   const handleCancel = () => {

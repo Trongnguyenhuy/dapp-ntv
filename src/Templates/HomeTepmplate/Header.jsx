@@ -10,13 +10,14 @@ import {
   getStakerInfoApi,
   getStakingTimeInfoApi,
   getTotalMultiflierApi,
-  setMessage,
 } from "../../Redux/Reducers/FarmingReducer";
+import { setMessage } from "../../Redux/Reducers/MessageReducer";
 import ModalInfo from "../../Components/Modals/ModalInfo";
 import { useEffect } from "react";
 
 export const Header = () => {
-  const { account, message } = useSelector((state) => state.farmingReducer);
+  const { account } = useSelector((state) => state.farmingReducer);
+  const { message } = useSelector((state) => state.messageReducer);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -47,7 +48,7 @@ export const Header = () => {
     } else {
       const setMessageAction = setMessage({
         type: "warming",
-        message: "Need to install MetaMask",
+        message: "Làm ơn cài đặt ví Metamask trước khi sử dụng dịch vụ",
       });
       dispatch(setMessageAction);
     }
