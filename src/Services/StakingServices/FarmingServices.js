@@ -17,6 +17,17 @@ export const getAccountAddress = async () => {
   }
 };
 
+// Lấy địa chỉ ví của chủ sàn.
+export const getOwnerAddress = async () => {
+  try {
+    const owner = await StakingServices.methods.owner().call();
+
+    return owner;
+  } catch (err) {
+    return false;
+  }
+};
+
 // Số token thưởng cho 1 Block.
 export const getRewardTokenPerBlock = async () => {
   try {
@@ -307,12 +318,14 @@ export const harvestReward = async (poolId, time) => {
 };
 
 // Cập nhật thông tin phần thưởng trong pool
-export const updatePoolRewards = async (poolId) => {
+export const updatePoolRewards = async (poolId, time) => {
   try {
     const address = await getAccountAddress();
-    const rewards = await StakingServices.methods.getRewardsInfor(poolId).call({
-      from: address,
-    });
+    const rewards = await StakingServices.methods
+      .getRewardsInfor(poolId, time)
+      .call({
+        from: address,
+      });
     return rewards;
   } catch (err) {
     console.log(err);

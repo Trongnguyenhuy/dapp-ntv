@@ -92,3 +92,45 @@
     rgba(61, 18, 186, 1) 70%
   );
 }
+
+.farmCard {
+  /* ff 3.6+ */
+  background: -moz-radial-gradient(
+    circle at 91% 5%,
+    rgba(222, 2, 253, 1) 0%,
+    rgba(61, 18, 233, 1) 50%,
+    rgba(9, 18, 39, 1) 100%
+  );
+
+  /* safari 5.1+,chrome 10+ */
+  background: -webkit-radial-gradient(
+    circle at 91% 5%,
+    rgba(222, 2, 253, 1) 0%,
+    rgba(61, 18, 233, 1) 50%,
+    rgba(9, 18, 39, 1) 100%
+  );
+
+  /* opera 11.10+ */
+  background: -o-radial-gradient(
+    circle at 91% 5%,
+    rgba(222, 2, 253, 1) 0%,
+    rgba(61, 18, 233, 1) 50%,
+    rgba(9, 18, 39, 1) 100%
+  );
+
+  /* ie 10+ */
+  background: -ms-radial-gradient(
+    circle at 91% 5%,
+    rgba(222, 2, 253, 1) 0%,
+    rgba(61, 18, 233, 1) 50%,
+    rgba(9, 18, 39, 1) 100%
+  );
+
+  /* global 92%+ browsers support */
+  background: radial-gradient(
+    circle at 91% 5%,
+    rgba(222, 2, 253, 1) 0%,
+    rgba(61, 18, 233, 1) 50%,
+    rgba(9, 18, 39, 1) 100%
+  );
+}

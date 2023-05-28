@@ -7,7 +7,7 @@ const Loading = (props) => {
   return (
     <>
       {index == loading ? (
-        <LoadingOutlined className="text-base font-bold" />
+        <LoadingOutlined />
       ) : (
         text
       )}

@@ -18,7 +18,6 @@ export const HomeBody = () => {
           <img src={logo} alt="logo" width={800} height={600} />
         </div>
       </div>
-
       <FarmingBody />
       <PoolBody />
     </div>

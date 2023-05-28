@@ -6,6 +6,7 @@ import {
   getAllStakerInfo,
   getAllStakingTimeForPoolInfo,
   getAllStakingTimeInfo,
+  getOwnerAddress,
   getRewardTokenPerBlock,
   getTotalMultiflier,
 } from "../../Services/StakingServices/FarmingServices";
@@ -24,6 +25,7 @@ const initialState = {
   poolAPR: [],
   rewardTokenPerBlock: 0,
   totalMultiflier: 0,
+  owner: 0,
 };
 
 const FarmingReducer = createSlice({
@@ -58,6 +60,9 @@ const FarmingReducer = createSlice({
     updateBalanceOfTokenAction: (state, action) => {
       state.account.balanceOfStakeToken = action.payload;
     },
+    getOwnerAction: (state, action) => {
+      state.owner = action.payload;
+    },
   },
 });
 
@@ -70,11 +75,26 @@ export const {
   getRewardTokenPerBlockAction,
   getTotalMultiflierAction,
   updateBalanceOfTokenAction,
+  getOwnerAction,
 } = FarmingReducer.actions;
 
 export default FarmingReducer.reducer;
 
 // =============== Action Thunk / Middleware ===============
+
+// Lấy thông tin owner và đẩy lên store
+export const getOwnerAPI = () => {
+  return async (dispatch, getState) => {
+    try {
+      const owner = await getOwnerAddress();
+      const action = getOwnerAction(owner);
+      dispatch(action);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+};
+
 // Lấy thông tin của tất cả các pool có trên contract và đẩy lên store.
 export const getAllProductApi = () => {
   return async (dispatch, getState) => {

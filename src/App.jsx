@@ -5,10 +5,11 @@ import { Router } from "./Components/Router/Router";
 import { deleteMessage, setWarming } from "./Redux/Reducers/MessageReducer";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  checkConnectAccount,
   addWalletInfo,
-  checkChainId,
 } from "./Services/WalletServices/WalletServices";
 import ModalWarming from "./Components/Modals/ModalWarming";
+import { getOwnerAPI } from "./Redux/Reducers/FarmingReducer";
 
 function App() {
   const { message, warming } = useSelector((state) => state.messageReducer);
@@ -17,31 +18,36 @@ function App() {
     (async () => {
       if (window.ethereum) {
         try {
-          await checkChainId(dispatch);
+          await checkConnectAccount(dispatch);
         } catch (error) {
           console.error(error);
         }
         window.ethereum.on("chainChanged", async () => {
-          await checkChainId(dispatch);
+          await checkConnectAccount(dispatch);
         });
         window.ethereum.on("accountsChanged", async () => {
-          await addWalletInfo(dispatch);
+          await addWalletInfo(dispatch,true);
         });
       } else {
         const warmingAction = setWarming({
           type: "instruct",
           header: "Chưa Cài Đặt!",
           message: "Làm ơn cài đặt ví MetaMask!",
+          code: "wm01",
         });
         dispatch(warmingAction);
       }
     })();
+
+    const owner = getOwnerAPI();
+    dispatch(owner);
+
     return () => {
       window.ethereum?.removeListener("chainChanged", (chainId) => {
         console.log("chainId", chainId);
       });
-      window.ethereum?.removeListener("accountsChanged", (accounts) => {
-        console.log("accounts", accounts);
+      window.ethereum?.removeListener("accountsChanged", (chainId) => {
+        console.log("accountsChanged", chainId);
       });
     };
   }, []);

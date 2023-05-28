@@ -12,6 +12,7 @@ import Loading from "../Button/loadingButton";
 import { useDispatch, useSelector } from "react-redux";
 import { getStakingTimeInfoApi } from "../../Redux/Reducers/FarmingReducer";
 import { setMessage } from "../../Redux/Reducers/MessageReducer";
+import RewardLiveUpdate from "../LiveUpdate/RewardLiveUpdate";
 
 const FarmingTable = () => {
   const { allStakingTime } = useSelector((state) => state.farmingReducer);
@@ -115,7 +116,14 @@ const FarmingTable = () => {
             <td className="py-4 px-4">{index + 1}</td>
             <td className="py-4">{(key.amount / 1e18).toFixed(8)} TVN-LP</td>
             <td className="py-4">{key.depositStartTime}</td>
-            <td className="py-4">{(key.reward / 1e18).toFixed(8)} TVN</td>
+            <td className="py-4">
+              <RewardLiveUpdate
+                poolId={poolId}
+                isTotal={false}
+                time={key.unStakingTime}
+              />{" "}
+              TVN
+            </td>
             <td className="py-4 operation">
               <div className="flex flex-row justify-between gap-4 text-white">
                 <button

@@ -16,7 +16,7 @@ import ModalInfo from "../../Components/Modals/ModalInfo";
 import { useEffect } from "react";
 
 export const Header = () => {
-  const { account } = useSelector((state) => state.farmingReducer);
+  const { account, owner } = useSelector((state) => state.farmingReducer);
   const { message } = useSelector((state) => state.messageReducer);
   const dispatch = useDispatch();
 
@@ -71,9 +71,13 @@ export const Header = () => {
           <li className="my-auto cursor-pointer hover:text-[#1CE6EC]">
             <Link to="/pool">Pools</Link>
           </li>
-          <li className="my-auto cursor-pointer hover:text-[#1CE6EC]">
-            <Link to="/admin">Admin</Link>
-          </li>
+
+          {account.walletAddress == owner && owner != "" && (
+            <li className="my-auto cursor-pointer hover:text-[#1CE6EC]">
+              <Link to="/admin">Admin</Link>
+            </li>
+          )}
+
           {/* </div> */}
         </ul>
         <ul className="flex flex-row justify-start items-center gap-8 mr-8">

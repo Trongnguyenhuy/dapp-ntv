@@ -24,7 +24,7 @@ const FarmingCard = (props) => {
   return (
     <div
       style={{ background: "#fff", color: "#091227" }}
-      className="p-8 w-full rounded-xl mt-2 lg:mt-4 font-poppins"
+      className="p-8 w-full rounded-xl mt-2 lg:mt-4 font-poppins shadow-2xl"
     >
       <div className="flex flex-col justify-around items-center">
         <div className="flex flex-row justify-start relative px-2 py-4">
