@@ -1,59 +1,53 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect } from "react";
-// import { HomeBody } from "./Pages/Home/HomeBody";
-// import { Header } from "./Templates/HomeTepmplate/Header";
-// import { Footer } from "./Templates/HomeTepmplate/Footer";
 import "./App.css";
-import web3 from "./Services/Web3/Web3";
 import { Router } from "./Components/Router/Router";
-import {
-  deleteMessage,
-  getAllProductApi,
-  getPoolAPRAPI,
-  getWalletInfor,
-  setMessage,
-  // setNetwork,
-} from "./Redux/Reducers/FarmingReducer";
+import { deleteMessage, setWarming } from "./Redux/Reducers/MessageReducer";
 import { useDispatch, useSelector } from "react-redux";
-import ModalInfo from "./Components/Modals/ModalInfo";
-import { checkNetwork } from "./Ultis/NetworkCheck/NetworkCheck";
-// import { getAllGlobalAPRPool } from "./Services/StakingServices/FarmingServices";
-// import background from "../src/assets/background.jpg";
+import {
+  checkConnectAccount,
+  addWalletInfo,
+} from "./Services/WalletServices/WalletServices";
+import ModalWarming from "./Components/Modals/ModalWarming";
+import { getOwnerAPI } from "./Redux/Reducers/FarmingReducer";
 
 function App() {
-  const { message } = useSelector((state) => state.farmingReducer);
+  const { message, warming } = useSelector((state) => state.messageReducer);
   const dispatch = useDispatch();
   useEffect(() => {
     (async () => {
       if (window.ethereum) {
         try {
-          await addWalletInfo();
+          await checkConnectAccount(dispatch);
         } catch (error) {
           console.error(error);
         }
-
         window.ethereum.on("chainChanged", async () => {
-          await addWalletInfo();
-          window.location.reload();
+          await checkConnectAccount(dispatch);
         });
         window.ethereum.on("accountsChanged", async () => {
-          await addWalletInfo();
-          window.location.reload();
+          await addWalletInfo(dispatch,true);
         });
       } else {
-        const warmingAction = setMessage({
-          type: "warming",
-          message: "Please Connect to your MetaMask Wallet!",
+        const warmingAction = setWarming({
+          type: "instruct",
+          header: "Chưa Cài Đặt!",
+          message: "Làm ơn cài đặt ví MetaMask!",
+          code: "wm01",
         });
         dispatch(warmingAction);
       }
     })();
+
+    const owner = getOwnerAPI();
+    dispatch(owner);
+
     return () => {
       window.ethereum?.removeListener("chainChanged", (chainId) => {
         console.log("chainId", chainId);
       });
-      window.ethereum?.removeListener("accountsChanged", (accounts) => {
-        console.log("accounts", accounts);
+      window.ethereum?.removeListener("accountsChanged", (chainId) => {
+        console.log("accountsChanged", chainId);
       });
     };
   }, []);
@@ -73,55 +67,13 @@ function App() {
     };
   }, [message]);
 
-  useEffect(() => {
-    const allPools = getAllProductApi();
-    dispatch(allPools);
-    const globalAPR = getPoolAPRAPI();
-    dispatch(globalAPR);
-  }, []);
-
-  const addWalletInfo = async () => {
-    const accounts = await web3.eth.getAccounts();
-    if (accounts.length > 0) {
-      const balance = await web3.eth.getBalance(accounts[0]);
-      const chainId = await web3.eth.getChainId();
-
-      const network = checkNetwork(chainId);
-
-      const walletInfor = {
-        account: accounts[0],
-        balance: web3.utils.fromWei(balance, "ether"),
-        network: network,
-      };
-
-      const getWalletInforAction = getWalletInfor(walletInfor);
-      const connectAction = setMessage({
-        type: "infor",
-        message: "Connect to MetaMask success!",
-      });
-      dispatch(getWalletInforAction);
-      dispatch(connectAction);
-    }
-  };
-
   return (
     <div
       style={{ color: "white" }}
-      className="h-max font-poppins leading-loose relative backgroundRadius"
+      className="h-max font-poppins leading-loose relative bg-[#091227]"
     >
-      {/* <Header />
-      <HomeBody />
-      <Footer /> */}
-      <Router />
-      <div className="flex flex-col items-start justify-center gap-2 absolute left-0 md:bottom-14 w-1/4">
-        {message.map((item, index) => {
-          return (
-            <div key={index}>
-              <ModalInfo message={item} />
-            </div>
-          );
-        })}
-      </div>
+      <ModalWarming />
+      {Object.keys(warming).length === 0 && <Router />}
     </div>
   );
 }

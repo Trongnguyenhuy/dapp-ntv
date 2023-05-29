@@ -1,59 +1,28 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  getStakerInfo,
-  getGlobalARP,
-  getPoolInfor,
-} from "../../Services/StakingServices/FarmingServices";
+import { useSelector } from "react-redux";
 import ModalContract from "../Modals/ModalContract";
 import { useParams } from "react-router-dom";
 import RewardLiveUpdate from "../LiveUpdate/RewardLiveUpdate";
 import logoCoinLP from "../../assets/logo-coin-lp.png";
 import logoCoinTVN from "../../assets/logo-coin-tvn.png";
-import {
-  getStakerInfoApi,
-  getStakingTimeInfoApi,
-} from "../../Redux/Reducers/FarmingReducer";
 
 const FarmingInforCard = () => {
   const [modalOpen, setModalOpen] = useState(false);
-  const [globalAPR, setGlobalAPR] = useState(0);
-  const [pool, setPool] = useState({});
-  const [staker, setStaker] = useState({
-    amountOfStakeTokenOnPool: 0,
-    depositStartTime: 0,
-    rewards: 0,
-    startBlock: 0,
-    currentBlock: 0,
-  });
-  const { account, stakerInfo, allStakingTime } = useSelector((state) => state.farmingReducer);
+  const { account, poolAPR, allStakingTime } = useSelector(
+    (state) => state.farmingReducer
+  );
   const { id } = useParams();
-  const poolId = id - 1;
-  const amountOfStake = staker.totalTokenStake / 1e18;
-  const dispatch = useDispatch();
 
   useEffect(() => {
-    (async () => {
-      const staker = await getStakerInfo(poolId);
-      const pool = await getPoolInfor(poolId);
-      setPool(pool);
-      const APR = await getGlobalARP(poolId);
-      setGlobalAPR(APR);
-      setStaker(staker);
-    })();
-    const stakerOnReducer = getStakerInfoApi(poolId);
-    const allStakingOnReducer = getStakingTimeInfoApi(
-      poolId,
-      stakerInfo.firstStakeTime,
-      stakerInfo.finalStakeTime
-    );
-    dispatch(stakerOnReducer);
-    dispatch(allStakingOnReducer);
+    window.scrollTo(0, 0);
   }, []);
 
-  console.log(stakerInfo);
-  console.log(allStakingTime);
+  const poolId = id - 1;
+  const amountOfStake =
+    allStakingTime.length > 0
+      ? allStakingTime[poolId].staker.totalTokenStake / 1e18
+      : 0;
 
   const handleModal = () => {
     setModalOpen(true);
@@ -98,7 +67,7 @@ const FarmingInforCard = () => {
               </div>
               <div className="w-full flex flex-col items-center p-4 py-12 text-1xl">
                 <p className="flex flex-col items-center gap-2 font-bold">
-                  <RewardLiveUpdate poolId={poolId} />
+                  <RewardLiveUpdate poolId={poolId} isTotal={true}/>
                   <span className="text-xl">TVN</span>
                 </p>
               </div>
@@ -111,11 +80,15 @@ const FarmingInforCard = () => {
           <div className="flex flex-col">
             <p className="flex flex-row justify-between py-6">
               <span>APR</span>
-              <span>{`${globalAPR.toFixed(2)} %`}</span>
+              <span>{`${poolAPR.length > 0 ? poolAPR[id - 1] : 0} %`}</span>
             </p>
             <p className="flex flex-row justify-between py-6">
               <span>Tổng số thanh khoản đã được đặt cọc</span>
-              <span>{(pool.totalTokenStaked / 1e18).toFixed(5)}</span>
+              <span>
+                {allStakingTime.length > 0
+                  ? (allStakingTime[poolId].pool.tokensStaked / 1e18).toFixed(5)
+                  : 0}
+              </span>
             </p>
             <p className="flex flex-row justify-between py-6">
               <span>Chu kỳ trả thưởng</span>
@@ -138,6 +111,7 @@ const FarmingInforCard = () => {
         setModalOpen={setModalOpen}
         account={account}
         poolId={poolId}
+        isInfoCard={true}
       />
     </div>
   );

@@ -17,6 +17,43 @@ export const getAccountAddress = async () => {
   }
 };
 
+// Lấy địa chỉ ví của chủ sàn.
+export const getOwnerAddress = async () => {
+  try {
+    const owner = await StakingServices.methods.owner().call();
+
+    return owner;
+  } catch (err) {
+    return false;
+  }
+};
+
+// Số token thưởng cho 1 Block.
+export const getRewardTokenPerBlock = async () => {
+  try {
+    const rewardTokenperBlock = await StakingServices.methods
+      .getRewardTokenPerBlock()
+      .call();
+    return rewardTokenperBlock;
+  } catch (err) {
+    console.log(err.message);
+    return false;
+  }
+};
+
+// Số token thưởng cho 1 Block.
+export const getTotalMultiflier = async () => {
+  try {
+    const totalMultifier = await StakingServices.methods
+      .getTotalMultiplier()
+      .call();
+    return totalMultifier;
+  } catch (err) {
+    console.log(err.message);
+    return false;
+  }
+};
+
 // Lấy số lượng token muốn stake trong địa chỉ address.
 export const getBalanceOfStakeToken = async () => {
   try {
@@ -156,6 +193,8 @@ export const totalReward = async (poolId, start, end) => {
 
 // Lấy tất cả thông tin về những lần staking vào pool
 export const getAllStakingTimeInfo = async (poolId, start, end) => {
+  let startNum = parseInt(start);
+  let endNum = parseInt(end);
   let arr = [];
   let stakingTimeInfo = [];
 
@@ -171,7 +210,7 @@ export const getAllStakingTimeInfo = async (poolId, start, end) => {
       return stakingTimeInfo;
     }
 
-    for (let i = start; i <= end; i++) {
+    for (let i = startNum; i <= endNum; i++) {
       arr.push(i);
     }
 
@@ -191,11 +230,7 @@ export const getAllStakingTimeInfo = async (poolId, start, end) => {
 export const unStakingToken = async (poolId, numberOfToken, time) => {
   try {
     const address = await getAccountAddress();
-    const wei = web3.utils.toWei(`${numberOfToken}`, "ether");
-    console.log("wei", wei);
-    console.log("poolId", poolId);
-    console.log("time:", time);
-    await StakingServices.methods.withdraw(poolId, wei, time).send({
+    await StakingServices.methods.withdraw(poolId, numberOfToken, time).send({
       from: address,
     });
     return true;
@@ -283,12 +318,14 @@ export const harvestReward = async (poolId, time) => {
 };
 
 // Cập nhật thông tin phần thưởng trong pool
-export const updatePoolRewards = async (poolId) => {
+export const updatePoolRewards = async (poolId, time) => {
   try {
     const address = await getAccountAddress();
-    const rewards = await StakingServices.methods.getRewardsInfor(poolId).call({
-      from: address,
-    });
+    const rewards = await StakingServices.methods
+      .getRewardsInfor(poolId, time)
+      .call({
+        from: address,
+      });
     return rewards;
   } catch (err) {
     console.log(err);
@@ -355,7 +392,7 @@ export const predictInvidualARP = async (numberOfTokenStack, poolId) => {
   }
 };
 
-//
+//Lấy APR từng Pool, format dạng array và đẩy lên Redux store
 export const getAllGlobalAPRPool = async () => {
   const globalAPRs = [];
   const arr = [];
@@ -378,6 +415,83 @@ export const getAllGlobalAPRPool = async () => {
     }
 
     return globalAPRs;
+  } catch (err) {
+    return false;
+  }
+};
+
+//Lấy thông tin staking từng Pool, format dạng array và đẩy lên Redux store
+export const getAllStakerInfo = async () => {
+  const stakerInfo = [];
+  const arr = [];
+  try {
+    const pools = await getAllPools();
+    const length = pools.length;
+
+    if (length > 1) {
+      for (let i = 0; i <= length - 1; i++) {
+        arr.push(i);
+      }
+
+      for (const item of arr) {
+        const statker = await getStakerInfo(item);
+        stakerInfo.push(statker);
+      }
+    } else if (length == 1) {
+      const statker = await getStakerInfo(0);
+      stakerInfo.push(statker);
+    }
+
+    return stakerInfo;
+  } catch (err) {
+    return false;
+  }
+};
+
+//Lấy thông tin những lần staking cho mỗi Staker  vào từng Pool, format dạng array và đẩy lên Redux store
+export const getAllStakingTimeForPoolInfo = async () => {
+  const allStakingTimeInfo = [];
+  const arr = [];
+  try {
+    const pools = await getAllPools();
+    const length = pools.length;
+
+    if (length > 1) {
+      for (let i = 0; i <= length - 1; i++) {
+        arr.push(i);
+      }
+
+      for (const item of arr) {
+        const staker = await getStakerInfo(item);
+
+        const stakingTimeInfo = await getAllStakingTimeInfo(
+          item,
+          staker.firstStakeTime,
+          staker.finalStakeTime
+        );
+
+        allStakingTimeInfo.push({
+          pool: pools[item],
+          staker: staker,
+          stakingTime: stakingTimeInfo,
+        });
+      }
+    } else if (length == 1) {
+      const staker = await getStakerInfo(0);
+      const stakingTimeInfo = await getAllStakingTimeInfo(
+        0,
+        staker.firstStakeTime,
+        staker.finalStakeTime
+      );
+
+      allStakingTimeInfo.push({
+        pool: pools[0],
+        staker: staker,
+        stakingTime: stakingTimeInfo,
+      });
+    }
+
+    return allStakingTimeInfo;
   } catch (err) {
     return false;
   }

@@ -1,13 +1,39 @@
-import { Link } from 'react-router-dom';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { Link } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import WalletInforCard from "../../Components/Card/WalletInforCard";
 import { useDispatch, useSelector } from "react-redux";
-import { setMessage } from "../../Redux/Reducers/FarmingReducer";
-
+import {
+  getAllProductApi,
+  getPoolAPRAPI,
+  getRewardTokenPerBlockApi,
+  getStakerInfoApi,
+  getStakingTimeInfoApi,
+  getTotalMultiflierApi,
+} from "../../Redux/Reducers/FarmingReducer";
+import { setMessage } from "../../Redux/Reducers/MessageReducer";
+import ModalInfo from "../../Components/Modals/ModalInfo";
+import { useEffect } from "react";
 
 export const Header = () => {
-  const { account } = useSelector((state) => state.farmingReducer);
+  const { account, owner } = useSelector((state) => state.farmingReducer);
+  const { message } = useSelector((state) => state.messageReducer);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    const allPools = getAllProductApi();
+    const globalAPR = getPoolAPRAPI();
+    const stakerInfo = getStakerInfoApi();
+    const stakingTimeInfo = getStakingTimeInfoApi();
+    const rewardTokenPerBlock = getRewardTokenPerBlockApi();
+    const totalMultiflier = getTotalMultiflierApi();
+    dispatch(totalMultiflier);
+    dispatch(stakingTimeInfo);
+    dispatch(rewardTokenPerBlock);
+    dispatch(allPools);
+    dispatch(stakerInfo);
+    dispatch(globalAPR);
+  }, []);
 
   const connectWalletHandler = async () => {
     if (window.ethereum && window.ethereum.isMetaMask) {
@@ -22,7 +48,7 @@ export const Header = () => {
     } else {
       const setMessageAction = setMessage({
         type: "warming",
-        message: "Need to install MetaMask",
+        message: "Làm ơn cài đặt ví Metamask trước khi sử dụng dịch vụ",
       });
       dispatch(setMessageAction);
     }
@@ -36,18 +62,22 @@ export const Header = () => {
             <img src={logo} alt="logo" width={65} height={65} />
           </li>
           {/* <div className="grid grid-cols-3 justify-items-start content-center gap-6 ps-8"> */}
-            <li className="my-auto cursor-pointer hover:text-[#1CE6EC]">
-              <Link to="/">Trang chủ</Link>
-            </li>
-            <li className="my-auto cursor-pointer hover:text-[#1CE6EC]">
-              <Link to="/farm">Farms</Link>
-            </li>
-            <li className="my-auto cursor-pointer hover:text-[#1CE6EC]">
-              <Link to="/pool">Pools</Link>
-            </li>
+          <li className="my-auto cursor-pointer hover:text-[#1CE6EC]">
+            <Link to="/">Trang chủ</Link>
+          </li>
+          <li className="my-auto cursor-pointer hover:text-[#1CE6EC]">
+            <Link to="/farm">Farms</Link>
+          </li>
+          <li className="my-auto cursor-pointer hover:text-[#1CE6EC]">
+            <Link to="/pool">Pools</Link>
+          </li>
+
+          {account.walletAddress == owner && owner != "" && (
             <li className="my-auto cursor-pointer hover:text-[#1CE6EC]">
               <Link to="/admin">Admin</Link>
             </li>
+          )}
+
           {/* </div> */}
         </ul>
         <ul className="flex flex-row justify-start items-center gap-8 mr-8">
@@ -66,6 +96,15 @@ export const Header = () => {
             </li>
           )}
         </ul>
+      </div>
+      <div className="flex flex-col w-1/3 px-16 justify-center gap-2 absolute left-1/3 top-16 md:top-14">
+        {message.map((item, index) => {
+          return (
+            <div key={index}>
+              <ModalInfo message={item} />
+            </div>
+          );
+        })}
       </div>
     </div>
   );

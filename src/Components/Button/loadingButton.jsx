@@ -5,7 +5,13 @@ const Loading = (props) => {
   const { index, loading, text } = props;
 
   return (
-    <>{index == loading ? <LoadingOutlined className="text-xl" /> : text}</>
+    <>
+      {index == loading ? (
+        <LoadingOutlined />
+      ) : (
+        text
+      )}
+    </>
   );
 };
 

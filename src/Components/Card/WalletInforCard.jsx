@@ -5,8 +5,9 @@ import { HiViewfinderCircle } from "react-icons/hi2";
 import { IoCopyOutline } from "react-icons/io5";
 import { MdAccountBalanceWallet } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
-import { setMessage } from "../../Redux/Reducers/FarmingReducer";
+import { setMessage } from "../../Redux/Reducers/MessageReducer";
 import { checkNetworkToken } from "../../Ultis/NetworkCheck/NetworkCheck";
+import logoCoinLP from "../../assets/logo-coin-lp.png";
 
 const WalletInforCard = () => {
   const [accountCard, setAccountCard] = useState(false);
@@ -38,8 +39,8 @@ const WalletInforCard = () => {
   const copyToClipboard = () => {
     navigator.clipboard.writeText(account.walletAddress);
     const action = setMessage({
-      type: "info",
-      message: "Sao chép thành công !",
+      type: "confirm",
+      message: "Sao chép thành công!",
     });
     dispatch(action);
   };
@@ -65,7 +66,6 @@ const WalletInforCard = () => {
       {accountCard && (
         <div
           className="rounded-md absolute top-20 right-12  text-white walletCard"
-          
           ref={dropdownRef}
         >
           <div className="border-b-2 border-gray-300 p-4">
@@ -91,13 +91,20 @@ const WalletInforCard = () => {
           <div className="border-b-2 border-gray-300 px-4 py-2">
             <p>Mạng</p>
             <h2 className="font-bold text-xl flex flex-row gap-2 justify-start items-center">
-              <GoPrimitiveDot className="text-xl" />{" "}
-              {account.network}
+              <GoPrimitiveDot className="text-xl" /> {account.network}
             </h2>
             <p>Tiền trong ví</p>
             <h2 className="font-poppins text-md flex flex-row gap-2 justify-start items-center">
-              <MdAccountBalanceWallet className="text-xl" />
+              <MdAccountBalanceWallet className="text-2xl" />
               {account.balance} {checkNetworkToken(account.network)}
+            </h2>
+            <h2 className="font-poppins text-md flex flex-row gap-2 justify-start items-center">
+              <img
+                className="w-6 h-6 rounded-full"
+                src={logoCoinLP}
+                alt="TVN-LP"
+              />
+              {account.balanceOfStakeToken} TVN-LP
             </h2>
           </div>
           <div>
@@ -109,7 +116,7 @@ const WalletInforCard = () => {
               <span>Sao chép địa chỉ ví</span>
             </p>
             <a
-              href={`https://etherscan.io/address/${account.walletAddress}`}
+              href={`https://sepolia.etherscan.io/address/${account.walletAddress}`}
               target="_blank"
               rel="noreferrer"
             >
