@@ -2,15 +2,15 @@ import WalletInforCard from "../../Components/Card/WalletInforCard";
 import { useDispatch, useSelector } from "react-redux";
 import { setMessage } from "../../Redux/Reducers/MessageReducer";
 import AdminFarmingCard from "../../Components/Card/AdminFarmingCard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import logo from "../../assets/logo.png";
-import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { createStakingToken, getAllPools } from "../../Services/StakingServices/FarmingServices";
 
 export const AdminBody = () => {
   const { account } = useSelector((state) => state.farmingReducer);
   const dispatch = useDispatch();
+  const [allPool, setAllPool] = useState([]);
 
   const connectWalletHandler = async () => {
     if (window.ethereum && window.ethereum.isMetaMask) {
@@ -31,6 +31,13 @@ export const AdminBody = () => {
     }
   };
 
+  useEffect(() => {
+    (async () => {
+      const allPools = await getAllPools();
+      setAllPool(allPools);
+    })();
+  }, [])
+
   const farmingCard = [
     { id: 1, isHome: true, duration: 30 },
     { id: 2, isHome: true, duration: 60 },
@@ -40,8 +47,6 @@ export const AdminBody = () => {
   const [depositDuration, setDepositDuration] = useState(0);
   const [farmMultiplier, setFarmMultiplier] = useState(0);
   const [showForm, setShowForm] = useState(false);
-
-  const history = useHistory();
 
   const submit = async () => {
     console.log("depositDuration: " + depositDuration);
