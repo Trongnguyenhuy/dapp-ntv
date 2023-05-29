@@ -60,41 +60,31 @@ const ModalWarming = () => {
   return (
     <>
       {Object.keys(warming).length !== 0 && (
-        <div
-          className="
-            fixed z-50
-            w-[100%] h-[100%]
-            flex flex-row justify-center items-center
-            bg-[rgba(0,0,0,0.3)]
-        "
-        >
-          <div
-            className="
-                bg-white 
-                h-[45%] w-[35%] 
-                rounded-xl shadow-xl 
-                grid grid-rows-2 justify-items-center gap-2
-            "
-          >
-            {warming.type == "instruct" ? (
-              <div className="w-full bg-blue-600 rounded-t-xl">
-                <MdOutlineInsertComment className="text-8xl text-white font-bold mx-auto mt-10" />
-              </div>
-            ) : (
-              <div className="w-full bg-red-600 rounded-t-xl">
-                <GoAlert className="text-8xl text-white font-bold mx-auto mt-10" />
-              </div>
-            )}
-            <div className="w-full rounded-b-xl text-black text-center p-4 leading-relaxed">
-              <h2 className="text-xl font-bold mb-2">{warming.header}</h2>
-              <p>{warming.message}</p>
+        <div className="h-screen flex flex-row justify-center items-center">
+          <div className="walletCard w-1/4 rounded-xl shadow-xl">
+            <div className="rounded-t-xl walletCard py-4 text-center">
+              {warming.type == "instruct" ? (
+                <div className="w-full rounded-t-xl">
+                  <MdOutlineInsertComment className="text-6xl text-white font-bold mx-auto" />
+                </div>
+              ) : (
+                <div className="w-full rounded-t-xl">
+                  <GoAlert className="text-6xl text-whit font-bold mx-auto" />
+                </div>
+              )}
+              <h2 className="text-xl font-bold py-2">{warming.header}</h2>
+            </div>
+
+            <div className="w-full rounded-b-xl bg-white p-4 text-black text-center leading-relaxed">
+              
+              <p className="text-sm font-poppins p-4 px-6">{warming.message}</p>
               <div className="px-4 py-2">
                 {warming.code == "wm03" && (
                   <button
                     onClick={changeNetwork}
-                    className="w-full py-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg font-sans font-medium cursor-pointer text-white"
+                    className="w-full py-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] text-white rounded-lg font-sans font-medium cursor-pointer"
                   >
-                    Chuyển Mạng
+                    Chuyển mạng
                   </button>
                 )}
                 {warming.code == "wm02" && (

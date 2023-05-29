@@ -113,7 +113,6 @@ export const depositTokenToPool = async (poolId, numberOfToken) => {
     if (allowance == false) {
       await approveStakingPool(numberOfToken);
     }
-
     await StakingServices.methods.deposit(poolId, wei).send({
       from: address,
     });

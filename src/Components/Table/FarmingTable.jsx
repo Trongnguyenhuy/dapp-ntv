@@ -10,7 +10,7 @@ import {
 } from "../../Services/StakingServices/FarmingServices";
 import Loading from "../Button/loadingButton";
 import { useDispatch, useSelector } from "react-redux";
-import { getStakingTimeInfoApi } from "../../Redux/Reducers/FarmingReducer";
+import { getStakingTimeInfoApi, updateBalanceOfTokenApi } from "../../Redux/Reducers/FarmingReducer";
 import { setMessage } from "../../Redux/Reducers/MessageReducer";
 import RewardLiveUpdate from "../LiveUpdate/RewardLiveUpdate";
 
@@ -44,27 +44,52 @@ const FarmingTable = () => {
 
   const handleHarvest = async (time, index) => {
     setLoading("harvest" + index);
-    await harvestReward(poolId, time);
+    const success = await harvestReward(poolId, time);
     const allStakingTime = getStakingTimeInfoApi();
     dispatch(allStakingTime);
-    const setMessageAction = setMessage({
-      type: "confirm",
-      message: `Thu hoạch Token hoàn tất!`,
-    });
-    dispatch(setMessageAction);
+    if (success) {
+
+
+      const setMessageAction = setMessage({
+        type: "confirm",
+        message: `Thu hoạch Token hoàn tất!`,
+      });
+      dispatch(setMessageAction);
+    }
+    else {
+      const setMessageAction = setMessage({
+        type: "confirm",
+        message: `Đã hủy thu hoạch!`,
+      });
+      dispatch(setMessageAction);
+    }
+
     setLoading("");
   };
 
   const handleUnstaking = async (time, amount, index) => {
     setLoading("unstaking" + index);
-    await unStakingToken(poolId, amount, time);
+    const success = await unStakingToken(poolId, amount, time);
     const allStakingTime = getStakingTimeInfoApi();
     dispatch(allStakingTime);
-    const setMessageAction = setMessage({
-      type: "confirm",
-      message: `Thu hồi vốn hoàn tất!`,
-    });
-    dispatch(setMessageAction);
+    if (success) {
+      const setMessageAction = setMessage({
+        type: "confirm",
+        message: `Thu hồi vốn hoàn tất!`,
+      });
+      dispatch(setMessageAction);
+      
+      const balanceOfToken = updateBalanceOfTokenApi();
+      dispatch(balanceOfToken);
+    }
+    else {
+      const setMessageAction = setMessage({
+        type: "confirm",
+        message: `Đã hủy thu hồi vốn!`,
+      });
+      dispatch(setMessageAction);
+    }
+
     setLoading("");
   };
 
@@ -81,7 +106,13 @@ const FarmingTable = () => {
           item.depositStartTime.toLowerCase().includes(searchText.toLowerCase())
         );
       });
-      setFilteredData(filtered);
+      console.log(filtered);
+      // console.log(allStakingTime[poolId].stakingTime);
+      // const allStaking = allStakingTime
+      // console.log(allStaking);
+      // console.log(allStakingTime[poolId].stakingTime);
+      // console.log(filtered);
+      // setFilteredData(filtered);
     } else setFilteredData(data);
   };
 

@@ -48,7 +48,7 @@ export const Header = () => {
     } else {
       const setMessageAction = setMessage({
         type: "warming",
-        message: "Làm ơn cài đặt ví Metamask trước khi sử dụng dịch vụ",
+        message: "Hãy cài đặt ví Metamask trước khi sử dụng dịch vụ",
       });
       dispatch(setMessageAction);
     }
