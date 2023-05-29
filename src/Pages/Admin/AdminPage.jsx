@@ -11,11 +11,12 @@ export default function AdminPage() {
   useEffect(() => {
     if (account.walletAddress != owner) {
       alert(
-        "Bạn Không Có Quyền Tiếp Cận Trang Này!"
+        "Bạn không có quyền truy cập trang này!"
       );
       return history.push("/");
     }
   }, [account, owner]);
 
   return <>{account.walletAddress == owner && owner != "" && <AdminBody />}</>;
+  // return (<AdminBody />);
 }
