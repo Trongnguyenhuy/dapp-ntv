@@ -4,9 +4,14 @@ import logo from "../../assets/logo.png";
 import WalletInforCard from "../../Components/Card/WalletInforCard";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  getAllProductApi,
+  getPoolAPRAPI,
+  getStakerInfoApi,
+  getStakingTimeInfoApi,
   setMessage,
 } from "../../Redux/Reducers/FarmingReducer";
 import ModalInfo from "../../Components/Modals/ModalInfo";
+import { useEffect } from "react";
 
 export const Header = () => {
   const { account, message } = useSelector((state) => state.farmingReducer);
