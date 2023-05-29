@@ -2,7 +2,7 @@
 import { AiFillCloseCircle, AiOutlineCheck } from "react-icons/ai";
 import { GiConfirmed } from "react-icons/gi";
 import { useDispatch } from "react-redux";
-import { deleteMessage } from "../../Redux/Reducers/FarmingReducer";
+import { deleteMessage } from "../../Redux/Reducers/MessageReducer";
 
 const ModalInfo = (props) => {
   const { message } = props;

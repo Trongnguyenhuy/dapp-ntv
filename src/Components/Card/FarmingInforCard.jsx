@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import ModalContract from "../Modals/ModalContract";
 import { useParams } from "react-router-dom";
@@ -9,13 +9,20 @@ import logoCoinTVN from "../../assets/logo-coin-tvn.png";
 
 const FarmingInforCard = () => {
   const [modalOpen, setModalOpen] = useState(false);
-  const { account, stakerInfo, poolAPR, pools } = useSelector(
+  const { account, poolAPR, allStakingTime } = useSelector(
     (state) => state.farmingReducer
   );
   const { id } = useParams();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const poolId = id - 1;
   const amountOfStake =
-    stakerInfo.length > 0 ? stakerInfo[poolId].totalTokenStake / 1e18 : 0;
+    allStakingTime.length > 0
+      ? allStakingTime[poolId].staker.totalTokenStake / 1e18
+      : 0;
 
   const handleModal = () => {
     setModalOpen(true);
@@ -60,7 +67,7 @@ const FarmingInforCard = () => {
               </div>
               <div className="w-full flex flex-col items-center p-4 py-12 text-1xl">
                 <p className="flex flex-col items-center gap-2 font-bold">
-                  <RewardLiveUpdate poolId={poolId} />
+                  <RewardLiveUpdate poolId={poolId} isTotal={true}/>
                   <span className="text-xl">TVN</span>
                 </p>
               </div>
@@ -78,8 +85,8 @@ const FarmingInforCard = () => {
             <p className="flex flex-row justify-between py-6">
               <span>Tổng số thanh khoản đã được đặt cọc</span>
               <span>
-                {pools.length > 0
-                  ? (pools[id - 1].tokensStaked / 1e18).toFixed(5)
+                {allStakingTime.length > 0
+                  ? (allStakingTime[poolId].pool.tokensStaked / 1e18).toFixed(5)
                   : 0}
               </span>
             </p>
@@ -104,6 +111,7 @@ const FarmingInforCard = () => {
         setModalOpen={setModalOpen}
         account={account}
         poolId={poolId}
+        isInfoCard={true}
       />
     </div>
   );

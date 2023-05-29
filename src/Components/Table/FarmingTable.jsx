@@ -11,11 +11,11 @@ import {
 import Loading from "../Button/loadingButton";
 import { useDispatch, useSelector } from "react-redux";
 import { getStakingTimeInfoApi } from "../../Redux/Reducers/FarmingReducer";
+import { setMessage } from "../../Redux/Reducers/MessageReducer";
+import RewardLiveUpdate from "../LiveUpdate/RewardLiveUpdate";
 
 const FarmingTable = () => {
-  const { stakerInfo, allStakingTime } = useSelector(
-    (state) => state.farmingReducer
-  );
+  const { allStakingTime } = useSelector((state) => state.farmingReducer);
   const dispatch = useDispatch();
   const [searchText, setSearchText] = useState("");
   const [data, setData] = useState([]);
@@ -45,18 +45,26 @@ const FarmingTable = () => {
   const handleHarvest = async (time, index) => {
     setLoading("harvest" + index);
     await harvestReward(poolId, time);
-    const allStakingtimeInfo = getStakingTimeInfoApi(
-      poolId,
-      stakerInfo.firstStakeTime,
-      stakerInfo.finalStakeTime
-    );
-    dispatch(allStakingtimeInfo);
+    const allStakingTime = getStakingTimeInfoApi();
+    dispatch(allStakingTime);
+    const setMessageAction = setMessage({
+      type: "confirm",
+      message: `Thu hoạch Token hoàn tất!`,
+    });
+    dispatch(setMessageAction);
     setLoading("");
   };
 
   const handleUnstaking = async (time, amount, index) => {
     setLoading("unstaking" + index);
     await unStakingToken(poolId, amount, time);
+    const allStakingTime = getStakingTimeInfoApi();
+    dispatch(allStakingTime);
+    const setMessageAction = setMessage({
+      type: "confirm",
+      message: `Thu hồi vốn hoàn tất!`,
+    });
+    dispatch(setMessageAction);
     setLoading("");
   };
 
@@ -68,12 +76,11 @@ const FarmingTable = () => {
     if (searchText) {
       const filtered = filteredData.filter((item) => {
         return (
-          item.amount.toLowerCase().includes(searchText.toLowerCase())
-          || item.reward.toLowerCase().includes(searchText.toLowerCase())
-          || item.depositStartTime.toLowerCase().includes(searchText.toLowerCase())
-        )
-      }
-      );
+          item.amount.toLowerCase().includes(searchText.toLowerCase()) ||
+          item.reward.toLowerCase().includes(searchText.toLowerCase()) ||
+          item.depositStartTime.toLowerCase().includes(searchText.toLowerCase())
+        );
+      });
       setFilteredData(filtered);
     } else setFilteredData(data);
   };
@@ -109,7 +116,14 @@ const FarmingTable = () => {
             <td className="py-4 px-4">{index + 1}</td>
             <td className="py-4">{(key.amount / 1e18).toFixed(8)} TVN-LP</td>
             <td className="py-4">{key.depositStartTime}</td>
-            <td className="py-4">{(key.reward / 1e18).toFixed(8)} TVN</td>
+            <td className="py-4">
+              <RewardLiveUpdate
+                poolId={poolId}
+                isTotal={false}
+                time={key.unStakingTime}
+              />{" "}
+              TVN
+            </td>
             <td className="py-4 operation">
               <div className="flex flex-row justify-between gap-4 text-white">
                 <button

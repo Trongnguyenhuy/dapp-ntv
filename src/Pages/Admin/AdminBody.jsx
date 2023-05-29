@@ -1,6 +1,6 @@
 import WalletInforCard from "../../Components/Card/WalletInforCard";
 import { useDispatch, useSelector } from "react-redux";
-import { setMessage } from "../../Redux/Reducers/FarmingReducer";
+import { setMessage } from "../../Redux/Reducers/MessageReducer";
 import AdminFarmingCard from "../../Components/Card/AdminFarmingCard";
 import { useState } from "react";
 import logo from "../../assets/logo.png";
