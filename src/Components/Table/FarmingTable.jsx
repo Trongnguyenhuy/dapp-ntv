@@ -44,14 +44,25 @@ const FarmingTable = () => {
 
   const handleHarvest = async (time, index) => {
     setLoading("harvest" + index);
-    await harvestReward(poolId, time);
+    const success = await harvestReward(poolId, time);
     const allStakingTime = getStakingTimeInfoApi();
     dispatch(allStakingTime);
-    const setMessageAction = setMessage({
-      type: "confirm",
-      message: `Thu hoạch Token hoàn tất!`,
-    });
-    dispatch(setMessageAction);
+    if (success) {
+      const setMessageAction = setMessage({
+        type: "confirm",
+        message: `Thu hoạch Token hoàn tất!`,
+      });
+      dispatch(setMessageAction);
+    }
+    else {
+      const setMessageAction = setMessage({
+        type: "confirm",
+        message: `Đã hủy thu hoạch!`,
+      });
+      dispatch(setMessageAction);
+    }
+
+
     setLoading("");
   };
 

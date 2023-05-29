@@ -63,8 +63,8 @@ export const checkChainId = async (dispatch) => {
     } else {
       const warmingAction = setWarming({
         type: "warming",
-        header: "Sai Network!",
-        message: "Làm ơn sử dụng mạng Sepolia Ethereum để kết nối!",
+        header: "Sai mạng!",
+        message: "Hiện tại chỉ hỗ trợ mạng Sepolia Etherium. Vui lòng dùng mạng Sepolia Ethereum để kết nối!",
         code: "wm03",
       });
       dispatch(warmingAction);
@@ -74,7 +74,7 @@ export const checkChainId = async (dispatch) => {
     const warmingAction = setWarming({
       type: "warming",
       header: "Xuất hiện lỗi!",
-      message: "Có lỗi phát sinh trong lúc kiểm tra network!",
+      message: "Có lỗi phát sinh trong lúc kiểm tra mạng!",
       code: "wm04",
     });
     dispatch(warmingAction);
@@ -100,7 +100,7 @@ export const checkConnectAccount = async (dispatch) => {
     const warmingAction = setWarming({
       type: "warming",
       header: "Xuất hiện lỗi!",
-      message: "Có lỗi phát sinh trong lúc kiểm tra network!",
+      message: "Có lỗi phát sinh trong lúc kiểm tra mạng!",
       code: "wm04",
     });
     dispatch(warmingAction);

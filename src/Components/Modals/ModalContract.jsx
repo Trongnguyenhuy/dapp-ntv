@@ -52,15 +52,23 @@ const ModalContract = (props) => {
 
   const handleConfirm = async () => {
     setLoading(1);
-    await depositTokenToPool(poolId, amountOfToken.current);
+    const success= await depositTokenToPool(poolId, amountOfToken.current);
     setLoading(0);
-    setModalOpen(false);
-    const setMessageAction = setMessage({
-      type: "confirm",
-      message: `${amountOfToken.current} tokens đã được ký gửi!`,
-    });
-    dispatch(setMessageAction);
-
+    setModalOpen(false); 
+    if(success) {
+      const setMessageAction = setMessage({
+        type: "confirm",
+        message: `${amountOfToken.current} tokens đã được ký gửi!`,
+      });
+      dispatch(setMessageAction);
+    }
+    else {
+      const setMessageAction = setMessage({
+        type: "confirm",
+        message: `Đã hủy ký gửi`,
+      });
+      dispatch(setMessageAction);
+    }
     if (!isInfoCard) {
       history.push(`/farm-detail/${poolId + 1}`);
     } else {

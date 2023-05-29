@@ -32,7 +32,7 @@ function App() {
         const warmingAction = setWarming({
           type: "instruct",
           header: "Chưa Cài Đặt!",
-          message: "Làm ơn cài đặt ví MetaMask!",
+          message: "Hãy cài đặt ví MetaMask!",
           code: "wm01",
         });
         dispatch(warmingAction);
