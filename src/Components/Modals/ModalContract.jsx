@@ -151,7 +151,7 @@ const ModalContract = (props) => {
           />
         </div>
 
-        <div>
+        {/* <div>
           <Slider
             min={0}
             max={account.balanceOfStakeToken}
@@ -164,6 +164,11 @@ const ModalContract = (props) => {
               backgroundColor: "#A7AABA",
             }}
           />
+        </div> */}
+        <div>
+          <h2 className="py-4 text-base font-poppins font-semibold">
+              Số tiền hiện có trong ví: {account.balanceOfStakeToken}
+          </h2>
         </div>
 
         <div className="flex flex-row justify-between py-2">
