@@ -165,12 +165,12 @@ const ModalContract = (props) => {
             }}
           />
         </div> */}
-        <div>
-          <h2 className="py-4 text-base font-poppins font-semibold">
-              Số tiền hiện có trong ví: {account.balanceOfStakeToken}
-          </h2>
+        <div className="flex flex-row justify-between py-2">
+          <p className="py-2 text-base font-poppins font-semibold">Số tiền hiện có</p>
+            <h2 className="py-2 text-base font-poppins font-medium">
+            {account.balanceOfStakeToken}
+            </h2>
         </div>
-
         <div className="flex flex-row justify-between py-2">
           <p className="py-2 text-base font-poppins font-semibold">
             Tổng phần thưởng dự kiến
