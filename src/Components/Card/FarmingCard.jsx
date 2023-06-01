@@ -6,19 +6,26 @@ import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import logoCoinLP from "../../assets/logo-coin-lp.png";
 import logoCoinTVN from "../../assets/logo-coin-tvn.png";
+import ModalWarming from "../Modals/ModalWarming";
 
 const FarmingCard = (props) => {
   const { poolAPR, account } = useSelector((state) => state.farmingReducer);
   const { id, isHome, duration } = props;
   const history = useHistory();
   const [modalOpen, setModalOpen] = useState(false);
-
+  const [openModalWarming, setOpenModalWarming] = useState(false);
   const handleClick = () => {
     history.push(`/farm-detail/${id}`); // Chuyển đến đường dẫn với param
   };
 
   const handleModal = () => {
-    setModalOpen(true);
+    if (account.walletAddress) {
+      setOpenModalWarming(false);
+      setModalOpen(true);
+    } else {
+      setOpenModalWarming(true);
+      setModalOpen(false);
+    }
   };
 
   return (
@@ -48,7 +55,7 @@ const FarmingCard = (props) => {
 
           <p className="flex flex-row justify-between py-4">
             <span>Chu Kỳ</span>
-            <span className="font-bold">30 ngày</span>
+            <span className="font-bold">{duration} s</span>
           </p>
           <div className="flex flex-col items-center pt-8">
             <button
@@ -89,6 +96,10 @@ const FarmingCard = (props) => {
         poolId={id - 1}
         duration={duration}
         isInfoCard={false}
+      />
+      <ModalWarming
+        modalOpen={openModalWarming}
+        setModalOpen={setOpenModalWarming}
       />
     </div>
   );

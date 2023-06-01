@@ -55,25 +55,25 @@ export const Header = () => {
   };
 
   return (
-    <div className="border-b-2 border-gray-600 py-4 fixed w-full bg-[#091227] z-20">
+    <div className="border-b-2 border-gray-600 py-2 fixed w-full bg-[#091227] z-20">
       <div className="flex flex-row justify-between font-sans">
         <ul className="flex flex-row justify-between ml-8 gap-8 font-medium text-lg">
           <li>
             <img src={logo} alt="logo" width={65} height={65} />
           </li>
           {/* <div className="grid grid-cols-3 justify-items-start content-center gap-6 ps-8"> */}
-          <li className="my-auto cursor-pointer hover:text-[#1CE6EC]">
+          <li className="my-auto cursor-pointer hover:text-[#1CE6EC] uppercase">
             <Link to="/">Trang chủ</Link>
           </li>
-          <li className="my-auto cursor-pointer hover:text-[#1CE6EC]">
+          <li className="my-auto cursor-pointer hover:text-[#1CE6EC] uppercase">
             <Link to="/farm">Farms</Link>
           </li>
-          <li className="my-auto cursor-pointer hover:text-[#1CE6EC]">
+          <li className="my-auto cursor-pointer hover:text-[#1CE6EC] uppercase">
             <Link to="/pool">Pools</Link>
           </li>
 
           {account.walletAddress == owner && owner != "" && (
-            <li className="my-auto cursor-pointer hover:text-[#1CE6EC]">
+            <li className="my-auto cursor-pointer hover:text-[#1CE6EC] uppercase">
               <Link to="/admin">Admin</Link>
             </li>
           )}
@@ -89,7 +89,7 @@ export const Header = () => {
             <li>
               <button
                 onClick={connectWalletHandler}
-                className="p-2 px-6 text-[#091227] bg-[#1CE6EC] hover:bg-[#fff] rounded-lg font-sans font-medium cursor-pointer "
+                className="px-9 text-center w-full flex flex-row justify-between gap-4 items-center p-2 text-white walletCard rounded-full font-sans font-medium cursor-pointer"
               >
                 Kết nối ví
               </button>

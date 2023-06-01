@@ -49,7 +49,7 @@ const WalletInforCard = () => {
     <div className="pe-4 w-full">
       <div
         onClick={handleAccountCard}
-        className="flex flex-row justify-between gap-4 items-center p-2 text-white walletCard rounded-md"
+        className="flex flex-row justify-between gap-4 items-center p-2 text-white walletCard rounded-lg"
       >
         <img
           src="https://picsum.photos/id/134/200"

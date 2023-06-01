@@ -10,7 +10,7 @@ const PoolCard = (props) => {
 
   return (
     <div
-      className="w-full bg-[#091227] border-2 border-gray-600 rounded-lg font-sans cursor-pointer"
+      className="w-full bg-[#111c35] rounded-lg font-sans cursor-pointer"
       onClick={handleClick}
     >
       <div className="flex flex-col justify-between items-center">

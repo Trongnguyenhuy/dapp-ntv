@@ -72,8 +72,9 @@ function App() {
       style={{ color: "white" }}
       className="h-max font-poppins leading-loose relative bg-[#091227]"
     >
-      <ModalWarming />
-      {Object.keys(warming).length === 0 && <Router />}
+      <Router/>
+      {/* <ModalWarming />
+      {Object.keys(warming).length === 0 && <Router />} */}
     </div>
   );
 }
