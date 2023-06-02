@@ -168,7 +168,7 @@ const ModalContract = (props) => {
         <div className="flex flex-row justify-between py-2">
           <p className="py-2 text-base font-poppins font-semibold">Số tiền hiện có</p>
             <h2 className="py-2 text-base font-poppins font-medium">
-            {account.balanceOfStakeToken}
+            {`${account.balanceOfStakeToken} TVN`}
             </h2>
         </div>
         <div className="flex flex-row justify-between py-2">
