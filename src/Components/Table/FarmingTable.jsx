@@ -161,7 +161,7 @@ const FarmingTable = () => {
                   onClick={() =>
                     handleUnstaking(key.unStakingTime, key.amount, index)
                   }
-                  className="w-1/2 py-4 bg-white text-[#091227] hover:text-white hover:bg-[rgb(81,59,143)] rounded-lg"
+                  className="w-full py-4 bg-white text-[#091227] hover:text-white hover:bg-[rgb(81,59,143)] rounded-lg"
                 >
                   <Loading
                     index={"unstaking" + index}

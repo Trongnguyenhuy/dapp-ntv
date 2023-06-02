@@ -37,7 +37,7 @@ export const FarmingBody = () => {
         </h2>
       </div>
 
-      <div className={`flex flex-row justify-between h-sceen px-16 gap-8`}>
+      <div className={`flex flex-row justify-between h-sceen px-16 gap-9`}>
         {allPool.map((item, id) => (
           <FarmingCard
             key={id}

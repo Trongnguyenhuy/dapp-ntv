@@ -107,8 +107,20 @@
 .custom-modal .ant-modal-mask {
   background-color: rgba(0, 0, 0, 0.8);
 }
-
+:where(.css-dev-only-do-not-override-yp8pcc).ant-modal{
+    
+  margin: 0;
+  top: 20%;
+  left: 30%;
+    
+}
+.custom-modal .anticon {
+    color: white;
+}
 .custom-modal .ant-modal-content {
+    width: 40vw;
+    /* height: 50vh; */
+    
   /* ff 3.6+ */
   background: -moz-radial-gradient(circle at 0% 97%,
       rgba(222, 2, 254, 1) 10%,
