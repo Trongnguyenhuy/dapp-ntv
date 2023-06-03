@@ -80,7 +80,7 @@ const FarmingInforCard = () => {
           <div className="flex flex-col">
             <p className="flex flex-row justify-between py-6">
               <span>APR</span>
-              <span>{`${poolAPR.length > 0 ? poolAPR[id - 1] : 0} %`}</span>
+              <span>{poolAPR.length > 0 ? poolAPR[poolId] : 0} %</span>
             </p>
             <p className="flex flex-row justify-between py-6">
               <span>Tổng số thanh khoản đã được đặt cọc</span>

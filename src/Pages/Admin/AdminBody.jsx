@@ -2,15 +2,18 @@ import WalletInforCard from "../../Components/Card/WalletInforCard";
 import { useDispatch, useSelector } from "react-redux";
 import { setMessage } from "../../Redux/Reducers/MessageReducer";
 import AdminFarmingCard from "../../Components/Card/AdminFarmingCard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import logo from "../../assets/logo.png";
-import { useHistory } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { createStakingToken, getAllPools } from "../../Services/StakingServices/FarmingServices";
 
 export const AdminBody = () => {
   const { account } = useSelector((state) => state.farmingReducer);
   const dispatch = useDispatch();
+  const [depositDuration, setDepositDuration] = useState(0);
+  const [farmMultiplier, setFarmMultiplier] = useState(0);
+  const [showForm, setShowForm] = useState(false);
+  const [pools, setPools] = useState([]);
 
   const connectWalletHandler = async () => {
     if (window.ethereum && window.ethereum.isMetaMask) {
@@ -25,30 +28,25 @@ export const AdminBody = () => {
     } else {
       const setMessageAction = setMessage({
         type: "warming",
-        message: "Need to install MetaMask",
+        message: "Cần cài đặt MetaMask",
       });
       dispatch(setMessageAction);
     }
   };
 
-  const farmingCard = [
-    { id: 1, isHome: true, duration: 30 },
-    { id: 2, isHome: true, duration: 60 },
-    { id: 3, isHome: true, duration: 90 },
-  ];
-
-  const [depositDuration, setDepositDuration] = useState(0);
-  const [farmMultiplier, setFarmMultiplier] = useState(0);
-  const [showForm, setShowForm] = useState(false);
-
-  const history = useHistory();
+  useEffect(() => {
+    (async () => {
+      const allpool = await getAllPools();
+      setPools(allpool);
+    })();
+  }, []);
 
   const submit = async () => {
     console.log("depositDuration: " + depositDuration);
     console.log("farmMultiplier: " + farmMultiplier);
     await createStakingToken(depositDuration, farmMultiplier);
     const pools = await getAllPools();
-    console.log("pools",pools);
+    console.log("pools", pools);
   };
 
   return (
@@ -56,17 +54,14 @@ export const AdminBody = () => {
       <aside className="sidebar w-64 md:shadow transform -translate-x-full md:translate-x-0 transition-transform duration-150 ease-in bg-gray-800">
         <div className="sidebar-header flex items-center justify-center py-4">
           <div className="inline-flex">
-            <a href="/" className="inline-flex flex-row items-center">
+            <a className="inline-flex flex-row items-center">
               <img src={logo} alt="logo" width={65} height={65} />
             </a>
           </div>
         </div>
         <div className="sidebar-content px-4 py-6">
           <li className="my-px">
-            <a
-              href="#"
-              className="flex flex-row items-center h-10 px-3 rounded-lg text-gray-700 bg-gray-100"
-            >
+            <a className="flex flex-row items-center h-10 px-3 rounded-lg text-gray-700 bg-gray-100">
               <span className="ml-3">Dashboard</span>
             </a>
           </li>
@@ -102,7 +97,7 @@ export const AdminBody = () => {
               </div>
             </form>
             <div className="flex ml-auto">
-              <a href className="flex flex-row items-center">
+              <a className="flex flex-row items-center">
                 <ul className="flex flex-row justify-start items-center gap-8 mr-8">
                   {account.walletAddress.length > 0 ? (
                     <li>
@@ -232,12 +227,10 @@ export const AdminBody = () => {
             <div
               className={`flex flex-row justify-between h-sceen px-16 gap-12`}
             >
-              {farmingCard.map((item) => (
+              {pools.map((item,index) => (
                 <AdminFarmingCard
-                  key={item.id}
-                  id={item.id}
-                  isHome={item.isHome}
-                  duration={item.duration}
+                  key={index}
+                  id={index}
                 />
               ))}
             </div>

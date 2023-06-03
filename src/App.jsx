@@ -32,7 +32,7 @@ function App() {
         const warmingAction = setWarming({
           type: "instruct",
           header: "Chưa Cài Đặt!",
-          message: "Làm ơn cài đặt ví MetaMask!",
+          message: "Hãy cài đặt ví MetaMask!",
           code: "wm01",
         });
         dispatch(warmingAction);
@@ -72,8 +72,9 @@ function App() {
       style={{ color: "white" }}
       className="h-max font-poppins leading-loose relative bg-[#091227]"
     >
-      <ModalWarming />
-      {Object.keys(warming).length === 0 && <Router />}
+      <Router/>
+      {/* <ModalWarming />
+      {Object.keys(warming).length === 0 && <Router />} */}
     </div>
   );
 }

@@ -9,11 +9,9 @@
 }
 
 .backgroundLinear {
-  background: linear-gradient(
-    69deg,
-    rgba(222, 2, 254, 1) 10%,
-    rgba(61, 18, 186, 1) 70%
-  );
+  background: linear-gradient(69deg,
+      rgba(222, 2, 254, 1) 10%,
+      rgba(61, 18, 186, 1) 70%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -21,116 +19,131 @@
 
 .backgroundRadius {
   /* ff 3.6+ */
-  background: -moz-radial-gradient(
-    circle at 8% 57%,
-    rgba(77, 58, 117, 1) 0%,
-    rgba(9, 18, 39, 1) 46%
-  );
+  background: -moz-radial-gradient(circle at 8% 57%,
+      rgba(77, 58, 117, 1) 0%,
+      rgba(9, 18, 39, 1) 46%);
 
   /* safari 5.1+,chrome 10+ */
-  background: -webkit-radial-gradient(
-    circle at 8% 57%,
-    rgba(77, 58, 117, 1) 0%,
-    rgba(9, 18, 39, 1) 46%
-  );
+  background: -webkit-radial-gradient(circle at 8% 57%,
+      rgba(77, 58, 117, 1) 0%,
+      rgba(9, 18, 39, 1) 46%);
 
   /* opera 11.10+ */
-  background: -o-radial-gradient(
-    circle at 8% 57%,
-    rgba(77, 58, 117, 1) 0%,
-    rgba(9, 18, 39, 1) 46%
-  );
+  background: -o-radial-gradient(circle at 8% 57%,
+      rgba(77, 58, 117, 1) 0%,
+      rgba(9, 18, 39, 1) 46%);
 
   /* ie 10+ */
-  background: -ms-radial-gradient(
-    circle at 8% 57%,
-    rgba(77, 58, 117, 1) 0%,
-    rgba(9, 18, 39, 1) 46%
-  );
+  background: -ms-radial-gradient(circle at 8% 57%,
+      rgba(77, 58, 117, 1) 0%,
+      rgba(9, 18, 39, 1) 46%);
 
   /* global 92%+ browsers support */
-  background: radial-gradient(
-    circle at 8% 57%,
-    rgba(77, 58, 117, 1) 0%,
-    rgba(9, 18, 39, 1) 46%
-  );
+  background: radial-gradient(circle at 8% 57%,
+      rgba(77, 58, 117, 1) 0%,
+      rgba(9, 18, 39, 1) 46%);
 }
 
 .walletCard {
   /* ff 3.6+ */
-  background: -moz-radial-gradient(
-    circle at 0% 97%,
-    rgba(222, 2, 254, 1) 10%,
-    rgba(61, 18, 186, 1) 70%
-  );
+  background: -moz-radial-gradient(circle at 0% 97%,
+      rgba(222, 2, 254, 1) 10%,
+      rgba(61, 18, 186, 1) 70%);
 
   /* safari 5.1+,chrome 10+ */
-  background: -webkit-radial-gradient(
-    circle at 0% 97%,
-    rgba(222, 2, 254, 1) 10%,
-    rgba(61, 18, 186, 1) 70%
-  );
+  background: -webkit-radial-gradient(circle at 0% 97%,
+      rgba(222, 2, 254, 1) 10%,
+      rgba(61, 18, 186, 1) 70%);
 
   /* opera 11.10+ */
-  background: -o-radial-gradient(
-    circle at 0% 97%,
-    rgba(222, 2, 254, 1) 10%,
-    rgba(61, 18, 186, 1) 70%
-  );
+  background: -o-radial-gradient(circle at 0% 97%,
+      rgba(222, 2, 254, 1) 10%,
+      rgba(61, 18, 186, 1) 70%);
 
   /* ie 10+ */
-  background: -ms-radial-gradient(
-    circle at 0% 97%,
-    rgba(222, 2, 254, 1) 10%,
-    rgba(61, 18, 186, 1) 70%
-  );
+  background: -ms-radial-gradient(circle at 0% 97%,
+      rgba(222, 2, 254, 1) 10%,
+      rgba(61, 18, 186, 1) 70%);
 
   /* global 92%+ browsers support */
-  background: radial-gradient(
-    circle at 0% 97%,
-    rgba(222, 2, 254, 1) 10%,
-    rgba(61, 18, 186, 1) 70%
-  );
+  background: radial-gradient(circle at 0% 97%,
+      rgba(222, 2, 254, 1) 10%,
+      rgba(61, 18, 186, 1) 70%);
 }
 
 .farmCard {
   /* ff 3.6+ */
-  background: -moz-radial-gradient(
-    circle at 91% 5%,
-    rgba(222, 2, 253, 1) 0%,
-    rgba(61, 18, 233, 1) 50%,
-    rgba(9, 18, 39, 1) 100%
-  );
+  background: -moz-radial-gradient(circle at 91% 5%,
+      rgba(222, 2, 253, 1) 0%,
+      rgba(61, 18, 233, 1) 50%,
+      rgba(9, 18, 39, 1) 100%);
 
   /* safari 5.1+,chrome 10+ */
-  background: -webkit-radial-gradient(
-    circle at 91% 5%,
-    rgba(222, 2, 253, 1) 0%,
-    rgba(61, 18, 233, 1) 50%,
-    rgba(9, 18, 39, 1) 100%
-  );
+  background: -webkit-radial-gradient(circle at 91% 5%,
+      rgba(222, 2, 253, 1) 0%,
+      rgba(61, 18, 233, 1) 50%,
+      rgba(9, 18, 39, 1) 100%);
 
   /* opera 11.10+ */
-  background: -o-radial-gradient(
-    circle at 91% 5%,
-    rgba(222, 2, 253, 1) 0%,
-    rgba(61, 18, 233, 1) 50%,
-    rgba(9, 18, 39, 1) 100%
-  );
+  background: -o-radial-gradient(circle at 91% 5%,
+      rgba(222, 2, 253, 1) 0%,
+      rgba(61, 18, 233, 1) 50%,
+      rgba(9, 18, 39, 1) 100%);
 
   /* ie 10+ */
-  background: -ms-radial-gradient(
-    circle at 91% 5%,
-    rgba(222, 2, 253, 1) 0%,
-    rgba(61, 18, 233, 1) 50%,
-    rgba(9, 18, 39, 1) 100%
-  );
+  background: -ms-radial-gradient(circle at 91% 5%,
+      rgba(222, 2, 253, 1) 0%,
+      rgba(61, 18, 233, 1) 50%,
+      rgba(9, 18, 39, 1) 100%);
 
   /* global 92%+ browsers support */
-  background: radial-gradient(
-    circle at 91% 5%,
-    rgba(222, 2, 253, 1) 0%,
-    rgba(61, 18, 233, 1) 50%,
-    rgba(9, 18, 39, 1) 100%
-  );
+  background: radial-gradient(circle at 91% 5%,
+      rgba(222, 2, 253, 1) 0%,
+      rgba(61, 18, 233, 1) 50%,
+      rgba(9, 18, 39, 1) 100%);
+}
+
+
+.custom-modal .ant-modal-mask {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.custom-modal .ant-modal-content {
+  /* ff 3.6+ */
+  background: -moz-radial-gradient(circle at 0% 97%,
+      rgba(222, 2, 254, 1) 10%,
+      rgba(61, 18, 186, 1) 70%);
+
+  /* safari 5.1+,chrome 10+ */
+  background: -webkit-radial-gradient(circle at 0% 97%,
+      rgba(222, 2, 254, 1) 10%,
+      rgba(61, 18, 186, 1) 70%);
+
+  /* opera 11.10+ */
+  background: -o-radial-gradient(circle at 0% 97%,
+      rgba(222, 2, 254, 1) 10%,
+      rgba(61, 18, 186, 1) 70%);
+
+  /* ie 10+ */
+  background: -ms-radial-gradient(circle at 0% 97%,
+      rgba(222, 2, 254, 1) 10%,
+      rgba(61, 18, 186, 1) 70%);
+
+  /* global 92%+ browsers support */
+  background: radial-gradient(circle at 0% 97%,
+      rgba(222, 2, 254, 1) 10%,
+      rgba(61, 18, 186, 1) 70%);
+  color: white;
+}
+
+.custom-modal .ant-modal-header {
+  /* background-color: blue;
+color: yellow; */
+  background-color: unset;
+  color: white;
+}
+
+.custom-modal .ant-modal-body {
+  /* background-color: green;
+color: black; */
 }

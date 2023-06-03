@@ -114,7 +114,8 @@ export const updateBalanceOfTokenApi = () => {
   return async (dispatch, getState) => {
     try {
       const balance = await getBalanceOfStakeToken();
-      const action = updateBalanceOfTokenAction(balance);
+      console.log(balance); 
+      const action = updateBalanceOfTokenAction((balance/1e18).toFixed(6));
       dispatch(action);
     } catch (err) {
       console.log(err.message);
