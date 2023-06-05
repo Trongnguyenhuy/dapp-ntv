@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Link } from "react-router-dom";
 import logo from "../../assets/logo.png";
@@ -14,6 +15,22 @@ import {
 import { setMessage } from "../../Redux/Reducers/MessageReducer";
 import ModalInfo from "../../Components/Modals/ModalInfo";
 import { useEffect } from "react";
+import { checkChainId } from "../../Services/WalletServices/WalletServices";
+
+export const reloadData = (dispatch) => {
+  const allPools = getAllProductApi();
+  const globalAPR = getPoolAPRAPI();
+  const stakerInfo = getStakerInfoApi();
+  const stakingTimeInfo = getStakingTimeInfoApi();
+  const rewardTokenPerBlock = getRewardTokenPerBlockApi();
+  const totalMultiflier = getTotalMultiflierApi();
+  dispatch(totalMultiflier);
+  dispatch(stakingTimeInfo);
+  dispatch(rewardTokenPerBlock);
+  dispatch(allPools);
+  dispatch(stakerInfo);
+  dispatch(globalAPR);
+};
 
 export const Header = () => {
   const { account, owner } = useSelector((state) => state.farmingReducer);
@@ -21,18 +38,12 @@ export const Header = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const allPools = getAllProductApi();
-    const globalAPR = getPoolAPRAPI();
-    const stakerInfo = getStakerInfoApi();
-    const stakingTimeInfo = getStakingTimeInfoApi();
-    const rewardTokenPerBlock = getRewardTokenPerBlockApi();
-    const totalMultiflier = getTotalMultiflierApi();
-    dispatch(totalMultiflier);
-    dispatch(stakingTimeInfo);
-    dispatch(rewardTokenPerBlock);
-    dispatch(allPools);
-    dispatch(stakerInfo);
-    dispatch(globalAPR);
+    (async () => {
+      const checkChain = await checkChainId(dispatch);
+      if (checkChain) {
+        reloadData(dispatch);
+      }
+    })();
   }, []);
 
   const connectWalletHandler = async () => {

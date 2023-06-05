@@ -202,7 +202,7 @@ export const getAllStakingTimeInfo = async (poolId, start, end) => {
       const stakingTime = await getStakingTimeInfo(poolId, end);
 
       if (stakingTime.startBlock != 0) {
-        stakingTime.unStakingTime = 1;
+        stakingTime.unStakingTime = end;
         stakingTimeInfo.push(stakingTime);
       }
 
@@ -244,6 +244,7 @@ export const getAllPools = async () => {
     const pools = await StakingServices.methods.getAllPool().call();
     return pools;
   } catch (err) {
+    console.log("error: ", err.message);
     return false;
   }
 };

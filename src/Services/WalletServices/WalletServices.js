@@ -60,14 +60,16 @@ export const checkChainId = async (dispatch) => {
     const network = checkNetwork(chainId);
     if (network == "Ethereum Sepolia") {
       await addWalletInfo(dispatch, true);
+      return true;
     } else {
       const warmingAction = setWarming({
         type: "warming",
         header: "Sai mạng!",
-        message: "Hiện tại chỉ hỗ trợ mạng Sepolia Etherium. Vui lòng dùng mạng Sepolia Ethereum để kết nối!",
+        message: "Vui lòng dùng mạng Sepolia Ethereum để kết nối!",
         code: "wm03",
       });
       dispatch(warmingAction);
+      return false;
     }
   } catch (err) {
     console.log("Connect Error: ", err.message);
@@ -78,6 +80,7 @@ export const checkChainId = async (dispatch) => {
       code: "wm04",
     });
     dispatch(warmingAction);
+    return false;
   }
 };
 

@@ -100,7 +100,6 @@ export const getAllProductApi = () => {
   return async (dispatch, getState) => {
     try {
       const pools = await getAllPools();
-
       const action = getAllPoolsAction(pools);
       dispatch(action);
     } catch (err) {
@@ -114,8 +113,8 @@ export const updateBalanceOfTokenApi = () => {
   return async (dispatch, getState) => {
     try {
       const balance = await getBalanceOfStakeToken();
-      console.log(balance); 
-      const action = updateBalanceOfTokenAction((balance/1e18).toFixed(6));
+      console.log(balance);
+      const action = updateBalanceOfTokenAction((balance / 1e18).toFixed(6));
       dispatch(action);
     } catch (err) {
       console.log(err.message);

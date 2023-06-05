@@ -7,9 +7,11 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   checkConnectAccount,
   addWalletInfo,
+  checkChainId,
 } from "./Services/WalletServices/WalletServices";
 import ModalWarming from "./Components/Modals/ModalWarming";
 import { getOwnerAPI } from "./Redux/Reducers/FarmingReducer";
+import { reloadData } from "./Templates/HomeTepmplate/Header";
 
 function App() {
   const { message, warming } = useSelector((state) => state.messageReducer);
@@ -23,16 +25,19 @@ function App() {
           console.error(error);
         }
         window.ethereum.on("chainChanged", async () => {
-          await checkConnectAccount(dispatch);
+          const checkChain = await checkChainId(dispatch);
+          if (checkChain) {
+            reloadData(dispatch);
+          }
         });
         window.ethereum.on("accountsChanged", async () => {
-          await addWalletInfo(dispatch,true);
+          await addWalletInfo(dispatch, true);
         });
       } else {
         const warmingAction = setWarming({
           type: "instruct",
           header: "Chưa Cài Đặt!",
-          message: "Hãy cài đặt ví MetaMask!",
+          message: "Bạn chưa cài đặt ví MetaMask!",
           code: "wm01",
         });
         dispatch(warmingAction);
@@ -72,7 +77,8 @@ function App() {
       style={{ color: "white" }}
       className="h-max font-poppins leading-loose relative bg-[#091227]"
     >
-      <Router/>
+      {Object.keys(warming).length !== 0 && <ModalWarming />}
+      <Router />
       {/* <ModalWarming />
       {Object.keys(warming).length === 0 && <Router />} */}
     </div>
