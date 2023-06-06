@@ -317,6 +317,32 @@ export const harvestReward = async (poolId, time) => {
   }
 };
 
+// Lấy tất cả thông tin về những lần staking vào pool
+export const harvestAllReward = async (poolId, start, end) => {
+  let startNum = parseInt(start);
+  let endNum = parseInt(end);
+  let arr = [];
+
+  try {
+    if (start === end) {
+      const harvest = await harvestReward(poolId, end);
+      return harvest;
+    }
+
+    for (let i = startNum; i <= endNum; i++) {
+      arr.push(i);
+    }
+
+    for (const item of arr) {
+      await harvestReward(poolId, item);
+    }
+
+    return true;
+  } catch (err) {
+    return false;
+  }
+};
+
 // Cập nhật thông tin phần thưởng trong pool
 export const updatePoolRewards = async (poolId, time) => {
   try {

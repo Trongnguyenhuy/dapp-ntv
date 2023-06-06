@@ -9,7 +9,7 @@ import logoCoinTVN from "../../assets/logo-coin-tvn.png";
 
 const FarmingInforCard = () => {
   const [modalOpen, setModalOpen] = useState(false);
-  const { account, poolAPR, allStakingTime } = useSelector(
+  const { account, poolAPR, allStakingTime, pools } = useSelector(
     (state) => state.farmingReducer
   );
   const { id } = useParams();
@@ -27,6 +27,8 @@ const FarmingInforCard = () => {
   const handleModal = () => {
     setModalOpen(true);
   };
+
+  console.log("Pool:", pools);
 
   return (
     <div className="container px-32 mx-auto flex flex-col gap-4 pt-32 h-full py-12">
@@ -50,14 +52,19 @@ const FarmingInforCard = () => {
               <div className="w-full flex flex-col items-center border-b-2 border-gray-600 uppercase p-4">
                 <span>Đã đặt</span>
               </div>
-              <div className="w-full flex flex-col items-center py-12 text-1xl">
+              <div className="w-full flex flex-col items-center py-12 text-xl">
                 <p className="flex flex-col items-center gap-2 font-bold">
                   <span className="text-4xl text-gray-400">
-                    {amountOfStake.toFixed(5)} 
+                    {amountOfStake.toFixed(5)}
                   </span>
                   <span className="text-xl  py-6">TVN-LP</span>
                 </p>
-                <button className="w-full p-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg">Rút</button>
+                <button
+                  className="w-full p-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg"
+                  style={{ visibility: "hidden" }}
+                >
+                  Rút
+                </button>
               </div>
             </div>
           </div>
@@ -66,12 +73,14 @@ const FarmingInforCard = () => {
               <div className="w-full flex flex-col items-center border-b-2 border-gray-600 uppercase p-4">
                 <span>Kiếm được</span>
               </div>
-              <div className="w-full flex flex-col items-center p-4 py-12 text-1xl">
+              <div className="w-full flex flex-col items-center p-4 py-12 text-xl">
                 <p className="flex flex-col items-center gap-2 font-bold">
-                  <RewardLiveUpdate poolId={poolId} isTotal={true}/>
+                  <RewardLiveUpdate poolId={poolId} isTotal={true} />
                   <span className="text-xl  py-6">TVN</span>
                 </p>
-                <button className="w-full p-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg">Rút</button>
+                <button className="w-full p-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg">
+                  Rút
+                </button>
               </div>
             </div>
           </div>

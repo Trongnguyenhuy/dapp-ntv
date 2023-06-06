@@ -39,7 +39,7 @@ export const Header = () => {
 
   useEffect(() => {
     (async () => {
-      const checkChain = await checkChainId(dispatch);
+      const checkChain = await checkChainId(dispatch, false);
       if (checkChain) {
         reloadData(dispatch);
       }

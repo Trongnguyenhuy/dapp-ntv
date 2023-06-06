@@ -142,12 +142,12 @@ const ModalContract = (props) => {
           <input
             type="number"
             min="0"
+            max={account.balanceOfStakeToken}
             id="amountOfToke"
             name="amountOfToke"
             className="w-full p-2 border-2 boder-black rounded-md text-lg outline-gray-400 focus: outline-none"
             placeholder="Nhập số lượng muốn nạp"
             onChange={handleChange}
-            value={quantity}
           />
         </div>
 

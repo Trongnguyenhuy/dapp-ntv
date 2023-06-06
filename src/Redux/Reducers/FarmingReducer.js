@@ -20,6 +20,7 @@ const initialState = {
     network: "",
   },
   pools: [],
+
   stakerInfo: [],
   allStakingTime: [],
   poolAPR: [],

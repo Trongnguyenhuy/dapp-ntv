@@ -25,7 +25,7 @@ function App() {
           console.error(error);
         }
         window.ethereum.on("chainChanged", async () => {
-          const checkChain = await checkChainId(dispatch);
+         const checkChain =  await checkChainId(dispatch, true);
           if (checkChain) {
             reloadData(dispatch);
           }

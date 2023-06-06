@@ -55,11 +55,6 @@ const ModalChangeNetwork = (props) => {
   return (
     <Modal
       wrapClassName="custom-modal"
-      // title={
-      //   <h2 className="font-bold text-xl text-white uppercase text-center p-4">
-      //     {warming.header}
-      //   </h2>
-      // }
       bodyStyle={{ padding: 10 }}
       open={isOpen}
       onCancel={handleCancel}

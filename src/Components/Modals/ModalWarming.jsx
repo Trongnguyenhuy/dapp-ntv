@@ -1,5 +1,4 @@
 import { useSelector } from "react-redux";
-import ModalConnectWallet from "./ModalConnectWallet";
 import ModalInstallWallet from "./ModalInstallWallet";
 import ModalChangeNetwork from "./ModalChangeNetwork";
 
@@ -13,12 +12,6 @@ const ModalWarming = () => {
         <div className="px-4 py-2">
           {warming.code == "wm03" && (
             <ModalChangeNetwork
-              modalOpen={true}
-              warming={warming}
-            />
-          )}
-          {warming.code == "wm02" && (
-            <ModalConnectWallet
               modalOpen={true}
               warming={warming}
             />
