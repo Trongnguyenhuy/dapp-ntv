@@ -1,18 +1,22 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ModalContract from "../Modals/ModalContract";
 import { useParams } from "react-router-dom";
 import RewardLiveUpdate from "../LiveUpdate/RewardLiveUpdate";
 import logoCoinLP from "../../assets/logo-coin-lp.png";
 import logoCoinTVN from "../../assets/logo-coin-tvn.png";
+import { harvestAllReward } from "../../Services/StakingServices/FarmingServices";
+import { getStakingTimeInfoApi } from "../../Redux/Reducers/FarmingReducer";
+import { setMessage } from "../../Redux/Reducers/MessageReducer";
 
 const FarmingInforCard = () => {
   const [modalOpen, setModalOpen] = useState(false);
-  const { account, poolAPR, allStakingTime, pools } = useSelector(
+  const { account, poolAPR, allStakingTime } = useSelector(
     (state) => state.farmingReducer
   );
   const { id } = useParams();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -28,7 +32,23 @@ const FarmingInforCard = () => {
     setModalOpen(true);
   };
 
-  console.log("Pool:", pools);
+  const handleharvestAll = async () => {
+    try {
+      const harvest = await harvestAllReward(poolId);
+      if (harvest) {
+        const allStakingTime = getStakingTimeInfoApi();
+        dispatch(allStakingTime);
+      } else {
+        const setMessageAction = setMessage({
+          type: "confirm",
+          message: `Thu hoạch không thành công`,
+        });
+        dispatch(setMessageAction);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <div className="container px-32 mx-auto flex flex-col gap-4 pt-32 h-full py-12">
@@ -78,8 +98,11 @@ const FarmingInforCard = () => {
                   <RewardLiveUpdate poolId={poolId} isTotal={true} />
                   <span className="text-xl  py-6">TVN</span>
                 </p>
-                <button className="w-full p-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg">
-                  Rút
+                <button
+                  onClick={handleharvestAll}
+                  className="w-full p-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg"
+                >
+                  Thu Hoạch Tất Cả
                 </button>
               </div>
             </div>

@@ -1,7 +1,7 @@
 import web3 from "../Web3/Web3";
-import stakingABI from "../ABI/SepoliaABI/DynamicAPRABI/TestABI/DynamicARPFarmingPool.json";
+import stakingABI from "../ABI/SepoliaABI/DynamicAPRABI/DynamicARPFarmingPool.json";
 
-const contractAdress = "0xAaB54dbD7eA732dE8729ffA7631F8CF7bE93e59d";
+const contractAdress = "0xcffe38C106CdB1006E39EFb1B86087af2fC4d32A";
 
 let stakingServices;
 if (web3) {

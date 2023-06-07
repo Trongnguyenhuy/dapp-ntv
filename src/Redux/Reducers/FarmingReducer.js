@@ -19,8 +19,26 @@ const initialState = {
     balanceOfStakeToken: 0,
     network: "",
   },
-  pools: [],
-
+  pools: [
+    {
+      endStakeTime: "2",
+      farmMultiplier: "25",
+      stakeToken: "0xDeFAdf7357933EE32b5983D6Ee87A31E29eED7c0",
+      tokensStaked: "5010000000000000000000",
+    },
+    {
+      endStakeTime: "2",
+      farmMultiplier: "25",
+      stakeToken: "0xDeFAdf7357933EE32b5983D6Ee87A31E29eED7c0",
+      tokensStaked: "5010000000000000000000",
+    },
+    {
+      endStakeTime: "2",
+      farmMultiplier: "25",
+      stakeToken: "0xDeFAdf7357933EE32b5983D6Ee87A31E29eED7c0",
+      tokensStaked: "5010000000000000000000",
+    },
+  ],
   stakerInfo: [],
   allStakingTime: [],
   poolAPR: [],
@@ -114,7 +132,6 @@ export const updateBalanceOfTokenApi = () => {
   return async (dispatch, getState) => {
     try {
       const balance = await getBalanceOfStakeToken();
-      console.log(balance);
       const action = updateBalanceOfTokenAction((balance / 1e18).toFixed(6));
       dispatch(action);
     } catch (err) {
