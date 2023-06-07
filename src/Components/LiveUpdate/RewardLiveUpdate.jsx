@@ -36,7 +36,7 @@ const RewardLiveUpdate = (props) => {
 
     const interval = setInterval(() => {
       fetchReward();
-    }, 3000);
+    }, 1000);
 
     return () => {
       clearInterval(interval);
