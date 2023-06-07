@@ -1,7 +1,7 @@
 import web3 from "../Web3/Web3";
 import stakeTokenABI from "../ABI/SepoliaABI/DynamicAPRABI/StakeToken.json";
 
-const stakeTokenAddress = "0xDeFAdf7357933EE32b5983D6Ee87A31E29eED7c0";
+const stakeTokenAddress = "0x84831aD87534a7E6C76f50623348578010eb14A6";
 
 let stakeTokenServices;
 if (web3) {

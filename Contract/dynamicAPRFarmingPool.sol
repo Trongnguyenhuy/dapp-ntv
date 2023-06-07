@@ -71,7 +71,7 @@ contract DynamicARPFarmingPool is Ownable, ERC20 {
         uint256 time
     );
 
-    event PoolCreated(uint256 poolId);
+event PoolCreated(uint256 indexed poolId);
 
     event ChangeFarmMultifier(uint256 indexed poolId, uint256 farmMultiplier);
 
@@ -180,7 +180,12 @@ contract DynamicARPFarmingPool is Ownable, ERC20 {
         staker.totalTokenStake -= _amount;
 
         if (staker.firstStakeTime == _time) {
-            staker.firstStakeTime += 1;
+            if (staker.finalStakeTime == _time) {
+                staker.finalStakeTime = 0;
+                staker.firstStakeTime = 0;
+            } else {
+                staker.firstStakeTime += 1;
+            }
         } else if (staker.finalStakeTime == _time) {
             staker.finalStakeTime -= 1;
         } else if (
@@ -258,6 +263,28 @@ contract DynamicARPFarmingPool is Ownable, ERC20 {
         emit CollectRewards(msg.sender, _poolId, rewardsToHarvest, _time);
         rewardToken.mint(address(this), rewardFee);
         rewardToken.mint(msg.sender, harvest);
+    }
+
+    /**
+     * Collect all rewards from a given pool id
+     */
+
+    function collectAllRewards(uint256 _poolId) public {
+        StakerInfo storage staker = stakerInfo[_poolId][msg.sender];
+        uint256 numberOfStakingTime = staker.finalStakeTime -
+            staker.firstStakeTime;
+
+        if (numberOfStakingTime == 0) {
+            collectRewards(_poolId, staker.finalStakeTime);
+        } else {
+            for (
+                uint256 i = staker.firstStakeTime;
+                i <= staker.finalStakeTime;
+                i++
+            ) {
+                collectRewards(_poolId, i);
+            }
+        }
     }
 
     /**

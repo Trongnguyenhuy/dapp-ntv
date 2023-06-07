@@ -10,7 +10,6 @@ const NUMBEROFBLOCKPERDAY = 84000 / 13;
 export const getAccountAddress = async () => {
   try {
     const accounts = await web3.eth.getAccounts();
-
     return accounts[0];
   } catch (err) {
     return false;
@@ -202,7 +201,7 @@ export const getAllStakingTimeInfo = async (poolId, start, end) => {
       const stakingTime = await getStakingTimeInfo(poolId, end);
 
       if (stakingTime.startBlock != 0) {
-        stakingTime.unStakingTime = 1;
+        stakingTime.unStakingTime = end;
         stakingTimeInfo.push(stakingTime);
       }
 
@@ -244,6 +243,7 @@ export const getAllPools = async () => {
     const pools = await StakingServices.methods.getAllPool().call();
     return pools;
   } catch (err) {
+    console.log("error: ", err.message);
     return false;
   }
 };
@@ -296,6 +296,37 @@ export const harvestReward = async (poolId, time) => {
       });
 
     await StakingServices.methods.collectRewards(poolId, time).send({
+      from: address,
+    });
+
+    const afterBalance = await rewardTokenServices.methods
+      .balanceOf(address)
+      .call({
+        from: address,
+      });
+
+    const diff = afterBalance - beforeBalance;
+    if (diff > 0) {
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.log(err.message);
+    return false;
+  }
+};
+
+// Lấy tất cả thông tin về những lần staking vào pool
+export const harvestAllReward = async (poolId) => {
+  try {
+    const address = await getAccountAddress();
+    const beforeBalance = await rewardTokenServices.methods
+      .balanceOf(address)
+      .call({
+        from: address,
+      });
+
+    await StakingServices.methods.collectAllRewards(poolId).send({
       from: address,
     });
 

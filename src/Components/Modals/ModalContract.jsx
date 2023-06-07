@@ -7,6 +7,7 @@ import React, { useState } from "react";
 import { Slider } from "antd";
 import "antd/dist/reset.css";
 import {
+  getPoolAPRAPI,
   getStakingTimeInfoApi,
   updateBalanceOfTokenApi,
 } from "../../Redux/Reducers/FarmingReducer";
@@ -60,7 +61,9 @@ const ModalContract = (props) => {
         type: "confirm",
         message: `${amountOfToken.current} tokens đã được ký gửi!`,
       });
+      const globalAPR = getPoolAPRAPI();
       dispatch(setMessageAction);
+      dispatch(globalAPR);
     }
     else {
       const setMessageAction = setMessage({
@@ -142,12 +145,12 @@ const ModalContract = (props) => {
           <input
             type="number"
             min="0"
+            max={account.balanceOfStakeToken}
             id="amountOfToke"
             name="amountOfToke"
             className="w-full p-2 border-2 boder-black rounded-md text-lg outline-gray-400 focus: outline-none"
             placeholder="Nhập số lượng muốn nạp"
             onChange={handleChange}
-            value={quantity}
           />
         </div>
 
@@ -168,7 +171,7 @@ const ModalContract = (props) => {
         <div className="flex flex-row justify-between py-2">
           <p className="py-2 text-base font-poppins font-semibold">Số tiền hiện có</p>
             <h2 className="py-2 text-base font-poppins font-medium">
-            {account.balanceOfStakeToken}
+            {`${account.balanceOfStakeToken} TVN-LP`}
             </h2>
         </div>
         <div className="flex flex-row justify-between py-2">

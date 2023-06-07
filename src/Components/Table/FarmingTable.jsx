@@ -4,13 +4,16 @@ import { useEffect, useState } from "react";
 import { LoadingOutlined } from "@ant-design/icons";
 import {
   getStakerInfo,
-  // harvestReward,
+  harvestReward,
   unStakingToken,
   getAllStakingTimeInfo,
 } from "../../Services/StakingServices/FarmingServices";
 import Loading from "../Button/loadingButton";
 import { useDispatch, useSelector } from "react-redux";
-import { getStakingTimeInfoApi, updateBalanceOfTokenApi } from "../../Redux/Reducers/FarmingReducer";
+import {
+  getStakingTimeInfoApi,
+  updateBalanceOfTokenApi,
+} from "../../Redux/Reducers/FarmingReducer";
 import { setMessage } from "../../Redux/Reducers/MessageReducer";
 import RewardLiveUpdate from "../LiveUpdate/RewardLiveUpdate";
 
@@ -42,30 +45,27 @@ const FarmingTable = () => {
     })();
   }, []);
 
-  // const handleHarvest = async (time, index) => {
-  //   setLoading("harvest" + index);
-  //   const success = await harvestReward(poolId, time);
-  //   const allStakingTime = getStakingTimeInfoApi();
-  //   dispatch(allStakingTime);
-  //   if (success) {
+  const handleHarvest = async (time, index) => {
+    setLoading("harvest" + index);
+    const success = await harvestReward(poolId, time);
+    const allStakingTime = getStakingTimeInfoApi();
+    dispatch(allStakingTime);
+    if (success) {
+      const setMessageAction = setMessage({
+        type: "confirm",
+        message: `Thu hoạch Token hoàn tất!`,
+      });
+      dispatch(setMessageAction);
+    } else {
+      const setMessageAction = setMessage({
+        type: "confirm",
+        message: `Đã hủy thu hoạch!`,
+      });
+      dispatch(setMessageAction);
+    }
 
-
-  //     const setMessageAction = setMessage({
-  //       type: "confirm",
-  //       message: `Thu hoạch Token hoàn tất!`,
-  //     });
-  //     dispatch(setMessageAction);
-  //   }
-  //   else {
-  //     const setMessageAction = setMessage({
-  //       type: "confirm",
-  //       message: `Đã hủy thu hoạch!`,
-  //     });
-  //     dispatch(setMessageAction);
-  //   }
-
-  //   setLoading("");
-  // };
+    setLoading("");
+  };
 
   const handleUnstaking = async (time, amount, index) => {
     setLoading("unstaking" + index);
@@ -78,11 +78,10 @@ const FarmingTable = () => {
         message: `Thu hồi vốn hoàn tất!`,
       });
       dispatch(setMessageAction);
-      
+
       const balanceOfToken = updateBalanceOfTokenApi();
       dispatch(balanceOfToken);
-    }
-    else {
+    } else {
       const setMessageAction = setMessage({
         type: "confirm",
         message: `Đã hủy thu hồi vốn!`,
@@ -156,6 +155,16 @@ const FarmingTable = () => {
                     index={"unstaking" + index}
                     loading={loading}
                     text={"Kết thúc"}
+                  />
+                </button>
+                <button
+                  onClick={() => handleHarvest(key.unStakingTime, index)}
+                  className="w-1/2 py-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg"
+                >
+                  <Loading
+                    index={"harvest" + index}
+                    loading={loading}
+                    text={"Thu Hoạch"}
                   />
                 </button>
               </div>

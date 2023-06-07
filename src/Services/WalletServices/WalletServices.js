@@ -11,7 +11,7 @@ import { checkNetwork } from "../../Ultis/NetworkCheck/NetworkCheck";
 import { getBalanceOfStakeToken } from "../StakingServices/FarmingServices";
 import web3 from "../Web3/Web3";
 
-export const addWalletInfo = async (dispatch, accountsChanged) => {
+export const addWalletInfo = async (dispatch, isApp) => {
   const accounts = await web3.eth.getAccounts();
   if (accounts.length > 0) {
     let balance = await web3.eth.getBalance(accounts[0]);
@@ -30,13 +30,14 @@ export const addWalletInfo = async (dispatch, accountsChanged) => {
       balanceOfStakeToken: balanceOfStakeToken.toFixed(6),
       network: network,
     };
+
     const getWalletInforAction = getWalletInfor(walletInfor);
     const allStakingTime = getStakingTimeInfoApi();
     const warmingAction = deleteWarming();
     dispatch(allStakingTime);
     dispatch(getWalletInforAction);
     dispatch(warmingAction);
-    if (accountsChanged) {
+    if (isApp) {
       const connectAction = setMessage({
         type: "infor",
         message: "Kết nối với ví MetaMask thành công!",
@@ -54,20 +55,24 @@ export const addWalletInfo = async (dispatch, accountsChanged) => {
   }
 };
 
-export const checkChainId = async (dispatch) => {
+export const checkChainId = async (dispatch, isApp) => {
   try {
     const chainId = await web3.eth.getChainId();
     const network = checkNetwork(chainId);
     if (network == "Ethereum Sepolia") {
-      await addWalletInfo(dispatch, true);
+      await addWalletInfo(dispatch, isApp);
+      return true;
     } else {
-      const warmingAction = setWarming({
-        type: "warming",
-        header: "Sai mạng!",
-        message: "Hiện tại chỉ hỗ trợ mạng Sepolia Etherium. Vui lòng dùng mạng Sepolia Ethereum để kết nối!",
-        code: "wm03",
-      });
-      dispatch(warmingAction);
+      if (!isApp) {
+        const warmingAction = setWarming({
+          type: "warming",
+          header: "Sai mạng!",
+          message: "Vui lòng dùng mạng Sepolia Ethereum để kết nối!",
+          code: "wm03",
+        });
+        dispatch(warmingAction);
+      }
+      return false;
     }
   } catch (err) {
     console.log("Connect Error: ", err.message);
@@ -78,6 +83,7 @@ export const checkChainId = async (dispatch) => {
       code: "wm04",
     });
     dispatch(warmingAction);
+    return false;
   }
 };
 
@@ -93,7 +99,7 @@ export const checkConnectAccount = async (dispatch) => {
       });
       dispatch(warmingAction);
     } else {
-      await checkChainId(dispatch);
+      await checkChainId(dispatch, true);
     }
   } catch (err) {
     console.log("Connect Error: ", err.message);
