@@ -56,7 +56,7 @@ const FarmingInforCard = () => {
   };
 
   return (
-    <div className="container px-32 mx-auto flex flex-col gap-4 pt-32 h-full py-12">
+    <div className="container px-32 mx-auto flex flex-col gap-4 pt-32 h-full py-8">
       <div className="flex flex-row justify-around items-center gap-4">
         <div className="w-1/3">
           <div className="flex flex-col gap-4 items-center">

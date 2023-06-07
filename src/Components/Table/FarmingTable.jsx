@@ -105,20 +105,9 @@ const FarmingTable = () => {
           item.depositStartTime.toLowerCase().includes(searchText.toLowerCase())
         );
       });
-      console.log(filtered);
-      // console.log(allStakingTime[poolId].stakingTime);
-      // const allStaking = allStakingTime
-      // console.log(allStaking);
-      // console.log(allStakingTime[poolId].stakingTime);
-      // console.log(filtered);
-      // setFilteredData(filtered);
+      setFilteredData(filtered);
     } else setFilteredData(data);
   };
-
-  // const handleReset = () => {
-  //   setFilteredData(dataSource);
-  //   setSearchText("");
-  // };
 
   const renderHeader = () => {
     let headerElement = [
@@ -160,7 +149,7 @@ const FarmingTable = () => {
                   onClick={() =>
                     handleUnstaking(key.unStakingTime, key.amount, index)
                   }
-                  className="w-1/2 py-4 bg-white text-[#091227] hover:text-white hover:bg-[rgb(81,59,143)] rounded-lg"
+                  className="w-full py-4 bg-white text-[#091227] hover:text-white hover:bg-[rgb(81,59,143)] rounded-lg"
                 >
                   <Loading
                     index={"unstaking" + index}
@@ -188,7 +177,7 @@ const FarmingTable = () => {
 
   return (
     <div className="container px-32 mx-auto py-8">
-      <div className="flex flex-row justify-between py-6 gap-4">
+      {/* <div className="flex flex-row justify-between py-6 gap-4">
         <input
           type="text"
           className="w-full py-2 px-4 bg-[#060d20] border-b-2 border-gray-800 focus:outline-none rounded-md"
@@ -202,7 +191,8 @@ const FarmingTable = () => {
         >
           Tìm kiếm
         </button>
-      </div>
+      </div> */}
+      <h1 className="font-poppins font-bold text-center text-2xl uppercase py-4">LỊCH SỬ GỬI</h1>
       {loading === "harvest" || loading === "unstaking" ? (
         <div className="w-full">
           <LoadingOutlined className="w-full text-4xl py-8 font-bold mx-auto" />
