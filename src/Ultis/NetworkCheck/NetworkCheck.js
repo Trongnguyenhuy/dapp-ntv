@@ -38,7 +38,8 @@ export const checkNetworkToken = (network) => {
   }
 };
 
-export const convertSecondsToDateTime = (seconds) => {
+export const convertSecondsToDateTime = (numberOfSeconds) => {
+  let seconds = parseInt(numberOfSeconds);
   const modifierTime = (time) => {
     if (time < 10) {
       time = "0" + time;
@@ -48,6 +49,12 @@ export const convertSecondsToDateTime = (seconds) => {
   };
 
   let date = new Date(0);
+  let hour = date.getHours();
+
+  if(hour != 7){
+    seconds -= (hour - 7)*3600;
+  }
+
   date.setSeconds(seconds);
 
   let year = date.getFullYear();

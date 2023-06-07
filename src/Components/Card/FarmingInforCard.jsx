@@ -37,6 +37,11 @@ const FarmingInforCard = () => {
       const harvest = await harvestAllReward(poolId);
       if (harvest) {
         const allStakingTime = getStakingTimeInfoApi();
+        const setMessageAction = setMessage({
+          type: "confirm",
+          message: `Thu hoạch thành công`,
+        });
+        dispatch(setMessageAction);
         dispatch(allStakingTime);
       } else {
         const setMessageAction = setMessage({

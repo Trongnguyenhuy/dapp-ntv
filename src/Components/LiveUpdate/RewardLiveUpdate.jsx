@@ -46,9 +46,9 @@ const RewardLiveUpdate = (props) => {
   return (
     <>
       {isTotal ? (
-        <span className="text-4xl text-gray-400">{reward.toFixed(5)}</span>
+        <span className="text-4xl text-gray-400">{reward.toFixed(8)}</span>
       ) : (
-        reward.toFixed(5)
+        reward.toFixed(8)
       )}
     </>
   );
