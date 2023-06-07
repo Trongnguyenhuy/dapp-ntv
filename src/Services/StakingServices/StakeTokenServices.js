@@ -1,13 +1,19 @@
 import web3 from "../Web3/Web3";
 import stakeTokenABI from "../ABI/SepoliaABI/DynamicAPRABI/StakeToken.json";
 
-<<<<<<< Updated upstream
-const stakeTokenAddress = "0x37e9C5254904C70923Efb21511302a41fa84dD11";
-=======
-const stakeTokenAddress = "0xDeFAdf7357933EE32b5983D6Ee87A31E29eED7c0";
->>>>>>> Stashed changes
+const stakeTokenAddress = "0x84831aD87534a7E6C76f50623348578010eb14A6";
 
-export default new web3.eth.Contract(stakeTokenABI.abi, stakeTokenAddress);
+let stakeTokenServices;
+if (web3) {
+  stakeTokenServices = new web3.eth.Contract(
+    stakeTokenABI.abi,
+    stakeTokenAddress
+  );
+} else {
+  stakeTokenServices = false;
+}
+
+export default stakeTokenServices;
 
 // const stakeTokenBSCAddress = "0x9c11FFAa2e4b4C484659F0252e37036Fe2038aD0";
 

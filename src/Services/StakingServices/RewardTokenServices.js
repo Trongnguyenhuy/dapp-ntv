@@ -1,15 +1,19 @@
 import web3 from "../Web3/Web3";
 import stakeTokenABI from "../ABI/SepoliaABI/DynamicAPRABI/RewardToken.json";
 
-<<<<<<< Updated upstream
-const rewardTokenAddress = "0x9EC9DD61eF0f0DB45cd7fdC2716D64E8F22Ab6c7";
-=======
-console.log(stakeTokenABI);
+const rewardTokenAddress = "0xba1FcaE5cC1AaD01147D5cD57b94d8CF95337306";
 
-const rewardTokenAddress = "0x74c8b048f359BbF935fD394Dd573827BC190ACf3";
->>>>>>> Stashed changes
+let rewardTokenServices;
+if (web3) {
+  rewardTokenServices = new web3.eth.Contract(
+    stakeTokenABI.abi,
+    rewardTokenAddress
+  );
+} else {
+    rewardTokenServices = false;
+}
 
-export default new web3.eth.Contract(stakeTokenABI.abi, rewardTokenAddress);
+export default rewardTokenServices;
 
 // const rewardTokenBSCAddress = "0xc369f981F939ED8e3C72fEd3d1fa64E4e4759477";
 

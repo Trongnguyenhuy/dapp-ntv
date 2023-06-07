@@ -1,91 +1,105 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
-// import { AiFillCaretDown, AiOutlineCaretUp } from "react-icons/ai";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ModalContract from "../Modals/ModalContract";
 import { useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
+import logoCoinLP from "../../assets/logo-coin-lp.png";
+import logoCoinTVN from "../../assets/logo-coin-tvn.png";
+import ModalWarming from "../Modals/ModalWarming";
 
 const FarmingCard = (props) => {
-  const { openInforCard, setOpenInforCard } = props;
-  // const [drop, setDrop] = useState(false);
+  const { poolAPR, account } = useSelector((state) => state.farmingReducer);
+  const { id, isHome, duration } = props;
+  const history = useHistory();
   const [modalOpen, setModalOpen] = useState(false);
-  const { account } = useSelector((state) => state.farmingReducer);
-
-  useEffect(() => {
-    console.log("account: ", account);
-  }, [account]);
-
-  // const handleDrop = () => {
-  //   setDrop(!drop);
-  // };
+  const [openModalWarming, setOpenModalWarming] = useState(false);
+  const handleClick = () => {
+    history.push(`/farm-detail/${id}`); // Chuyển đến đường dẫn với param
+  };
 
   const handleModal = () => {
-    setModalOpen(true);
+    if (account.walletAddress) {
+      setOpenModalWarming(false);
+      setModalOpen(true);
+    } else {
+      setOpenModalWarming(true);
+      setModalOpen(false);
+    }
   };
 
   return (
     <div
-      style={{ background: "rgb(9,3,23)" }}
-      className="p-8 w-full rounded-2xl shadow-2xl mt-2 lg:mt-4"
+      style={{ background: "#fff", color: "#091227" }}
+      className="p-8 w-full rounded-xl mt-2 lg:mt-4 font-poppins shadow-2xl"
     >
-      <div className="flex flex-row justify-around items-center gap-4">
-        <div className="flex flex-row justify-start relative px-2">
+      <div className="flex flex-col justify-around items-center">
+        <div className="flex flex-row justify-start relative px-2 py-4">
+          <img className="w-20 h-20" src={logoCoinTVN} alt="TVN" />
           <img
-            className="w-14 h-14"
-            src="https://miaswap-img-s3.s3.ap-northeast-1.amazonaws.com/busd.png"
-            alt="BUSDT"
-          />
-          <img
-            className="w-8 h-8 absolute left-12 bottom-9 bg-white rounded-full p-1"
-            src="https://miaswap-img-s3.s3.ap-northeast-1.amazonaws.com/busd.png"
-            alt="MIA"
+            className="w-12 h-12 absolute left-16 bottom-12 rounded-full"
+            src={logoCoinLP}
+            alt="TVN-LP"
           />
         </div>
-        <h2 className="text-3xl font-bold">Nạp VNDC</h2>
-        <button className="p-1 border-2 border-[rgb(124,77,255)] text-[rgb(124,77,255)] hover:text-white hover:bg-[rgb(124,77,255)] rounded-lg shadow-lg">
-          Auto Renew
-        </button>
+        <h2 className="text-2xl font-bold">Nạp TVN-LP nhận TVN</h2>
       </div>
-      <div className="grid grid-col-4 content-center divide-y divide-gray-600 border-2 border-gray-600 rounded-lg p-6 mt-4 text-xl">
-        {openInforCard.length > 0 ? (
-          <>
-            <p className="flex flex-row justify-between py-4">
-              <span>Nhận lại</span>
-              <span>VNDC</span>
-            </p>
-          </>
-        ) : (
-          <>
-            <p className="flex flex-row justify-between py-4">
-              <span>APY</span>
-              <span>283.11%</span>
-            </p>
-            <p className="flex flex-row justify-between py-4">
-              <span>Chu Kỳ</span>
-              <span>30 ngày</span>
-            </p>
-            <p
-              onClick={() => {
-                setOpenInforCard("Card 1");
-              }}
-              className="flex flex-row justify-center py-4"
+      <div className="grid grid-col-4 content-center rounded-lg p-2 mt-4 text-lg w-full">
+        <div className="grid grid-col-4 content-center rounded-lg p-2 mt-4 text-lg w-full divide-y divide-gray-600">
+          <p className="flex flex-row justify-between py-6">
+            <span>APR</span>
+            <span className="font-bold">
+              {poolAPR.length > 0 ? poolAPR[id - 1] : 0} %
+            </span>
+          </p>
+
+          <p className="flex flex-row justify-between py-4">
+            <span>Chu Kỳ</span>
+            <span className="font-bold">{duration} s</span>
+          </p>
+          <div className="flex flex-col items-center pt-8">
+            <button
+              onClick={handleClick}
+              className={`${
+                isHome == false ? "hidden" : ""
+              } w-full py-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg font-sans font-medium cursor-pointer text-white`}
             >
-              <span className="text-blue-700 cursor-pointer">Xem Chi Tiêt</span>
-            </p>
-            <div className="flex flex-row justify-center py-4">
-              <button
-                onClick={handleModal}
-                className="w-full p-4 bg-[rgb(127,82,255)] rounded-lg border-gray-600 border-2"
-              >
-                Nạp
-              </button>
-            </div>
-          </>
-        )}
+              Xem chi tiết
+            </button>
+            <span
+              onClick={handleClick}
+              className={`${
+                isHome == true ? "hidden" : ""
+              } underline cursor-pointer`}
+            >
+              Xem chi tiết
+            </span>
+          </div>
+        </div>
+        <div
+          className={`flex flex-row justify-center py-4 ${
+            isHome == true ? "hidden" : ""
+          }`}
+        >
+          <button
+            onClick={handleModal}
+            className="w-full py-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg font-sans font-medium cursor-pointer text-white"
+          >
+            Nạp
+          </button>
+        </div>
       </div>
       <ModalContract
         modalOpen={modalOpen}
         setModalOpen={setModalOpen}
         account={account}
+        poolId={id - 1}
+        duration={duration}
+        isInfoCard={false}
+      />
+      <ModalWarming
+        modalOpen={openModalWarming}
+        setModalOpen={setOpenModalWarming}
       />
     </div>
   );

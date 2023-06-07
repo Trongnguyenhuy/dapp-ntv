@@ -1,15 +1,16 @@
 import web3 from "../Web3/Web3";
-<<<<<<< Updated upstream
-import stakingABI from "../ABI/MumbaiABI/StakingToken.json";
-
-const contractAdress = "0x6C875dC9856352842d45E25056E9EEF59275B1b3";
-=======
 import stakingABI from "../ABI/SepoliaABI/DynamicAPRABI/DynamicARPFarmingPool.json";
 
-const contractAdress = "0xE66eaBeb8c1ad4263b28B79829e7819D360ABc31";
->>>>>>> Stashed changes
+const contractAdress = "0xcffe38C106CdB1006E39EFb1B86087af2fC4d32A";
 
-export default new web3.eth.Contract(stakingABI.abi, contractAdress);
+let stakingServices;
+if (web3) {
+    stakingServices = new web3.eth.Contract(stakingABI.abi, contractAdress)
+} else {
+    stakingServices = false;
+}
+
+export default stakingServices;
 
 // const contractBSCAdress = "0x6141AA7ddf4953Ba21F677554A0Ccf923e322bF4";
 

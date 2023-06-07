@@ -1,61 +1,25 @@
-import { useState } from "react";
-import FarmingCard from "../../Components/Card/FarmingCard";
-import FarmingInforCard from "../../Components/Card/FarmingInforCard";
+import logo from "../../assets/home-image.png";
+import { FarmingBody } from "../Farming/FarmingBody";
+import { PoolBody } from "../Pool/PoolBody";
 
 export const HomeBody = () => {
-  const [openInforCard, setOpenInforCard] = useState("");
-
   return (
-    <div
-      // className={`grid grid-cols-1 ${
-      //   openInforCard.length > 1 ? "grid-cols-3" : "grid-cols-1"
-      // } justify-items-center h-sceen p-1 md:p-2`}
-      
-      className={`grid grid-cols-1 justify-items-center h-sceen p-1 md:p-2`}
-    >
-      <div
-        className={` w-full ${
-          openInforCard.length > 1 ? "hidden" : "md:w-1/2 xl:w-1/3"
-        } px-4`}
-
-        // className="w-full px-4"
-      >
-        <FarmingCard
-          openInforCard={openInforCard}
-          setOpenInforCard={setOpenInforCard}
-        />
+    <div className={`p-1 md:p-2`}>
+      <div className={`flex flex-row justify-between mt-20`}>
+        <div className={`flex flex-col justify-center ps-16`}>
+          <h1 className="font-poppins font-bold text-8xl uppercase titleLinear backgroundLinear">
+            NTV Group
+          </h1>
+          <h2 className="font-sans font-medium text-4xl py-4">
+            Sàn giao dịch phi tập trung trên nền tảng Ethereum Sepolia
+          </h2>
+        </div>
+        <div className={`justify-items-end pe-16`}>
+          <img src={logo} alt="logo" width={800} height={600} />
+        </div>
       </div>
-      {openInforCard.length > 1 && (
-        // <div className="col-span-2 w-full flex flex-row justify-center">
-        //   <FarmingInforCard setOpenInforCard={setOpenInforCard} />
-        // </div>
-        <div className="w-full xl:w-1/2 flex flex-row justify-center">
-        <FarmingInforCard setOpenInforCard={setOpenInforCard} />
-      </div>
-      )}
-      {/* <div
-        // className={` w-full ${
-        //   openInforCard.length > 1 ? "" : "md:w-1/2 xl:w-1/3"
-        // } px-4`}
-
-        className="w-full px-4"
-      >
-        <FarmingCard
-          openInforCard={openInforCard}
-          setOpenInforCard={setOpenInforCard}
-        />
-      </div>
-      <div
-        // className={` w-full ${
-        //   openInforCard.length > 1 ? "" : "md:w-1/2 xl:w-1/3"
-        // } px-4`}
-        className="w-full px-4"
-      >
-        <FarmingCard
-          openInforCard={openInforCard}
-          setOpenInforCard={setOpenInforCard}
-        />
-      </div> */}
+      <FarmingBody />
+      <PoolBody />
     </div>
   );
 };

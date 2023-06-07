@@ -1,107 +1,86 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import { Modal } from "antd";
-import { useEffect, useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useRef } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import React, { useState } from "react";
+import { Slider } from "antd";
+import "antd/dist/reset.css";
 import {
-  setHarvestingToken,
-  setMessage,
+  getPoolAPRAPI,
+  getStakingTimeInfoApi,
+  updateBalanceOfTokenApi,
 } from "../../Redux/Reducers/FarmingReducer";
-import {
-  unStakingToken,
-  depositTokenToPool,
-  getAccountAddress,
-  getBalanceOfStakeToken,
-  getPoolInfor,
-  getStakerInfo,
-  getAllPools,
-  createStakingToken,
-  approveStakingPool,
-  checkAllowance,
-  harvestReward,
-  updatePoolRewards,
-} from "../../Services/StakingServices/FarmingServices";
+import { setMessage } from "../../Redux/Reducers/MessageReducer";
+import { depositTokenToPool } from "../../Services/StakingServices/FarmingServices";
+import Loading from "../Button/loadingButton";
+import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+const NUMBEROFBLOCKPERDAY = 84000 / 13;
 
 const ModalContract = (props) => {
-  const { modalOpen, setModalOpen, account } = props;
+  const { modalOpen, setModalOpen, poolId, isInfoCard } = props;
+  const { account, pools, rewardTokenPerBlock, totalMultiflier } = useSelector(
+    (state) => state.farmingReducer
+  );
+  const [loading, setLoading] = useState(0);
+  const [quantity, setQuantity] = useState(0);
+  const [predictAPR, setPredictAPR] = useState(0);
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const amountOfToken = useRef(0);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        // const tx = await createStakingToken();
-        const address = await getAccountAddress();
-        const prevBalance = await getBalanceOfStakeToken(address);
-        console.log("prevBalance", prevBalance);
-        // const approve = await approveStakingPool(1000);
-        // console.log("approve", approve);
-        // const allowance = await checkAllowance();
-        // console.log("allowance:", allowance);
-        // const deposit = await depositTokenToPool(1,20);
-        // console.log("deposit:",deposit)
-        // const unStaking = await unStakingToken(1,40);
-        // console.log("unStaking:",unStaking)
-        const beforeBalance = await getBalanceOfStakeToken(address);
-        console.log("beforeBalance", beforeBalance);
-        const updatePool = await updatePoolRewards(0);
-        const pool = await getPoolInfor(0);
-        const stakerInfo = await getStakerInfo(0);
-        // const pools = await getAllPools();
-        console.log("updatePool", updatePool);
-        console.log("pool", pool);
-        console.log("stakerInfo:", stakerInfo);
-        // console.log("pools", pools);
-      } catch (err) {
-        console.log("message", err.message);
-      }
-    })();
-  }, []);
+  const calculateInvidualAPR = (numberOfToken) => {
+    const assetRatio = (numberOfToken * 1e18) / pools[poolId].tokensStaked;
+    const poolWeight = pools[poolId].farmMultiplier / totalMultiflier;
+    const rewardPerBlockForPool = poolWeight * rewardTokenPerBlock;
+    const invidualAPRPerDay =
+      assetRatio * poolWeight * rewardPerBlockForPool * NUMBEROFBLOCKPERDAY;
 
-<<<<<<< Updated upstream
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      await updatePoolRewards(0);
-      const stakerInfo = await getStakerInfo(0);
-      const pool = await getPoolInfor(0);
-      console.log("pool lastRewardedBlock:", pool.lastRewardedBlock);
-      console.log("stakerInfo startBlock", stakerInfo.startBlock);
-      console.log("stakerInfo rewards", stakerInfo.rewards);
-    }, 30000); 
-=======
+    return invidualAPRPerDay / 1e18;
+  };
+
   const handleSliderChange = async (value) => {
-    let predictAmount = await predictInvidualARP(value, poolId);
-    predictAmount = predictAmount * (poolId + 1);
-    console.log(predictAmount);
-    setPredictAPR(predictAmount);
+    if (pools.length > 0) {
+      const invidualToken = calculateInvidualAPR(value);
+      setPredictAPR(invidualToken);
+    } else {
+      setPredictAPR(0);
+    }
     setQuantity(value);
     amountOfToken.current = value;
   };
->>>>>>> Stashed changes
 
-    return () => {
-      clearInterval(interval);
-    };
-  }, []);
+  const handleConfirm = async () => {
+    setLoading(1);
+    const success= await depositTokenToPool(poolId, amountOfToken.current);
+    setLoading(0);
+    setModalOpen(false); 
+    if(success) {
+      const setMessageAction = setMessage({
+        type: "confirm",
+        message: `${amountOfToken.current} tokens đã được ký gửi!`,
+      });
+      const globalAPR = getPoolAPRAPI();
+      dispatch(setMessageAction);
+      dispatch(globalAPR);
+    }
+    else {
+      const setMessageAction = setMessage({
+        type: "confirm",
+        message: `Đã hủy ký gửi`,
+      });
+      dispatch(setMessageAction);
+    }
+    if (!isInfoCard) {
+      history.push(`/farm-detail/${poolId + 1}`);
+    } else {
+      const allStakingTime = getStakingTimeInfoApi();
+      dispatch(allStakingTime);
+    }
 
-  const handleConfirm = () => {
-    setModalOpen(false);
-    const setHarvestingTokenAction = setHarvestingToken(amountOfToken.current);
-    const setMessageAction = setMessage({
-      type: "confirm",
-      message: `${amountOfToken.current} tokens have been confirmed!`,
-    });
-    dispatch(setHarvestingTokenAction);
-    dispatch(setMessageAction);
-<<<<<<< Updated upstream
-    console.log(`amountOfToken: ${amountOfToken.current}`);
-    console.log(`Address: ${account.walletAddress}`);
-    console.log(`Balance: ${account.balance}`);
-=======
-    window.location.reload();
->>>>>>> Stashed changes
+    const balanceOfToken = updateBalanceOfTokenApi();
+    dispatch(balanceOfToken);
   };
 
   const handleCancel = () => {
@@ -109,17 +88,16 @@ const ModalContract = (props) => {
     amountOfToken.current = 0;
   };
 
-  const handleChange = (e) => {
+  const handleChange = async (e) => {
     const { value } = e.target;
-<<<<<<< Updated upstream
-    amountOfToken.current = value;
-=======
-    let predictAmount = await predictInvidualARP(value, poolId);
-    predictAmount = predictAmount * 30 * (poolId + 1);
-    setPredictAPR(predictAmount);
+    if (pools.length > 0) {
+      const invidualToken = calculateInvidualAPR(value);
+      setPredictAPR(invidualToken);
+    } else {
+      setPredictAPR(0);
+    }
     amountOfToken.current = value;
     setQuantity(value);
->>>>>>> Stashed changes
   };
 
   return (
@@ -146,20 +124,10 @@ const ModalContract = (props) => {
           onClick={handleConfirm}
           className="text-xl font-poppins p-4 text-white bg-[rgb(127,82,255)] w-1/4 rounded-md ml-4"
         >
-          Nạp
+          <Loading index={1} loading={loading} text={"Nạp"} />
         </button>,
       ]}
     >
-<<<<<<< Updated upstream
-      <input
-        type="number"
-        id="amountOfToke"
-        name="amountOfToke"
-        className="w-full p-2 border-2 boder-black rounded-xl text-xl"
-        placeholder="Nhập Vào Số Lượng Muốn Nạp"
-        onChange={handleChange}
-      />
-=======
       <div className="flex flex-col justify-between gap-4">
         <div>
           <h2 className="w-full text-center text-[#222b42] text-5xl font-poppins font-bold">
@@ -177,19 +145,19 @@ const ModalContract = (props) => {
           <input
             type="number"
             min="0"
+            max={account.balanceOfStakeToken}
             id="amountOfToke"
             name="amountOfToke"
             className="w-full p-2 border-2 boder-black rounded-md text-lg outline-gray-400 focus: outline-none"
             placeholder="Nhập số lượng muốn nạp"
             onChange={handleChange}
-            value={quantity}
           />
         </div>
 
-        <div>
+        {/* <div>
           <Slider
             min={0}
-            max={max.toFixed(0)}
+            max={account.balanceOfStakeToken}
             value={quantity}
             onChange={handleSliderChange}
             trackStyle={{
@@ -199,14 +167,19 @@ const ModalContract = (props) => {
               backgroundColor: "#A7AABA",
             }}
           />
+        </div> */}
+        <div className="flex flex-row justify-between py-2">
+          <p className="py-2 text-base font-poppins font-semibold">Số tiền hiện có</p>
+            <h2 className="py-2 text-base font-poppins font-medium">
+            {`${account.balanceOfStakeToken} TVN-LP`}
+            </h2>
         </div>
-
         <div className="flex flex-row justify-between py-2">
           <p className="py-2 text-base font-poppins font-semibold">
             Tổng phần thưởng dự kiến
           </p>
           <h2 className="py-2 text-base font-poppins font-medium">
-            {`${predictAPR ? predictAPR.toFixed(8) : 0} TVN`}
+            {`${(predictAPR * 30 * (poolId + 1)).toFixed(8)} TVN`}
           </h2>
         </div>
         <div className="flex flex-row justify-between pb-6">
@@ -214,11 +187,10 @@ const ModalContract = (props) => {
             Phần thưởng dự kiến theo ngày
           </p>
           <h2 className="py-2 text-base font-poppins font-medium">
-            {`${predictAPR ? (predictAPR / (30 * (poolId + 1))).toFixed(8) : 0} TVN`}
+            {`${predictAPR.toFixed(8)} TVN`}
           </h2>
         </div>
       </div>
->>>>>>> Stashed changes
     </Modal>
   );
 };
