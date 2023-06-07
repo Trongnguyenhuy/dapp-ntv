@@ -68,18 +68,6 @@ const ModalConnectWallet = (props) => {
             footer={null}
             className="custom-modal"
         >
-            {/* <div className="flex items-center mb-4">
-                <FaEthereum className="mr-4 text-5xl text-indigo-500" />
-                <span className="text-2xl font-semibold">Metamask</span>
-            </div>
-            <div className="flex items-center mb-4">
-                <AiOutlineWallet className="mr-4 text-5xl text-purple-500" />
-                <span className="text-2xl font-semibold">Other Wallets</span>
-            </div>
-            <div className="flex items-center">
-                <AiFillGithub className="mr-4 text-5xl text-gray-500" />
-                <span className="text-2xl font-semibold">GitHub</span>
-            </div> */}
             <div className="flex flex-row p-8 pt-2">
                 <div className="w-1/2 flex flex-col items-center">
                     <img

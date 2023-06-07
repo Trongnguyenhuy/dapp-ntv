@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Link } from "react-router-dom";
 import logo from "../../assets/logo.png";
+import ModalWarming from "../../Components/Modals/ModalWarming";
 import WalletInforCard from "../../Components/Card/WalletInforCard";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -13,12 +14,15 @@ import {
 } from "../../Redux/Reducers/FarmingReducer";
 import { setMessage } from "../../Redux/Reducers/MessageReducer";
 import ModalInfo from "../../Components/Modals/ModalInfo";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { checkChainId, checkConnectAccount } from "../../Services/WalletServices/WalletServices";
 
 export const Header = () => {
   const { account, owner } = useSelector((state) => state.farmingReducer);
   const { message } = useSelector((state) => state.messageReducer);
+  const [openModalWarming, setOpenModalWarming] = useState(false);
   const dispatch = useDispatch();
+
 
   useEffect(() => {
     const allPools = getAllProductApi();
@@ -34,24 +38,24 @@ export const Header = () => {
     dispatch(stakerInfo);
     dispatch(globalAPR);
   }, []);
-
   const connectWalletHandler = async () => {
-    if (window.ethereum && window.ethereum.isMetaMask) {
-      try {
-        await window.ethereum.request({
-          method: "eth_requestAccounts",
-        });
-        window.location.reload();
-      } catch (err) {
-        console.log(err);
-      }
-    } else {
-      const setMessageAction = setMessage({
-        type: "warming",
-        message: "Hãy cài đặt ví Metamask trước khi sử dụng dịch vụ",
-      });
-      dispatch(setMessageAction);
-    }
+    // if (window.ethereum && window.ethereum.isMetaMask) {
+    //   try {
+    //     await window.ethereum.request({
+    //       method: "eth_requestAccounts",
+    //     });
+    //     window.location.reload();
+    //   } catch (err) {
+    //     console.log(err);
+    //   }
+    // } else {
+    //   const setMessageAction = setMessage({
+    //     type: "warming",
+    //     message: "Hãy cài đặt ví Metamask trước khi sử dụng dịch vụ",
+    //   });
+    //   dispatch(setMessageAction);
+    // }
+    setOpenModalWarming(true);
   };
 
   return (
@@ -62,18 +66,18 @@ export const Header = () => {
             <img src={logo} alt="logo" width={65} height={65} />
           </li>
           {/* <div className="grid grid-cols-3 justify-items-start content-center gap-6 ps-8"> */}
-          <li className="my-auto cursor-pointer hover:text-[#1CE6EC] uppercase">
+          <li className="my-auto cursor-pointer hover:text-[#1CE6EC]">
             <Link to="/">Trang chủ</Link>
           </li>
-          <li className="my-auto cursor-pointer hover:text-[#1CE6EC] uppercase">
+          <li className="my-auto cursor-pointer hover:text-[#1CE6EC]">
             <Link to="/farm">Farms</Link>
           </li>
-          <li className="my-auto cursor-pointer hover:text-[#1CE6EC] uppercase">
+          <li className="my-auto cursor-pointer hover:text-[#1CE6EC]">
             <Link to="/pool">Pools</Link>
           </li>
 
           {account.walletAddress == owner && owner != "" && (
-            <li className="my-auto cursor-pointer hover:text-[#1CE6EC] uppercase">
+            <li className="my-auto cursor-pointer hover:text-[#1CE6EC]">
               <Link to="/admin">Admin</Link>
             </li>
           )}
@@ -91,7 +95,8 @@ export const Header = () => {
                 onClick={connectWalletHandler}
                 className="px-9 text-center w-full flex flex-row justify-between gap-4 items-center p-2 text-white walletCard rounded-full font-sans font-medium cursor-pointer"
               >
-                Kết nối ví
+               Kết nối ví
+
               </button>
             </li>
           )}
@@ -106,6 +111,11 @@ export const Header = () => {
           );
         })}
       </div>
+      <ModalWarming
+        modalOpen={openModalWarming}
+        setModalOpen={setOpenModalWarming}
+      />
+
     </div>
   );
 };

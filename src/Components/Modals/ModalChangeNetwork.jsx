@@ -64,17 +64,12 @@ const ModalChangeNetwork= (props) => {
             ]}
         >
             <div className="flex flex-col justify-between gap-4">
-                
+            <h2 className="text-lg py-4 text-center font-poppins font-light cursor-pointer text-white">{warming.message}</h2>
                 <button
                 onClick={changeNetwork}
                     className="w-full flex flex-row items-center gap-10 px-6 py-4 bg-white rounded-lg"
                 >
-                    <img
-                    src={logoMetaMask}
-                    alt="account"
-                    className="w-16 h-16 rounded-full"
-                />
-                <h2 className="text-lg font-poppins font-light cursor-pointer text-black">{warming.message}</h2>
+                <h2 className="text-lg font-poppins font-light text-center w-full cursor-pointer text-black">Chuyển mạng</h2>
                     
                 </button>
 

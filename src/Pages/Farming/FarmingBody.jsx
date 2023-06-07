@@ -10,6 +10,7 @@ import {
   getPoolInfor,
   totalReward,
 } from "../../Services/StakingServices/FarmingServices";
+import { Step } from "../../Components/Steps/Steps";
 export const FarmingBody = () => {
 
   const [allPool, setAllPool] = useState([]);
@@ -19,6 +20,7 @@ export const FarmingBody = () => {
     (async () => {
 
       const allPools = await getAllPools();
+      console.log(allPools);
       setAllPool(allPools);
 
     })();
@@ -28,7 +30,7 @@ export const FarmingBody = () => {
     { id: 2, isHome: false, duration: 60 },
     { id: 3, isHome: false, duration: 90 },
   ];
-  return (
+  return allPool?(
     <div className="container mx-auto flex flex-col justify-center py-20">
       <div className="flex flex-col justify-around items-center py-8">
         <h1 className="font-poppins font-bold text-4xl uppercase ">FARMS</h1>
@@ -49,5 +51,7 @@ export const FarmingBody = () => {
         ))}
       </div>
     </div>
-  );
+  ):(
+    <Step/>
+  )
 };
