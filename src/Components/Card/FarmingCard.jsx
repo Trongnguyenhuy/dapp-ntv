@@ -19,7 +19,7 @@ const FarmingCard = (props) => {
   };
 
   const handleModal = () => {
-    if (account.walletAddress) {
+    if (account.address) {
       setOpenModalWarming(false);
       setModalOpen(true);
     } else {
@@ -42,7 +42,9 @@ const FarmingCard = (props) => {
             alt="TVN-LP"
           />
         </div>
-        <h2 className="text-xl font-bold font-sans text-white">Nạp TVN-LP nhận TVN</h2>
+        <h2 className="text-xl font-bold font-sans text-white">
+          Nạp TVN-LP nhận TVN
+        </h2>
       </div>
       <div className="grid grid-col-4 content-center rounded-lg p-8 text-lg w-full">
         <div className="grid grid-col-4 content-center rounded-lg text-md w-full gap-2">

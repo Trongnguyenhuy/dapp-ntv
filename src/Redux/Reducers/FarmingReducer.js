@@ -13,12 +13,7 @@ import {
 import { getBalanceOfStakeToken } from "../../Services/StakingServices/FarmingServices";
 
 const initialState = {
-  account: {
-    walletAddress: "",
-    balance: 0,
-    balanceOfStakeToken: 0,
-    network: "",
-  },
+  account: {},
   pools: [
     {
       endStakeTime: "2",
@@ -51,12 +46,8 @@ const FarmingReducer = createSlice({
   name: "farmingReducer",
   initialState,
   reducers: {
-    getWalletInfor: (state, action) => {
-      const { account, balance, balanceOfStakeToken, network } = action.payload;
-      state.account.walletAddress = account;
-      state.account.balance = balance;
-      state.account.balanceOfStakeToken = balanceOfStakeToken;
-      state.account.network = network;
+    getWalletInforAction: (state, action) => {
+      state.account= action.payload;
     },
     getAllPoolsAction: (state, action) => {
       state.pools = action.payload;
@@ -82,11 +73,19 @@ const FarmingReducer = createSlice({
     getOwnerAction: (state, action) => {
       state.owner = action.payload;
     },
+    disconnectAction: (state, action) => {
+      state.owner = 0;
+      state.account= {};
+      state.totalMultiflier = 0;
+      state.rewardTokenPerBlock = 0;
+      state.allStakingTime = [];
+      state.stakerInfo = [];
+    },
   },
 });
 
 export const {
-  getWalletInfor,
+  getWalletInforAction,
   getAllPoolsAction,
   getStakerInforAction,
   getStakingTimeInforAction,
@@ -95,6 +94,7 @@ export const {
   getTotalMultiflierAction,
   updateBalanceOfTokenAction,
   getOwnerAction,
+  disconnectAction
 } = FarmingReducer.actions;
 
 export default FarmingReducer.reducer;

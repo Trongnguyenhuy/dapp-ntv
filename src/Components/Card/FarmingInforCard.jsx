@@ -106,6 +106,9 @@ const FarmingInforCard = () => {
                 <button
                   onClick={handleharvestAll}
                   className="w-full p-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg"
+                  style={
+                    allStakingTime.length > 0 ? {} : { visibility: "hidden" }
+                  }
                 >
                   Thu Hoạch Tất Cả
                 </button>

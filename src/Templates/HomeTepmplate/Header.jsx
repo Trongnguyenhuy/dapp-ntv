@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-refresh/only-export-components */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Link } from "react-router-dom";
@@ -6,20 +7,37 @@ import ModalWarming from "../../Components/Modals/ModalWarming";
 import WalletInforCard from "../../Components/Card/WalletInforCard";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  disconnectAction,
+  getAllPoolsAction,
   getAllProductApi,
+  getOwnerAction,
   getPoolAPRAPI,
   getRewardTokenPerBlockApi,
   getStakerInfoApi,
   getStakingTimeInfoApi,
+  getTotalMultiflierAction,
   getTotalMultiflierApi,
+  getWalletInforAction,
 } from "../../Redux/Reducers/FarmingReducer";
-import { setMessage } from "../../Redux/Reducers/MessageReducer";
+import { setMessage, setWarming } from "../../Redux/Reducers/MessageReducer";
 import ModalInfo from "../../Components/Modals/ModalInfo";
-import { useEffect } from "react";
-import { checkChainId } from "../../Services/WalletServices/WalletServices";
+import { useEffect, useState } from "react";
+import {
+  addWalletInfo,
+  checkChainId,
+} from "../../Services/WalletServices/WalletServices";
+import {
+  convertBigNumber,
+  useReadFarmingContract,
+} from "../../Services/StakingServices/FarmingHook";
+import { useWalletInfor } from "../../Services/Hooks/WalletHook";
+import {
+  ConnectWallet,
+  useAddress,
+  useConnectionStatus,
+} from "@thirdweb-dev/react";
 
 export const reloadData = (dispatch) => {
-  const allPools = getAllProductApi();
   const globalAPR = getPoolAPRAPI();
   const stakerInfo = getStakerInfoApi();
   const stakingTimeInfo = getStakingTimeInfoApi();
@@ -28,7 +46,6 @@ export const reloadData = (dispatch) => {
   dispatch(totalMultiflier);
   dispatch(stakingTimeInfo);
   dispatch(rewardTokenPerBlock);
-  dispatch(allPools);
   dispatch(stakerInfo);
   dispatch(globalAPR);
 };
@@ -38,16 +55,48 @@ export const Header = () => {
   const { message } = useSelector((state) => state.messageReducer);
   const [openModalWarming, setOpenModalWarming] = useState(false);
   const dispatch = useDispatch();
-
+  const status = useConnectionStatus();
+  const { data, isLoading, error } = useReadFarmingContract("getAllPool", []);
+  const walletInfo = useWalletInfor();
+  const address = useAddress();
 
   useEffect(() => {
-    (async () => {
-      const checkChain = await checkChainId(dispatch, false);
-      if (checkChain) {
-        reloadData(dispatch);
-      }
-    })();
-  }, []);
+    if (!isLoading && !error) {
+      let modifierData = data.map((item) => {
+        return {
+          endStakeTime: convertBigNumber(item.endStakeTime),
+          farmMultiplier: convertBigNumber(item.farmMultiplier),
+          stakeToken: item.stakeToken,
+          tokensStaked: convertBigNumber(item.tokensStaked),
+        };
+      });
+      const action = getAllPoolsAction(modifierData);
+      dispatch(action);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (status == "disconnected") {
+      const action = disconnectAction();
+      dispatch(action);
+    } else if (status == "connected") {
+      reloadData(dispatch);
+    } else if (status == "connecting") {
+      const walletAction = getWalletInforAction(walletInfo);
+      dispatch(walletAction);
+    }
+  }, [status]);
+
+  useEffect(() => {
+    if (address != undefined) {
+      const walletAction = getWalletInforAction(walletInfo);
+      dispatch(walletAction);
+    } else {
+      const action = disconnectAction();
+      dispatch(action);
+    }
+  }, [address]);
+
   const connectWalletHandler = async () => {
     // if (window.ethereum && window.ethereum.isMetaMask) {
     //   try {
@@ -95,7 +144,8 @@ export const Header = () => {
           {/* </div> */}
         </ul>
         <ul className="flex flex-row justify-start items-center gap-8 mr-8">
-          {account.walletAddress.length > 0 ? (
+          <ConnectWallet btnTitle="Kết Nối Ví" modalTitle="Chọn Ví Kết Nối" />
+          {/* {account.walletAddress.length > 0 ? (
             <li>
               <WalletInforCard />
             </li>
@@ -105,11 +155,10 @@ export const Header = () => {
                 onClick={connectWalletHandler}
                 className="px-9 text-center w-full flex flex-row justify-between gap-4 items-center p-2 text-white walletCard rounded-full font-sans font-medium cursor-pointer"
               >
-               Kết nối ví
-
+                Kết nối ví
               </button>
             </li>
-          )}
+          )} */}
         </ul>
       </div>
       <div className="flex flex-col w-1/3 px-16 justify-center gap-2 absolute left-1/3 top-16 md:top-14">
@@ -121,11 +170,10 @@ export const Header = () => {
           );
         })}
       </div>
-      <ModalWarming
+      {/* <ModalWarming
         modalOpen={openModalWarming}
         setModalOpen={setOpenModalWarming}
-      />
-
+      /> */}
     </div>
   );
 };
