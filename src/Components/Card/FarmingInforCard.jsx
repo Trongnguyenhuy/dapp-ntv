@@ -6,17 +6,43 @@ import { useParams } from "react-router-dom";
 import RewardLiveUpdate from "../LiveUpdate/RewardLiveUpdate";
 import logoCoinLP from "../../assets/logo-coin-lp.png";
 import logoCoinTVN from "../../assets/logo-coin-tvn.png";
-import { harvestAllReward } from "../../Services/StakingServices/FarmingServices";
+import {
+  getGlobalARP,
+  harvestAllReward,
+} from "../../Services/StakingServices/FarmingServices";
 import { getStakingTimeInfoApi } from "../../Redux/Reducers/FarmingReducer";
 import { setMessage } from "../../Redux/Reducers/MessageReducer";
+import Loading from "../Button/loadingButton";
 
 const FarmingInforCard = () => {
   const [modalOpen, setModalOpen] = useState(false);
-  const { account, poolAPR, allStakingTime } = useSelector(
-    (state) => state.farmingReducer
-  );
+  const [harvestAllLoading, setHarvesAllLoading] = useState("");
+  const [globalAPR, setGlobalAPR] = useState(0);
+  const {
+    account,
+    pools,
+    allStakingTime,
+    totalMultiflier,
+    rewardTokenPerBlock,
+  } = useSelector((state) => state.farmingReducer);
   const { id } = useParams();
   const dispatch = useDispatch();
+
+  const calculateGlobalAPR = () => {
+    return getGlobalARP(
+      totalMultiflier,
+      pools[id - 1].tokensStaked,
+      pools[id - 1].farmMultiplier,
+      rewardTokenPerBlock
+    );
+  };
+
+  useEffect(() => {
+    if (totalMultiflier > 0) {
+      const globalAPR = calculateGlobalAPR();
+      setGlobalAPR(globalAPR.toFixed(2));
+    }
+  }, [totalMultiflier]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -34,6 +60,7 @@ const FarmingInforCard = () => {
 
   const handleharvestAll = async () => {
     try {
+      setHarvesAllLoading("harvestAll");
       const harvest = await harvestAllReward(poolId);
       if (harvest) {
         const allStakingTime = getStakingTimeInfoApi();
@@ -43,15 +70,18 @@ const FarmingInforCard = () => {
         });
         dispatch(setMessageAction);
         dispatch(allStakingTime);
+        setHarvesAllLoading("");
       } else {
         const setMessageAction = setMessage({
           type: "confirm",
           message: `Thu hoạch không thành công`,
         });
         dispatch(setMessageAction);
+        setHarvesAllLoading("");
       }
     } catch (err) {
       console.log(err);
+      setHarvesAllLoading("");
     }
   };
 
@@ -110,7 +140,11 @@ const FarmingInforCard = () => {
                     allStakingTime.length > 0 ? {} : { visibility: "hidden" }
                   }
                 >
-                  Thu Hoạch Tất Cả
+                  <Loading
+                    index={"harvestAll"}
+                    loading={harvestAllLoading}
+                    text={"Thu Hoạch Hết"}
+                  />
                 </button>
               </div>
             </div>
@@ -122,7 +156,7 @@ const FarmingInforCard = () => {
           <div className="flex flex-col">
             <p className="flex flex-row justify-between py-6">
               <span>APR</span>
-              <span>{poolAPR.length > 0 ? poolAPR[poolId] : 0} %</span>
+              <span>{" " + globalAPR} %</span>
             </p>
             <p className="flex flex-row justify-between py-6">
               <span>Tổng số thanh khoản đã được đặt cọc</span>
@@ -142,6 +176,7 @@ const FarmingInforCard = () => {
       <div className="flex flex-col items-center gap-8 w-full rounded-md cursor-pointer py-6">
         <span className="underline">Xem hợp đồng</span>
         <button
+          disabled={account.address == undefined}
           onClick={handleModal}
           className="w-full p-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg"
         >
