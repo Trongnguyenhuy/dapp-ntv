@@ -45,6 +45,13 @@ const FarmingInforCard = () => {
   }, [totalMultiflier]);
 
   useEffect(() => {
+    if (totalMultiflier > 0) {
+      const globalAPR = calculateGlobalAPR();
+      setGlobalAPR(globalAPR.toFixed(2));
+    }
+  }, [pools[id - 1].tokensStaked]);
+
+  useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
@@ -161,8 +168,8 @@ const FarmingInforCard = () => {
             <p className="flex flex-row justify-between py-6">
               <span>Tổng số thanh khoản đã được đặt cọc</span>
               <span>
-                {allStakingTime.length > 0
-                  ? (allStakingTime[poolId].pool.tokensStaked / 1e18).toFixed(5)
+                {pools.length > 0
+                  ? (pools[id - 1].tokensStaked/ 1e18).toFixed(5)
                   : 0}
               </span>
             </p>
