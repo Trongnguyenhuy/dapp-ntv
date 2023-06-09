@@ -71,6 +71,8 @@ const ModalContract = (props) => {
       dispatch(setMessageAction);
     }
     if (!isInfoCard) {
+      const allStakingTime = getStakingTimeInfoApi();
+      dispatch(allStakingTime);
       history.push(`/farm-detail/${poolId + 1}`);
     } else {
       const allStakingTime = getStakingTimeInfoApi();

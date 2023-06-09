@@ -13,7 +13,10 @@ import {
 import { getBalanceOfStakeToken } from "../../Services/StakingServices/FarmingServices";
 
 const initialState = {
-  account: {},
+  account: {
+    address: 0,
+    balanceOfStakeToken: 0,
+  },
   pools: [
     {
       endStakeTime: "2",
@@ -40,6 +43,7 @@ const initialState = {
   rewardTokenPerBlock: 0,
   totalMultiflier: 0,
   owner: 0,
+  isActiveChain: true,
 };
 
 const FarmingReducer = createSlice({
@@ -47,7 +51,20 @@ const FarmingReducer = createSlice({
   initialState,
   reducers: {
     getWalletInforAction: (state, action) => {
-      state.account= action.payload;
+      state.account = action.payload;
+    },
+    getBalanceOfTokenInforAction: (state, action) => {
+      if (state.isActiveChain) {
+        state.account.balanceOfStakeToken = action.payload;
+      }
+    },
+    getAddressInforAction: (state, action) => {
+      if (state.isActiveChain) {
+        state.account.address = action.payload;
+      }
+    },
+    setIsActiveChainAction: (state, action) => {
+      state.isActiveChain = action.payload;
     },
     getAllPoolsAction: (state, action) => {
       state.pools = action.payload;
@@ -75,9 +92,9 @@ const FarmingReducer = createSlice({
     },
     disconnectAction: (state, action) => {
       state.owner = 0;
-      state.account= {};
-      state.totalMultiflier = 0;
-      state.rewardTokenPerBlock = 0;
+      state.account = {};
+      // state.totalMultiflier = 0;
+      // state.rewardTokenPerBlock = 0;
       state.allStakingTime = [];
       state.stakerInfo = [];
     },
@@ -86,6 +103,9 @@ const FarmingReducer = createSlice({
 
 export const {
   getWalletInforAction,
+  setIsActiveChainAction,
+  getBalanceOfTokenInforAction,
+  getAddressInforAction,
   getAllPoolsAction,
   getStakerInforAction,
   getStakingTimeInforAction,
@@ -94,7 +114,7 @@ export const {
   getTotalMultiflierAction,
   updateBalanceOfTokenAction,
   getOwnerAction,
-  disconnectAction
+  disconnectAction,
 } = FarmingReducer.actions;
 
 export default FarmingReducer.reducer;

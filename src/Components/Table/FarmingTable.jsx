@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -28,22 +29,22 @@ const FarmingTable = () => {
   const { id } = useParams();
   const poolId = id - 1;
 
-  useEffect(() => {
-    (async () => {
-      const staker = await getStakerInfo(poolId);
-      const allStakingTime = await getAllStakingTimeInfo(
-        poolId,
-        staker.firstStakeTime,
-        staker.finalStakeTime
-      );
-      allStakingTime.map((item) => {
-        item.amount = (item.amount / 1e18).toFixed(5);
-        item.reward = (item.reward / 1e18).toFixed(5);
-      });
-      // setFilteredData(allStakingTime);
-      // setData(allStakingTime);
-    })();
-  }, []);
+  // useEffect(() => {
+  //   (async () => {
+  //     const staker = await getStakerInfo(poolId);
+  //     const allStakingTime = await getAllStakingTimeInfo(
+  //       poolId,
+  //       staker.firstStakeTime,
+  //       staker.finalStakeTime
+  //     );
+  //     allStakingTime.map((item) => {
+  //       item.amount = (item.amount / 1e18).toFixed(5);
+  //       item.reward = (item.reward / 1e18).toFixed(5);
+  //     });
+  //     // setFilteredData(allStakingTime);
+  //     // setData(allStakingTime);
+  //   })();
+  // }, []);
 
   const handleHarvest = async (time, index) => {
     setLoading("harvest" + index);

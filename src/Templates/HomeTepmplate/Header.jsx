@@ -8,16 +8,20 @@ import WalletInforCard from "../../Components/Card/WalletInforCard";
 import { useDispatch, useSelector } from "react-redux";
 import {
   disconnectAction,
+  getAddressInforAction,
   getAllPoolsAction,
   getAllProductApi,
+  getBalanceOfTokenInforAction,
   getOwnerAction,
   getPoolAPRAPI,
+  getRewardTokenPerBlockAction,
   getRewardTokenPerBlockApi,
   getStakerInfoApi,
   getStakingTimeInfoApi,
   getTotalMultiflierAction,
   getTotalMultiflierApi,
   getWalletInforAction,
+  setIsActiveChainAction,
 } from "../../Redux/Reducers/FarmingReducer";
 import { setMessage, setWarming } from "../../Redux/Reducers/MessageReducer";
 import ModalInfo from "../../Components/Modals/ModalInfo";
@@ -29,23 +33,23 @@ import {
 import {
   convertBigNumber,
   useReadFarmingContract,
+  useRewardPerBlock,
+  useTotalMultiflier,
 } from "../../Services/StakingServices/FarmingHook";
 import { useWalletInfor } from "../../Services/Hooks/WalletHook";
 import {
   ConnectWallet,
   useAddress,
+  useChain,
   useConnectionStatus,
 } from "@thirdweb-dev/react";
+import { useStakeTokenbalence } from "../../Services/Hooks/TokenHook";
 
 export const reloadData = (dispatch) => {
   const globalAPR = getPoolAPRAPI();
   const stakerInfo = getStakerInfoApi();
   const stakingTimeInfo = getStakingTimeInfoApi();
-  const rewardTokenPerBlock = getRewardTokenPerBlockApi();
-  const totalMultiflier = getTotalMultiflierApi();
-  dispatch(totalMultiflier);
   dispatch(stakingTimeInfo);
-  dispatch(rewardTokenPerBlock);
   dispatch(stakerInfo);
   dispatch(globalAPR);
 };
@@ -59,6 +63,11 @@ export const Header = () => {
   const { data, isLoading, error } = useReadFarmingContract("getAllPool", []);
   const walletInfo = useWalletInfor();
   const address = useAddress();
+  const chain = useChain();
+  const { resultTotal, loadingTotal, errTotal } = useTotalMultiflier();
+  const { resultReward, loadingReward, errReward } = useRewardPerBlock();
+  const { resultBalance, loadingBalance, errBalance } =
+    useStakeTokenbalence(address);
 
   useEffect(() => {
     if (!isLoading && !error) {
@@ -76,46 +85,73 @@ export const Header = () => {
   }, [data]);
 
   useEffect(() => {
+    if (!loadingTotal && !errTotal) {
+      // console.log("totalMultiflier", resultTotal);
+      const totalMultiflierAction = getTotalMultiflierAction(resultTotal);
+      dispatch(totalMultiflierAction);
+    }
+  }, [resultTotal]);
+
+  useEffect(() => {
+    if (!loadingReward && !errReward) {
+      // console.log("rewardPerBlock", resultReward);
+      const rewardTokenPerBlock = getRewardTokenPerBlockAction(resultReward);
+      dispatch(rewardTokenPerBlock);
+    }
+  }, [resultReward]);
+
+  useEffect(() => {
+    if (!loadingBalance && !errBalance) {
+      const balanceOfTokenAction = getBalanceOfTokenInforAction(resultBalance);
+      const addressInfoAction = getAddressInforAction(address);
+      dispatch(addressInfoAction);
+      dispatch(balanceOfTokenAction);
+    }
+  }, [resultBalance]);
+
+  useEffect(() => {
+    console.log("Status:", status);
     if (status == "disconnected") {
       const action = disconnectAction();
       dispatch(action);
     } else if (status == "connected") {
       reloadData(dispatch);
-    } else if (status == "connecting") {
-      const walletAction = getWalletInforAction(walletInfo);
-      dispatch(walletAction);
     }
   }, [status]);
 
   useEffect(() => {
+    // console.log("address:", address);
     if (address != undefined) {
-      const walletAction = getWalletInforAction(walletInfo);
-      dispatch(walletAction);
+      const addressInfoAction = getAddressInforAction(address);
+      const balanceOfTokenAction = getBalanceOfTokenInforAction(resultBalance);
+      dispatch(balanceOfTokenAction);
+      dispatch(addressInfoAction);
+      reloadData(dispatch);
     } else {
       const action = disconnectAction();
       dispatch(action);
     }
   }, [address]);
 
-  const connectWalletHandler = async () => {
-    // if (window.ethereum && window.ethereum.isMetaMask) {
-    //   try {
-    //     await window.ethereum.request({
-    //       method: "eth_requestAccounts",
-    //     });
-    //     window.location.reload();
-    //   } catch (err) {
-    //     console.log(err);
-    //   }
-    // } else {
-    //   const setMessageAction = setMessage({
-    //     type: "warming",
-    //     message: "Hãy cài đặt ví Metamask trước khi sử dụng dịch vụ",
-    //   });
-    //   dispatch(setMessageAction);
-    // }
-    setOpenModalWarming(true);
-  };
+  useEffect(() => {
+    if (chain != undefined) {
+      if (chain.name == "Sepolia") {
+        const activeChain = setIsActiveChainAction(true);
+        const addressInfoAction = getAddressInforAction(address);
+        const balanceOfTokenAction =
+          getBalanceOfTokenInforAction(resultBalance);
+        dispatch(activeChain);
+        dispatch(balanceOfTokenAction);
+        dispatch(addressInfoAction);
+        reloadData(dispatch);
+      } else {
+        const activeChain = setIsActiveChainAction(false);
+        const action = disconnectAction();
+        dispatch(activeChain);
+        dispatch(action);
+      }
+    }
+  }, [chain]);
 
   return (
     <div className="border-b-2 border-gray-600 py-2 fixed w-full bg-[#091227] z-20">
