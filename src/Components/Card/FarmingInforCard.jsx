@@ -38,18 +38,18 @@ const FarmingInforCard = () => {
   };
 
   useEffect(() => {
-    if (totalMultiflier > 0) {
+    if (totalMultiflier > 0 && pools.length > 0) {
       const globalAPR = calculateGlobalAPR();
       setGlobalAPR(globalAPR.toFixed(2));
     }
-  }, [totalMultiflier]);
+  }, [totalMultiflier,pools]);
 
-  useEffect(() => {
-    if (totalMultiflier > 0) {
-      const globalAPR = calculateGlobalAPR();
-      setGlobalAPR(globalAPR.toFixed(2));
-    }
-  }, [pools[id - 1].tokensStaked]);
+  // useEffect(() => {
+  //   if (totalMultiflier > 0) {
+  //     const globalAPR = calculateGlobalAPR();
+  //     setGlobalAPR(globalAPR.toFixed(2));
+  //   }
+  // }, [pools[id - 1].tokensStaked]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -169,7 +169,7 @@ const FarmingInforCard = () => {
               <span>Tổng số thanh khoản đã được đặt cọc</span>
               <span>
                 {pools.length > 0
-                  ? (pools[id - 1].tokensStaked/ 1e18).toFixed(5)
+                  ? (pools[id - 1].tokensStaked / 1e18).toFixed(5)
                   : 0}
               </span>
             </p>
@@ -187,7 +187,7 @@ const FarmingInforCard = () => {
           onClick={handleModal}
           className="w-full p-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg"
         >
-          Thêm thanh khoản
+          Đặt Cọc
         </button>
       </div>
       <ModalContract

@@ -7,6 +7,7 @@ import React, { useState } from "react";
 import { Slider } from "antd";
 import "antd/dist/reset.css";
 import {
+  getAllPoolsAction,
   getPoolAPRAPI,
   getStakingTimeInfoApi,
   updateBalanceOfTokenApi,
@@ -15,6 +16,12 @@ import { setMessage } from "../../Redux/Reducers/MessageReducer";
 import { depositTokenToPool } from "../../Services/StakingServices/FarmingServices";
 import Loading from "../Button/loadingButton";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import {
+  usePools,
+  useReadFarmingContract,
+} from "../../Services/StakingServices/FarmingHook";
+import useStaking from "../../Services/StakingServices/StakingHook";
+import { bignumberModifier } from "../../Ultis/modifierData";
 const NUMBEROFBLOCKPERDAY = 84000 / 13;
 
 const ModalContract = (props) => {
@@ -22,6 +29,10 @@ const ModalContract = (props) => {
   const { account, pools, rewardTokenPerBlock, totalMultiflier } = useSelector(
     (state) => state.farmingReducer
   );
+
+  const stakingContract = useStaking();
+  // const { result, isLoading, error } = usePools();
+
   const [loading, setLoading] = useState(0);
   const [quantity, setQuantity] = useState(0);
   const [predictAPR, setPredictAPR] = useState(0);
@@ -53,6 +64,7 @@ const ModalContract = (props) => {
   const handleConfirm = async () => {
     setLoading(1);
     const success = await depositTokenToPool(poolId, amountOfToken.current);
+    // const success = true;
     setLoading(0);
     setModalOpen(false);
     if (success) {
@@ -60,9 +72,13 @@ const ModalContract = (props) => {
         type: "confirm",
         message: `${amountOfToken.current} tokens đã được ký gửi!`,
       });
-      const globalAPR = getPoolAPRAPI();
+      const allPool = await stakingContract.call("getAllPool");
+      const action = getAllPoolsAction(bignumberModifier(allPool));
+      dispatch(action);
       dispatch(setMessageAction);
-      dispatch(globalAPR);
+      // console.log("allPool",bignumberModifier(allPool))
+      // const globalAPR = getPoolAPRAPI();
+      // dispatch(globalAPR);
     } else {
       const setMessageAction = setMessage({
         type: "confirm",

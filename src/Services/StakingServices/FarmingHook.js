@@ -56,3 +56,29 @@ export const useRewardPerBlock = () => {
     errReward: error,
   };
 };
+
+export const usePools = () => {
+  const [result, setResult] = useState([]);
+  const { data, isLoading, error } = useReadFarmingContract("getAllPool", []);
+
+  useEffect(() => {
+    if (!isLoading && !error) {
+      let modifierData = data.map((item) => {
+        return {
+          // endStakeTime: ethers.utils.formatUnits(item.endStakeTime),
+          endStakeTime: convertBigNumber(item.endStakeTime),
+          farmMultiplier: convertBigNumber(item.farmMultiplier),
+          stakeToken: item.stakeToken,
+          tokensStaked: convertBigNumber(item.tokensStaked),
+        };
+      });
+      setResult(modifierData);
+    }
+  }, [data]);
+
+  return {
+    result: result,
+    loading: isLoading,
+    err: error,
+  };
+};

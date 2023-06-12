@@ -32,7 +32,8 @@ import {
 } from "../../Services/WalletServices/WalletServices";
 import {
   convertBigNumber,
-  useReadFarmingContract,
+  usePools,
+  // useReadFarmingContract,
   useRewardPerBlock,
   useTotalMultiflier,
 } from "../../Services/StakingServices/FarmingHook";
@@ -44,14 +45,15 @@ import {
   useConnectionStatus,
 } from "@thirdweb-dev/react";
 import { useStakeTokenbalence } from "../../Services/Hooks/TokenHook";
+import { ethers } from "ethers";
 
 export const reloadData = (dispatch) => {
-  const globalAPR = getPoolAPRAPI();
+  // const globalAPR = getPoolAPRAPI();
   const stakerInfo = getStakerInfoApi();
   const stakingTimeInfo = getStakingTimeInfoApi();
   dispatch(stakingTimeInfo);
   dispatch(stakerInfo);
-  dispatch(globalAPR);
+  // dispatch(globalAPR);
 };
 
 export const Header = () => {
@@ -60,7 +62,7 @@ export const Header = () => {
   const [openModalWarming, setOpenModalWarming] = useState(false);
   const dispatch = useDispatch();
   const status = useConnectionStatus();
-  const { data, isLoading, error } = useReadFarmingContract("getAllPool", []);
+  const { result: pools, isLoading, error } = usePools();
   const walletInfo = useWalletInfor();
   const address = useAddress();
   const chain = useChain();
@@ -69,58 +71,78 @@ export const Header = () => {
   const { resultBalance, loadingBalance, errBalance } =
     useStakeTokenbalence(address);
 
-  useEffect(() => {
-    if (!isLoading && !error) {
-      let modifierData = data.map((item) => {
-        return {
-          endStakeTime: convertBigNumber(item.endStakeTime),
-          farmMultiplier: convertBigNumber(item.farmMultiplier),
-          stakeToken: item.stakeToken,
-          tokensStaked: convertBigNumber(item.tokensStaked),
-        };
-      });
-      const action = getAllPoolsAction(modifierData);
-      dispatch(action);
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (!isLoading && !error) {
+  //     let modifierData = data.map((item) => {
+  //       return {
+  //         endStakeTime: convertBigNumber(item.endStakeTime),
+  //         farmMultiplier: convertBigNumber(item.farmMultiplier),
+  //         stakeToken: item.stakeToken,
+  //         tokensStaked: convertBigNumber(item.tokensStaked),
+  //       };
+  //     });
+  //     const action = getAllPoolsAction(modifierData);
+  //     dispatch(action);
+  //   }
+  // }, [data]);
+
+  // useEffect(() => {
+  //   if (!loadingTotal && !errTotal) {
+  //     // console.log("totalMultiflier", resultTotal);
+  //     const totalMultiflierAction = getTotalMultiflierAction(resultTotal);
+  //     dispatch(totalMultiflierAction);
+  //   }
+  // }, [resultTotal]);
+
+  // useEffect(() => {
+  //   if (!loadingReward && !errReward) {
+  //     // console.log("rewardPerBlock", resultReward);
+  //     const rewardTokenPerBlock = getRewardTokenPerBlockAction(resultReward);
+  //     dispatch(rewardTokenPerBlock);
+  //   }
+  // }, [resultReward]);
+
+  // useEffect(() => {
+  //   if (!loadingBalance && !errBalance) {
+  //     const balanceOfTokenAction = getBalanceOfTokenInforAction(resultBalance);
+  //     const addressInfoAction = getAddressInforAction(address);
+  //     dispatch(addressInfoAction);
+  //     dispatch(balanceOfTokenAction);
+  //   }
+  // }, [resultBalance]);
 
   useEffect(() => {
-    if (!loadingTotal && !errTotal) {
-      // console.log("totalMultiflier", resultTotal);
-      const totalMultiflierAction = getTotalMultiflierAction(resultTotal);
-      dispatch(totalMultiflierAction);
-    }
-  }, [resultTotal]);
-
-  useEffect(() => {
-    if (!loadingReward && !errReward) {
-      // console.log("rewardPerBlock", resultReward);
-      const rewardTokenPerBlock = getRewardTokenPerBlockAction(resultReward);
-      dispatch(rewardTokenPerBlock);
-    }
-  }, [resultReward]);
-
-  useEffect(() => {
-    if (!loadingBalance && !errBalance) {
-      const balanceOfTokenAction = getBalanceOfTokenInforAction(resultBalance);
-      const addressInfoAction = getAddressInforAction(address);
-      dispatch(addressInfoAction);
-      dispatch(balanceOfTokenAction);
-    }
-  }, [resultBalance]);
-
-  useEffect(() => {
-    console.log("Status:", status);
+    // console.log("Status:", status);
     if (status == "disconnected") {
       const action = disconnectAction();
       dispatch(action);
     } else if (status == "connected") {
       reloadData(dispatch);
     }
-  }, [status]);
 
-  useEffect(() => {
-    // console.log("address:", address);
+    if (!loadingBalance && !errBalance) {
+      const balanceOfTokenAction = getBalanceOfTokenInforAction(resultBalance);
+      const addressInfoAction = getAddressInforAction(address);
+      dispatch(addressInfoAction);
+      dispatch(balanceOfTokenAction);
+    }
+
+    if (!loadingTotal && !errTotal) {
+      // console.log("totalMultiflier", resultTotal);
+      const totalMultiflierAction = getTotalMultiflierAction(resultTotal);
+      dispatch(totalMultiflierAction);
+    }
+
+    if (!loadingReward && !errReward) {
+      // console.log("rewardPerBlock", resultReward);
+      const rewardTokenPerBlock = getRewardTokenPerBlockAction(resultReward);
+      dispatch(rewardTokenPerBlock);
+    }
+
+    if (!isLoading && !error) {
+      const action = getAllPoolsAction(pools);
+      dispatch(action);
+    }
     if (address != undefined) {
       const addressInfoAction = getAddressInforAction(address);
       const balanceOfTokenAction = getBalanceOfTokenInforAction(resultBalance);
@@ -131,9 +153,7 @@ export const Header = () => {
       const action = disconnectAction();
       dispatch(action);
     }
-  }, [address]);
 
-  useEffect(() => {
     if (chain != undefined) {
       if (chain.name == "Sepolia") {
         const activeChain = setIsActiveChainAction(true);
@@ -151,7 +171,51 @@ export const Header = () => {
         dispatch(action);
       }
     }
-  }, [chain]);
+  }, [status, address, chain, resultTotal, resultReward, pools, resultBalance]);
+
+  // useEffect(() => {
+  //   console.log("Status:", status);
+  //   if (status == "disconnected") {
+  //     const action = disconnectAction();
+  //     dispatch(action);
+  //   } else if (status == "connected") {
+  //     reloadData(dispatch);
+  //   }
+  // }, [status]);
+
+  // useEffect(() => {
+  //   // console.log("address:", address);
+  //   if (address != undefined) {
+  //     const addressInfoAction = getAddressInforAction(address);
+  //     const balanceOfTokenAction = getBalanceOfTokenInforAction(resultBalance);
+  //     dispatch(balanceOfTokenAction);
+  //     dispatch(addressInfoAction);
+  //     reloadData(dispatch);
+  //   } else {
+  //     const action = disconnectAction();
+  //     dispatch(action);
+  //   }
+  // }, [address]);
+
+  // useEffect(() => {
+  //   if (chain != undefined) {
+  //     if (chain.name == "Sepolia") {
+  //       const activeChain = setIsActiveChainAction(true);
+  //       const addressInfoAction = getAddressInforAction(address);
+  //       const balanceOfTokenAction =
+  //         getBalanceOfTokenInforAction(resultBalance);
+  //       dispatch(activeChain);
+  //       dispatch(balanceOfTokenAction);
+  //       dispatch(addressInfoAction);
+  //       reloadData(dispatch);
+  //     } else {
+  //       const activeChain = setIsActiveChainAction(false);
+  //       const action = disconnectAction();
+  //       dispatch(activeChain);
+  //       dispatch(action);
+  //     }
+  //   }
+  // }, [chain]);
 
   return (
     <div className="border-b-2 border-gray-600 py-2 fixed w-full bg-[#091227] z-20">
