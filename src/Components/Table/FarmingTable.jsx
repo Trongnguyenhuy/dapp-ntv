@@ -192,13 +192,8 @@ const FarmingTable = () => {
         >
           Tìm kiếm
         </button>
-<<<<<<< HEAD
       </div>
       
-=======
-      </div> */}
-      <h1 className="font-poppins font-bold text-center text-2xl uppercase py-4">LỊCH SỬ GỬI</h1>
->>>>>>> Delta_Labs_Nguyen_Huy_Trong
       {loading === "harvest" || loading === "unstaking" ? (
         <div className="w-full">
           <LoadingOutlined className="w-full text-4xl py-8 font-bold mx-auto" />
