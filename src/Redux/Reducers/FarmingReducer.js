@@ -14,10 +14,8 @@ import { getBalanceOfStakeToken } from "../../Services/StakingServices/FarmingSe
 
 const initialState = {
   account: {
-    walletAddress: "",
-    balance: 0,
+    address: 0,
     balanceOfStakeToken: 0,
-    network: "",
   },
   pools: [
     {
@@ -45,18 +43,28 @@ const initialState = {
   rewardTokenPerBlock: 0,
   totalMultiflier: 0,
   owner: 0,
+  isActiveChain: true,
 };
 
 const FarmingReducer = createSlice({
   name: "farmingReducer",
   initialState,
   reducers: {
-    getWalletInfor: (state, action) => {
-      const { account, balance, balanceOfStakeToken, network } = action.payload;
-      state.account.walletAddress = account;
-      state.account.balance = balance;
-      state.account.balanceOfStakeToken = balanceOfStakeToken;
-      state.account.network = network;
+    getWalletInforAction: (state, action) => {
+      state.account = action.payload;
+    },
+    getBalanceOfTokenInforAction: (state, action) => {
+      if (state.isActiveChain) {
+        state.account.balanceOfStakeToken = action.payload;
+      }
+    },
+    getAddressInforAction: (state, action) => {
+      if (state.isActiveChain) {
+        state.account.address = action.payload;
+      }
+    },
+    setIsActiveChainAction: (state, action) => {
+      state.isActiveChain = action.payload;
     },
     getAllPoolsAction: (state, action) => {
       state.pools = action.payload;
@@ -82,11 +90,22 @@ const FarmingReducer = createSlice({
     getOwnerAction: (state, action) => {
       state.owner = action.payload;
     },
+    disconnectAction: (state, action) => {
+      state.owner = 0;
+      state.account = {};
+      // state.totalMultiflier = 0;
+      // state.rewardTokenPerBlock = 0;
+      state.allStakingTime = [];
+      state.stakerInfo = [];
+    },
   },
 });
 
 export const {
-  getWalletInfor,
+  getWalletInforAction,
+  setIsActiveChainAction,
+  getBalanceOfTokenInforAction,
+  getAddressInforAction,
   getAllPoolsAction,
   getStakerInforAction,
   getStakingTimeInforAction,
@@ -95,6 +114,7 @@ export const {
   getTotalMultiflierAction,
   updateBalanceOfTokenAction,
   getOwnerAction,
+  disconnectAction,
 } = FarmingReducer.actions;
 
 export default FarmingReducer.reducer;
