@@ -1,20 +1,10 @@
 /* eslint-disable react/prop-types */
 import { Modal } from "antd";
-import logoMetaMask from "../../assets/metamask.png";
-import { useEffect } from "react";
-import { useState } from "react";
 const ModalChangeNetwork = (props) => {
-  const { modalOpen, warming } = props;
-  const [isOpen, setIsOpen] = useState(false);
-
-  useEffect(() => {
-    if (modalOpen) {
-      setIsOpen(true);
-    }
-  }, [modalOpen, setIsOpen]);
+  const { modalOpen, setModalOpen, warming } = props;
 
   const handleCancel = () => {
-    setIsOpen(false);
+    setModalOpen(false);
   };
 
   const changeNetwork = async () => {

@@ -180,7 +180,7 @@ export const Header = () => {
           {/* </div> */}
         </ul>
         <ul className="flex flex-row justify-start items-center gap-8 mr-8">
-          <ConnectWallet btnTitle="Kết Nối Ví" modalTitle="Chọn Ví Kết Nối" />
+          <ConnectWallet className="modal-info" theme="dark" btnTitle="Kết nối ví" modalTitle="Chọn ví để kết nối" />
           {/* {account.walletAddress.length > 0 ? (
             <li>
               <WalletInforCard />
@@ -206,12 +206,7 @@ export const Header = () => {
           );
         })}
       </div>
-      <div className="absolute">
-        <ModalWarming
-          modalOpen={openModalWarming}
-          setModalOpen={setOpenModalWarming}
-        />
-      </div>
+      
 
 
     </div>

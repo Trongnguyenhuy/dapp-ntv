@@ -93,7 +93,7 @@ const FarmingInforCard = () => {
   };
 
   return (
-    <div className="container px-32 mx-auto flex flex-col gap-4 pt-32 h-full py-8">
+    <div className="container px-40 mx-auto flex flex-col gap-6 pt-32 h-full py-8">
       <div className="flex flex-row justify-around items-center gap-4">
         <div className="w-1/3">
           <div className="flex flex-col gap-4 items-center">
@@ -108,57 +108,63 @@ const FarmingInforCard = () => {
             <h2 className="text-2xl font-bold">Nạp TVN-LP nhận TVN</h2>
           </div>
         </div>
-        <div className="w-2/3 flex flex-row gap-6">
-          <div className="w-1/2 flex flex-col items-center gap-4">
-            <div className="w-full flex flex-col items-center gap-4 border-2 border-gray-600 rounded-md">
-              <div className="w-full flex flex-col items-center border-b-2 border-gray-600 uppercase p-4">
-                <span>Đã đặt</span>
+        <div className="w-2/3 flex flex-col gap-6">
+          <div className="flex flex-row gap-6">
+            <div className="w-1/2 flex flex-col items-center gap-4">
+              <div className="w-full flex flex-col items-center gap-4 border-2 border-gray-600 rounded-md">
+                <div className="w-full flex flex-col items-center border-b-2 border-gray-600 uppercase p-4">
+                  <span>Đã đặt</span>
+                </div>
+                <div className="w-full flex flex-col items-center py-12 text-xl">
+                  <p className="flex flex-col items-center gap-2 font-bold">
+                    <span className="text-4xl text-gray-400">
+                      {amountOfStake.toFixed(5)}
+                    </span>
+                    <span className="text-xl  py-6">TVN-LP</span>
+                  </p>
+
+                </div>
               </div>
-              <div className="w-full flex flex-col items-center py-12 text-xl">
-                <p className="flex flex-col items-center gap-2 font-bold">
-                  <span className="text-4xl text-gray-400">
-                    {amountOfStake.toFixed(5)}
-                  </span>
-                  <span className="text-xl  py-6">TVN-LP</span>
-                </p>
-                <button
-                  className="w-full p-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg"
-                  style={{ visibility: "hidden" }}
-                >
-                  Rút
-                </button>
-              </div>
+
+
             </div>
-          </div>
-          <div className="w-1/2 flex flex-col items-center gap-4">
-            <div className="w-full flex flex-col items-center gap-4 border-2 border-gray-600 rounded-md">
-              <div className="w-full flex flex-col items-center border-b-2 border-gray-600 uppercase p-4">
-                <span>Kiếm được</span>
+
+            <div className="w-1/2 flex flex-col items-center gap-4">
+              <div className="w-full flex flex-col items-center gap-4 border-2 border-gray-600 rounded-md">
+                <div className="w-full flex flex-col items-center border-b-2 border-gray-600 uppercase p-4">
+                  <span>Kiếm được</span>
+                </div>
+                <div className="w-full flex flex-col items-center p-4 py-12 text-xl">
+                  <p className="flex flex-col items-center gap-2 font-bold">
+                    <RewardLiveUpdate poolId={poolId} isTotal={true} />
+                    <span className="text-xl  py-6">TVN</span>
+                  </p>
+
+                </div>
               </div>
-              <div className="w-full flex flex-col items-center p-4 py-12 text-xl">
-                <p className="flex flex-col items-center gap-2 font-bold">
-                  <RewardLiveUpdate poolId={poolId} isTotal={true} />
-                  <span className="text-xl  py-6">TVN</span>
-                </p>
-                <button
-                  onClick={handleharvestAll}
-                  className="w-full p-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg"
-                  style={
-                    allStakingTime.length > 0 ? {} : { visibility: "hidden" }
-                  }
-                >
-                  <Loading
-                    index={"harvestAll"}
-                    loading={harvestAllLoading}
-                    text={"Thu Hoạch Hết"}
-                  />
-                </button>
-              </div>
+
+
             </div>
+
           </div>
+          <button
+              onClick={handleharvestAll}
+              className="p-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg"
+              style={
+                allStakingTime.length > 0 ? {} : { visibility: "hidden" }
+              }
+            >
+              <Loading
+                index={"harvestAll"}
+                loading={harvestAllLoading}
+                text={"Thu hoạch tất cả"}
+              />
+            </button>
         </div>
+
       </div>
-      <div className="flex flex-row justify-around items-center mt-8">
+
+      <div className="flex flex-row justify-around items-center">
         <div className="w-full border-2 border-gray-600 rounded-md px-8">
           <div className="flex flex-col">
             <p className="flex flex-row justify-between py-6">
@@ -169,7 +175,7 @@ const FarmingInforCard = () => {
               <span>Tổng số thanh khoản đã được đặt cọc</span>
               <span>
                 {pools.length > 0
-                  ? (pools[id - 1].tokensStaked/ 1e18).toFixed(5)
+                  ? (pools[id - 1].tokensStaked / 1e18).toFixed(5)
                   : 0}
               </span>
             </p>
@@ -187,7 +193,7 @@ const FarmingInforCard = () => {
           onClick={handleModal}
           className="w-full p-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg"
         >
-          Thêm thanh khoản
+          Đặt cọc
         </button>
       </div>
       <ModalContract

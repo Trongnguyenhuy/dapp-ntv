@@ -92,8 +92,7 @@ const FarmingTable = () => {
 
     setLoading("");
   };
-
-  // const handleSearchChange = (event) => {
+// const handleSearchChange = (event) => {
   //   const value = event.target.value;
   //   setSearchText(value);
   // };
@@ -128,8 +127,8 @@ const FarmingTable = () => {
   };
 
   const renderBody = () => {
-    if (allStakingTime.length >0) {
-      console.log("BBBBB", allStakingTime[poolId]);
+    return (
+      allStakingTime.length > 0 &&
       allStakingTime[poolId].stakingTime.map((key, index) => {
         return (
           <tr className="border-t-2 border-gray-600 p-4" key={index}>
@@ -171,37 +170,13 @@ const FarmingTable = () => {
               </div>
             </td>
           </tr>
-        )
+        );
       })
-
-    }
-    else {
-      return (
-        <tr className="border-t-2 border-gray-600 p-4">
-          <td className="col-span-4 py-4 px-4">Không có dữ liệu</td>
-        </tr>
-      )
-    }
+    );
   };
 
   return (
-    <div className="container px-32 mx-auto py-8">
-      {/* <div className="flex flex-row justify-between py-6 gap-4">
-        <input
-          type="text"
-          className="w-full py-2 px-4 bg-[#060d20] border-b-2 border-gray-800 focus:outline-none rounded-md"
-          placeholder="Search"
-          value={searchText || ""}
-          onChange={handleSearchChange}
-        />
-        <button
-          className="w-40 p-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg"
-          onClick={handleSearchClick}
-        >
-          Tìm kiếm
-        </button>
-      </div> */}
-      <h1 className="font-poppins font-bold text-center text-2xl uppercase py-4">LỊCH SỬ GỬI</h1>
+    <div className="container px-40 mx-auto py-8">    
       {loading === "harvest" || loading === "unstaking" ? (
         <div className="w-full">
           <LoadingOutlined className="w-full text-4xl py-8 font-bold mx-auto" />

@@ -2,12 +2,15 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 import ModalContract from "../Modals/ModalContract";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import logoCoinLP from "../../assets/logo-coin-lp.png";
 import logoCoinTVN from "../../assets/logo-coin-tvn.png";
 import ModalWarming from "../Modals/ModalWarming";
 import { getGlobalARP } from "../../Services/StakingServices/FarmingServices";
+import { checkConnectAccount, checkChainId } from "../../Services/WalletServices/WalletServices";
+import { setWarming } from "../../Redux/Reducers/MessageReducer";
+import { useChainId } from "@thirdweb-dev/react";
 
 const FarmingCard = (props) => {
   const { pools, account, totalMultiflier, rewardTokenPerBlock } = useSelector(
@@ -18,7 +21,8 @@ const FarmingCard = (props) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [openModalWarming, setOpenModalWarming] = useState(false);
   const [globalAPR, setGlobalAPR] = useState(0);
-
+  const dispatch = useDispatch();
+  const chainId = useChainId();
   const calculateGlobalAPR = () => {
     return getGlobalARP(
       totalMultiflier,
@@ -39,14 +43,51 @@ const FarmingCard = (props) => {
     history.push(`/farm-detail/${id}`); // Chuyển đến đường dẫn với param
   };
 
-  const handleModal = () => {
-    if (account.address) {
-      setOpenModalWarming(false);
-      setModalOpen(true);
-    } else {
-      setOpenModalWarming(true);
-      setModalOpen(false);
+  const handleModal = async () => {
+
+    try {
+      const checkConnect = await checkConnectAccount(dispatch);
+      const checkChain = await checkChainId(dispatch, true);
+      if (checkConnect == undefined) {
+        const warmingAction = setWarming({
+          type: "instruct",
+          header: "Chưa kết nối ví!",
+          message: "Bạn chưa kết nối ví MetaMask!",
+          code: "wm02",
+        });
+        dispatch(warmingAction);
+        setOpenModalWarming(true);
+        setModalOpen(false);
+      }
+      if (checkChain == false) {
+        const warmingAction = setWarming({
+          type: "instruct",
+          header: "Sai mạng!",
+          message: "Hãy chuyển sang mạng Sepolia!",
+          code: "wm03",
+        });
+        dispatch(warmingAction);
+        setOpenModalWarming(true);
+        setModalOpen(false);
+      }
+      else {
+        setOpenModalWarming(false);
+        setModalOpen(true);
+      }
+    } catch (error) {
+      console.error(error);
     }
+
+    // if (account.address) {
+
+    //   setOpenModalWarming(false);
+    //   setModalOpen(true);
+    // } else {
+    //   setOpenModalWarming(true);
+
+    //   setModalOpen(false);
+
+    // }
   };
 
   return (
@@ -82,26 +123,23 @@ const FarmingCard = (props) => {
           <div className="flex flex-col items-center py-4">
             <button
               onClick={handleClick}
-              className={`${
-                isHome == false ? "hidden" : ""
-              } w-full py-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg font-sans font-medium cursor-pointer text-white`}
+              className={`${isHome == false ? "hidden" : ""
+                } w-full py-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg font-sans font-medium cursor-pointer text-white`}
             >
               Xem chi tiết
             </button>
             <span
               onClick={handleClick}
-              className={`${
-                isHome == true ? "hidden" : ""
-              } underline cursor-pointer`}
+              className={`${isHome == true ? "hidden" : ""
+                } underline cursor-pointer`}
             >
               Xem chi tiết
             </span>
           </div>
         </div>
         <div
-          className={`flex flex-row justify-center ${
-            isHome == true ? "hidden" : ""
-          }`}
+          className={`flex flex-row justify-center ${isHome == true ? "hidden" : ""
+            }`}
         >
           <button
             onClick={handleModal}
