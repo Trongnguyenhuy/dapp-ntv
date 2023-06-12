@@ -38,18 +38,18 @@ const FarmingInforCard = () => {
   };
 
   useEffect(() => {
-    if (totalMultiflier > 0) {
+    if (totalMultiflier > 0 && pools.length > 0) {
       const globalAPR = calculateGlobalAPR();
       setGlobalAPR(globalAPR.toFixed(2));
     }
-  }, [totalMultiflier]);
+  }, [totalMultiflier, pools]);
 
-  useEffect(() => {
-    if (totalMultiflier > 0) {
-      const globalAPR = calculateGlobalAPR();
-      setGlobalAPR(globalAPR.toFixed(2));
-    }
-  }, [pools[id - 1].tokensStaked]);
+  // useEffect(() => {
+  //   if (totalMultiflier > 0) {
+  //     const globalAPR = calculateGlobalAPR();
+  //     setGlobalAPR(globalAPR.toFixed(2));
+  //   }
+  // }, [pools[id - 1].tokensStaked]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -169,7 +169,7 @@ const FarmingInforCard = () => {
               <span>Tổng số thanh khoản đã được đặt cọc</span>
               <span>
                 {pools.length > 0
-                  ? (pools[id - 1].tokensStaked/ 1e18).toFixed(5)
+                  ? (pools[id - 1].tokensStaked / 1e18).toFixed(5)
                   : 0}
               </span>
             </p>
@@ -181,13 +181,19 @@ const FarmingInforCard = () => {
         </div>
       </div>
       <div className="flex flex-col items-center gap-8 w-full rounded-md cursor-pointer py-6">
-        <span className="underline">Xem hợp đồng</span>
+        <a
+          target="_blank"
+          rel="noreferrer"
+          href="https://sepolia.etherscan.io/address/0xB25aef1a480e4613D6FAE9559F09F542CFb83f81#code"
+        >
+          <span className="underline">Xem hợp đồng</span>
+        </a>
         <button
           disabled={account.address == undefined}
           onClick={handleModal}
           className="w-full p-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg"
         >
-          Thêm thanh khoản
+          Đặt Cọc
         </button>
       </div>
       <ModalContract

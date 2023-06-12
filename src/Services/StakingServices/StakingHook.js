@@ -3,7 +3,7 @@ import stakingABI from "../ABI/SepoliaABI/DynamicAPRABI/DynamicARPFarmingPool.js
 
 const useStaking = () => {
   const { data: contract } = useContract(
-    "0xcffe38C106CdB1006E39EFb1B86087af2fC4d32A",
+    "0xB25aef1a480e4613D6FAE9559F09F542CFb83f81",
     stakingABI.abi
   );
   return contract;

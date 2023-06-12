@@ -33,7 +33,7 @@ const FarmingCard = (props) => {
       const globalAPR = calculateGlobalAPR();
       setGlobalAPR(globalAPR.toFixed(2));
     }
-  }, [totalMultiflier]);
+  }, [totalMultiflier,pools]);
 
   const handleClick = () => {
     history.push(`/farm-detail/${id}`); // Chuyển đến đường dẫn với param
