@@ -55,28 +55,27 @@ const ModalChangeNetwork = (props) => {
   return (
     <Modal
       wrapClassName="custom-modal"
+      title={
+        <h2 className="font-bold text-xl text-white uppercase text-center p-4">
+          {warming.header}
+        </h2>
+      }
       bodyStyle={{ padding: 10 }}
-      open={isOpen}
+      open={modalOpen}
       onCancel={handleCancel}
       footer={[]}
     >
-      <div className="flex flex-col justify-center items-center gap-4">
-        <div className="w-4/5 border-2 border-gray-700 rounded-xl px-6 py-4">
-          <h2 className="text-lg font-poppins font-light text-black">
-            {warming.message}
-          </h2>
-        </div>
+      <div className="flex flex-col justify-between gap-4">
+
+        <h2 className="text-lg py-4 text-center font-poppins font-light cursor-pointer text-white">{warming.message}</h2>
         <button
           onClick={changeNetwork}
-          className="w-4/5 flex flex-row items-center gap-10 px-6 py-4 bg-white rounded-lg"
+          className="w-full flex flex-row items-center gap-10 px-6 py-4 bg-white rounded-lg"
         >
-          <img
-            src={logoMetaMask}
-            alt="account"
-            className="w-6 h-6 rounded-full"
-          />
-          <span className="text-black text-xl font-semibold ">CHUYỂN MẠNG</span>
+          <h2 className="text-lg font-poppins font-light text-center w-full cursor-pointer text-black">Chuyển mạng</h2>
+
         </button>
+
       </div>
     </Modal>
   );

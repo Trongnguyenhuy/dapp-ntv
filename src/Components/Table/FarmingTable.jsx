@@ -36,10 +36,7 @@ const FarmingTable = () => {
         staker.firstStakeTime,
         staker.finalStakeTime
       );
-      allStakingTime.map((item) => {
-        item.amount = (item.amount / 1e18).toFixed(5);
-        item.reward = (item.reward / 1e18).toFixed(5);
-      });
+      
       setFilteredData(allStakingTime);
       setData(allStakingTime);
     })();
@@ -127,8 +124,8 @@ const FarmingTable = () => {
   };
 
   const renderBody = () => {
-    return (
-      allStakingTime.length > 0 &&
+    if (allStakingTime.length >0) {
+      console.log("BBBBB", allStakingTime[poolId]);
       allStakingTime[poolId].stakingTime.map((key, index) => {
         return (
           <tr className="border-t-2 border-gray-600 p-4" key={index}>
@@ -170,9 +167,17 @@ const FarmingTable = () => {
               </div>
             </td>
           </tr>
-        );
+        )
       })
-    );
+
+    }
+    else {
+      return (
+        <tr className="border-t-2 border-gray-600 p-4">
+          <td className="col-span-4 py-4 px-4">Không có dữ liệu</td>
+        </tr>
+      )
+    }
   };
 
   return (

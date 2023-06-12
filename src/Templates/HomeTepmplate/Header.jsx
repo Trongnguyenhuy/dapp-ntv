@@ -15,7 +15,7 @@ import {
 } from "../../Redux/Reducers/FarmingReducer";
 import { setMessage } from "../../Redux/Reducers/MessageReducer";
 import ModalInfo from "../../Components/Modals/ModalInfo";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { checkChainId } from "../../Services/WalletServices/WalletServices";
 
 export const reloadData = (dispatch) => {
@@ -69,7 +69,7 @@ export const Header = () => {
   };
 
   return (
-    <div className="border-b-2 border-gray-600 py-2 fixed w-full bg-[#091227] z-20">
+    <div className="border-b-2 border-gray-600 py-2 fixed top-0 w-full bg-[#091227] z-20">
       <div className="flex flex-row justify-between font-sans">
         <ul className="flex flex-row justify-between ml-8 gap-8 font-medium text-lg">
           <li>
@@ -105,7 +105,7 @@ export const Header = () => {
                 onClick={connectWalletHandler}
                 className="px-9 text-center w-full flex flex-row justify-between gap-4 items-center p-2 text-white walletCard rounded-full font-sans font-medium cursor-pointer"
               >
-               Kết nối ví
+                Kết nối ví
 
               </button>
             </li>
@@ -121,10 +121,13 @@ export const Header = () => {
           );
         })}
       </div>
-      <ModalWarming
-        modalOpen={openModalWarming}
-        setModalOpen={setOpenModalWarming}
-      />
+      <div className="absolute">
+        <ModalWarming
+          modalOpen={openModalWarming}
+          setModalOpen={setOpenModalWarming}
+        />
+      </div>
+
 
     </div>
   );
