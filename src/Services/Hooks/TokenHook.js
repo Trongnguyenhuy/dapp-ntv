@@ -6,7 +6,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { convertBigNumber } from "../StakingServices/FarmingHook";
 const stakeTokenAddress = "0x84831aD87534a7E6C76f50623348578010eb14A6";
-const rewardTokenAddress = "0xba1FcaE5cC1AaD01147D5cD57b94d8CF95337306";
+const rewardTokenAddress = "0x1e638159574e3c132E5adE8A09503cc2BC5d5C2c";
 
 export const useTokenContract = (tokenAddress, ABI) => {
   const { data: contract } = useContract(tokenAddress, ABI);

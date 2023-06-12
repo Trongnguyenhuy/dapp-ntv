@@ -12,11 +12,15 @@ import {
 import Loading from "../Button/loadingButton";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  getAllPoolsAction,
   getStakingTimeInfoApi,
   updateBalanceOfTokenApi,
 } from "../../Redux/Reducers/FarmingReducer";
 import { setMessage } from "../../Redux/Reducers/MessageReducer";
 import RewardLiveUpdate from "../LiveUpdate/RewardLiveUpdate";
+import { usePools } from "../../Services/StakingServices/FarmingHook";
+import useStaking from "../../Services/StakingServices/StakingHook";
+import { bignumberModifier } from "../../Ultis/modifierData";
 
 const FarmingTable = () => {
   const { allStakingTime } = useSelector((state) => state.farmingReducer);
@@ -25,6 +29,7 @@ const FarmingTable = () => {
   // const [data, setData] = useState([]);
   // const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState("");
+  const stakingContract = useStaking();
 
   const { id } = useParams();
   const poolId = id - 1;
@@ -80,8 +85,13 @@ const FarmingTable = () => {
       });
       dispatch(setMessageAction);
 
-      const balanceOfToken = updateBalanceOfTokenApi();
-      dispatch(balanceOfToken);
+      const allPool = await stakingContract.call("getAllPool");
+      const action = getAllPoolsAction(bignumberModifier(allPool));
+      dispatch(action);
+      
+      // console.log("allPool",bignumberModifier(allPool))
+      // const balanceOfToken = updateBalanceOfTokenApi();
+      // dispatch(balanceOfToken);
     } else {
       const setMessageAction = setMessage({
         type: "confirm",

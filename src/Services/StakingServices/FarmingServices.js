@@ -244,7 +244,7 @@ export const getAllPools = async () => {
     const pools = await StakingServices.methods.getAllPool().call();
     return pools;
   } catch (err) {
-    console.log("error: ", err.message);
+    // console.log("error: ", err.message);
     return false;
   }
 };
