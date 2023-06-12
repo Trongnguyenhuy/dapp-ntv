@@ -203,6 +203,7 @@ const FarmingTable = () => {
           Tìm kiếm
         </button>
       </div>
+      
       {loading === "harvest" || loading === "unstaking" ? (
         <div className="w-full">
           <LoadingOutlined className="w-full text-4xl py-8 font-bold mx-auto" />
