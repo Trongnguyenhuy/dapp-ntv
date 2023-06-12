@@ -1,25 +1,46 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ModalContract from "../Modals/ModalContract";
 import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import logoCoinLP from "../../assets/logo-coin-lp.png";
 import logoCoinTVN from "../../assets/logo-coin-tvn.png";
 import ModalWarming from "../Modals/ModalWarming";
+import { getGlobalARP } from "../../Services/StakingServices/FarmingServices";
 
 const FarmingCard = (props) => {
-  const { poolAPR, account } = useSelector((state) => state.farmingReducer);
+  const { pools, account, totalMultiflier, rewardTokenPerBlock } = useSelector(
+    (state) => state.farmingReducer
+  );
   const { id, isHome, duration } = props;
   const history = useHistory();
   const [modalOpen, setModalOpen] = useState(false);
   const [openModalWarming, setOpenModalWarming] = useState(false);
+  const [globalAPR, setGlobalAPR] = useState(0);
+
+  const calculateGlobalAPR = () => {
+    return getGlobalARP(
+      totalMultiflier,
+      pools[id - 1].tokensStaked,
+      pools[id - 1].farmMultiplier,
+      rewardTokenPerBlock
+    );
+  };
+
+  useEffect(() => {
+    if (totalMultiflier > 0) {
+      const globalAPR = calculateGlobalAPR();
+      setGlobalAPR(globalAPR.toFixed(2));
+    }
+  }, [totalMultiflier]);
+
   const handleClick = () => {
     history.push(`/farm-detail/${id}`); // Chuyển đến đường dẫn với param
   };
 
   const handleModal = () => {
-    if (account.walletAddress) {
+    if (account.address) {
       setOpenModalWarming(false);
       setModalOpen(true);
     } else {
@@ -42,15 +63,15 @@ const FarmingCard = (props) => {
             alt="TVN-LP"
           />
         </div>
-        <h2 className="text-xl font-bold font-sans text-white">Nạp TVN-LP nhận TVN</h2>
+        <h2 className="text-xl font-bold font-sans text-white">
+          Nạp TVN-LP nhận TVN
+        </h2>
       </div>
       <div className="grid grid-col-4 content-center rounded-lg p-8 text-lg w-full">
         <div className="grid grid-col-4 content-center rounded-lg text-md w-full gap-2">
           <p className="flex flex-row justify-between">
             <span>APR</span>
-            <span className="font-semibold">
-              {poolAPR.length > 0 ? poolAPR[id - 1] : 0} %
-            </span>
+            <span className="font-semibold">{" " + globalAPR} %</span>
           </p>
 
           <p className="flex flex-row justify-between">

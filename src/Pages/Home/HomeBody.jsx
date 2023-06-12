@@ -2,7 +2,9 @@ import logo from "../../assets/home-image.png";
 import { FarmingBody } from "../Farming/FarmingBody";
 import { PoolBody } from "../Pool/PoolBody";
 
+
 export const HomeBody = () => {
+
   return (
     <div className={`p-1 md:p-2`}>
       <div className={`flex flex-row justify-between mt-20`}>

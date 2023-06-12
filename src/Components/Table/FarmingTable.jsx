@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -20,27 +21,30 @@ import RewardLiveUpdate from "../LiveUpdate/RewardLiveUpdate";
 const FarmingTable = () => {
   const { allStakingTime } = useSelector((state) => state.farmingReducer);
   const dispatch = useDispatch();
-  const [searchText, setSearchText] = useState("");
-  const [data, setData] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
+  // const [searchText, setSearchText] = useState("");
+  // const [data, setData] = useState([]);
+  // const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState("");
 
   const { id } = useParams();
   const poolId = id - 1;
 
-  useEffect(() => {
-    (async () => {
-      const staker = await getStakerInfo(poolId);
-      const allStakingTime = await getAllStakingTimeInfo(
-        poolId,
-        staker.firstStakeTime,
-        staker.finalStakeTime
-      );
-      
-      setFilteredData(allStakingTime);
-      setData(allStakingTime);
-    })();
-  }, []);
+  // useEffect(() => {
+  //   (async () => {
+  //     const staker = await getStakerInfo(poolId);
+  //     const allStakingTime = await getAllStakingTimeInfo(
+  //       poolId,
+  //       staker.firstStakeTime,
+  //       staker.finalStakeTime
+  //     );
+  //     allStakingTime.map((item) => {
+  //       item.amount = (item.amount / 1e18).toFixed(5);
+  //       item.reward = (item.reward / 1e18).toFixed(5);
+  //     });
+  //     // setFilteredData(allStakingTime);
+  //     // setData(allStakingTime);
+  //   })();
+  // }, []);
 
   const handleHarvest = async (time, index) => {
     setLoading("harvest" + index);
@@ -89,22 +93,22 @@ const FarmingTable = () => {
     setLoading("");
   };
 
-  const handleSearchChange = (event) => {
-    const value = event.target.value;
-    setSearchText(value);
-  };
-  const handleSearchClick = () => {
-    if (searchText) {
-      const filtered = filteredData.filter((item) => {
-        return (
-          item.amount.toLowerCase().includes(searchText.toLowerCase()) ||
-          item.reward.toLowerCase().includes(searchText.toLowerCase()) ||
-          item.depositStartTime.toLowerCase().includes(searchText.toLowerCase())
-        );
-      });
-      setFilteredData(filtered);
-    } else setFilteredData(data);
-  };
+  // const handleSearchChange = (event) => {
+  //   const value = event.target.value;
+  //   setSearchText(value);
+  // };
+  // const handleSearchClick = () => {
+  //   if (searchText) {
+  //     const filtered = filteredData.filter((item) => {
+  //       return (
+  //         item.amount.toLowerCase().includes(searchText.toLowerCase()) ||
+  //         item.reward.toLowerCase().includes(searchText.toLowerCase()) ||
+  //         item.depositStartTime.toLowerCase().includes(searchText.toLowerCase())
+  //       );
+  //     });
+  //     setFilteredData(filtered);
+  //   } else setFilteredData(data);
+  // };
 
   const renderHeader = () => {
     let headerElement = [
@@ -156,7 +160,7 @@ const FarmingTable = () => {
                 </button>
                 <button
                   onClick={() => handleHarvest(key.unStakingTime, index)}
-                  className="w-1/2 py-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg"
+                  className="w-full py-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg"
                 >
                   <Loading
                     index={"harvest" + index}

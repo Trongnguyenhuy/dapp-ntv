@@ -36,7 +36,6 @@ const ModalContract = (props) => {
     const rewardPerBlockForPool = poolWeight * rewardTokenPerBlock;
     const invidualAPRPerDay =
       assetRatio * poolWeight * rewardPerBlockForPool * NUMBEROFBLOCKPERDAY;
-
     return invidualAPRPerDay / 1e18;
   };
 
@@ -53,10 +52,10 @@ const ModalContract = (props) => {
 
   const handleConfirm = async () => {
     setLoading(1);
-    const success= await depositTokenToPool(poolId, amountOfToken.current);
+    const success = await depositTokenToPool(poolId, amountOfToken.current);
     setLoading(0);
-    setModalOpen(false); 
-    if(success) {
+    setModalOpen(false);
+    if (success) {
       const setMessageAction = setMessage({
         type: "confirm",
         message: `${amountOfToken.current} tokens đã được ký gửi!`,
@@ -64,8 +63,7 @@ const ModalContract = (props) => {
       const globalAPR = getPoolAPRAPI();
       dispatch(setMessageAction);
       dispatch(globalAPR);
-    }
-    else {
+    } else {
       const setMessageAction = setMessage({
         type: "confirm",
         message: `Đã hủy ký gửi`,
@@ -73,6 +71,8 @@ const ModalContract = (props) => {
       dispatch(setMessageAction);
     }
     if (!isInfoCard) {
+      const allStakingTime = getStakingTimeInfoApi();
+      dispatch(allStakingTime);
       history.push(`/farm-detail/${poolId + 1}`);
     } else {
       const allStakingTime = getStakingTimeInfoApi();
@@ -169,10 +169,12 @@ const ModalContract = (props) => {
           />
         </div> */}
         <div className="flex flex-row justify-between py-2">
-          <p className="py-2 text-base font-poppins font-semibold">Số tiền hiện có</p>
-            <h2 className="py-2 text-base font-poppins font-medium">
+          <p className="py-2 text-base font-poppins font-semibold">
+            Số tiền hiện có
+          </p>
+          <h2 className="py-2 text-base font-poppins font-medium">
             {`${account.balanceOfStakeToken} TVN-LP`}
-            </h2>
+          </h2>
         </div>
         <div className="flex flex-row justify-between py-2">
           <p className="py-2 text-base font-poppins font-semibold">

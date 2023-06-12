@@ -38,8 +38,23 @@ export const checkNetworkToken = (network) => {
   }
 };
 
-export const convertSecondsToDateTime = (seconds) => {
+export const convertSecondsToDateTime = (numberOfSeconds) => {
+  let seconds = parseInt(numberOfSeconds);
+  const modifierTime = (time) => {
+    if (time < 10) {
+      time = "0" + time;
+    }
+
+    return time;
+  };
+
   let date = new Date(0);
+  let hour = date.getHours();
+
+  if(hour != 7){
+    seconds -= (hour - 7)*3600;
+  }
+
   date.setSeconds(seconds);
 
   let year = date.getFullYear();
@@ -48,9 +63,15 @@ export const convertSecondsToDateTime = (seconds) => {
   let hours = date.getHours();
   let minutes = date.getMinutes();
 
-  if(minutes < 10){
-    minutes = "0" + minutes;
-  }
-
-  return hours + ":" + minutes + " " + day + "/" + month + "/" + year;
+  return (
+    modifierTime(hours) +
+    ":" +
+    modifierTime(minutes) +
+    " " +
+    modifierTime(day) +
+    "/" +
+    modifierTime(month) +
+    "/" +
+    year
+  );
 };
