@@ -1,21 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import ModalContract from "../Modals/ModalContract";
 import { useParams } from "react-router-dom";
+import { getStakingTimeInfoApi } from "../../Redux/Reducers/FarmingReducer";
+import { setMessage, setWarming } from "../../Redux/Reducers/MessageReducer";
+import { checkConnectAccount, checkChainId } from "../../Services/WalletServices/WalletServices";
+import { getGlobalARP, harvestAllReward } from "../../Services/StakingServices/FarmingServices";
+import ModalContract from "../Modals/ModalContract";
 import RewardLiveUpdate from "../LiveUpdate/RewardLiveUpdate";
 import logoCoinLP from "../../assets/logo-coin-lp.png";
 import logoCoinTVN from "../../assets/logo-coin-tvn.png";
-import {
-  getGlobalARP,
-  harvestAllReward,
-} from "../../Services/StakingServices/FarmingServices";
-import { getStakingTimeInfoApi } from "../../Redux/Reducers/FarmingReducer";
-import { setMessage } from "../../Redux/Reducers/MessageReducer";
 import Loading from "../Button/loadingButton";
-
+import ModalWarming from "../Modals/ModalWarming";
+import { ConnectWallet, useChainId, useConnectionStatus } from "@thirdweb-dev/react";
 const FarmingInforCard = () => {
   const [modalOpen, setModalOpen] = useState(false);
+  const [openModalWarming, setOpenModalWarming] = useState(false);
   const [harvestAllLoading, setHarvesAllLoading] = useState("");
   const [globalAPR, setGlobalAPR] = useState(0);
   const {
@@ -27,7 +27,8 @@ const FarmingInforCard = () => {
   } = useSelector((state) => state.farmingReducer);
   const { id } = useParams();
   const dispatch = useDispatch();
-
+  const chainId = useChainId();
+  const connectionStatus = useConnectionStatus();
   const calculateGlobalAPR = () => {
     return getGlobalARP(
       totalMultiflier,
@@ -61,8 +62,59 @@ const FarmingInforCard = () => {
       ? allStakingTime[poolId].staker.totalTokenStake / 1e18
       : 0;
 
-  const handleModal = () => {
-    setModalOpen(true);
+  const handleModal = async () => {
+    
+    if (chainId !== 11155111) {
+      const warmingAction = setWarming({
+        type: "instruct",
+        header: "Sai mạng!",
+        message: "Hãy chuyển sang mạng Sepolia!",
+        code: "wm03",
+      });
+      dispatch(warmingAction);
+      setOpenModalWarming(true);
+      setModalOpen(false);
+    }
+    else{
+      setOpenModalWarming(false);
+      setModalOpen(true);
+    }
+    
+
+
+
+    // try {
+    //   const checkConnect = await checkConnectAccount(dispatch);
+    //   const checkChain = await checkChainId(dispatch, true);
+    //   if (checkConnect == undefined) {
+    //     if (checkChain == false) {
+    //       const warmingAction = setWarming({
+    //         type: "instruct",
+    //         header: "Sai mạng!",
+    //         message: "Hãy chuyển sang mạng Sepolia!",
+    //         code: "wm03",
+    //       });
+    //       dispatch(warmingAction);
+    //     }
+    //     else{
+    //       const warmingAction = setWarming({
+    //         type: "instruct",
+    //         header: "Chưa kết nối ví!",
+    //         message: "Bạn chưa kết nối ví MetaMask!",
+    //         code: "wm02",
+    //       });
+    //       dispatch(warmingAction);
+    //     }
+    //     setOpenModalWarming(true);
+    //     setModalOpen(false);
+    //   }
+    //   else{
+    //       setOpenModalWarming(false);
+    //       setModalOpen(true);
+    //   }
+    // } catch (error) {
+    //   console.error(error);
+    // }
   };
 
   const handleharvestAll = async () => {
@@ -148,18 +200,18 @@ const FarmingInforCard = () => {
 
           </div>
           <button
-              onClick={handleharvestAll}
-              className="p-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg"
-              style={
-                allStakingTime.length > 0 ? {} : { visibility: "hidden" }
-              }
-            >
-              <Loading
-                index={"harvestAll"}
-                loading={harvestAllLoading}
-                text={"Thu hoạch tất cả"}
-              />
-            </button>
+            onClick={handleharvestAll}
+            className="p-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg"
+            style={
+              allStakingTime.length > 0 ? {} : { visibility: "hidden" }
+            }
+          >
+            <Loading
+              index={"harvestAll"}
+              loading={harvestAllLoading}
+              text={"Thu hoạch tất cả"}
+            />
+          </button>
         </div>
 
       </div>
@@ -194,20 +246,32 @@ const FarmingInforCard = () => {
         >
           <span className="underline">Xem hợp đồng</span>
         </a>
-        <button
-          disabled={account.address == undefined}
+        {(connectionStatus !== "connected") ? (
+          
+          <ConnectWallet className="button-connect" theme="light" btnTitle="Kết nối ví" modalTitle="Chọn ví để kết nối" />
+        
+          
+        ):(
+          <button
+          // disabled={account.address == undefined}
           onClick={handleModal}
           className="w-full p-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg"
         >
           Đặt cọc
         </button>
+        )}
+        
       </div>
       <ModalContract
         modalOpen={modalOpen}
         setModalOpen={setModalOpen}
         account={account}
-        poolId={poolId}
-        isInfoCard={true}
+        poolId={id - 1}
+        isInfoCard={false}
+      />
+      <ModalWarming
+        modalOpen={openModalWarming}
+        setModalOpen={setOpenModalWarming}
       />
     </div>
   );

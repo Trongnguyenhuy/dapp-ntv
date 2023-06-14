@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { setMessage } from "../../Redux/Reducers/MessageReducer";
 import { AiFillGithub, AiOutlineWallet } from 'react-icons/ai';
 import { FaEthereum } from 'react-icons/fa';
+import { ConnectWallet } from "@thirdweb-dev/react";
 const ModalConnectWallet = (props) => {
     const { modalOpen, setModalOpen } = props;
     const handleCancel = () => {
@@ -55,25 +56,14 @@ const ModalConnectWallet = (props) => {
                         alt="account"
                         className="w-32 h-32 rounded-full"
                     />
-                    <h2 className="text-white font-sans text-lg font-semibold text-center">Hãy chọn một ví để kết nối</h2>
+                    <h2 className="text-white font-sans text-lg font-semibold text-center py-6">Bạn chưa kết nối ví</h2>
 
                 </div>
                 <div className="text-center">
 
-                    <div className="flex flex-col justify-between">
+                    <div className="flex flex-col">
 
-                        <button
-                            onClick={connectWalletHandler}
-                            className="flex flex-row items-center gap-16 px-4 py-3 bg-white rounded-lg"
-                        >
-                            <img
-                                src={logoMetaMask}
-                                alt="account"
-                                className="w-14 h-14 rounded-full"
-                            />
-                            <h2 className="text-lg font-poppins font-light cursor-pointer text-black">MetaMask</h2>
-
-                        </button>
+                    <ConnectWallet className="modal-info" theme="light" btnTitle="Kết nối ví" modalTitle="Chọn ví để kết nối" />
                     </div>
                 </div>
 

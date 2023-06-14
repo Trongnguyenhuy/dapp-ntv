@@ -8,9 +8,8 @@ import logoCoinLP from "../../assets/logo-coin-lp.png";
 import logoCoinTVN from "../../assets/logo-coin-tvn.png";
 import ModalWarming from "../Modals/ModalWarming";
 import { getGlobalARP } from "../../Services/StakingServices/FarmingServices";
-import { checkConnectAccount, checkChainId } from "../../Services/WalletServices/WalletServices";
 import { setWarming } from "../../Redux/Reducers/MessageReducer";
-import { useChainId } from "@thirdweb-dev/react";
+import { ConnectWallet, useChainId, useConnectionStatus } from "@thirdweb-dev/react";
 
 const FarmingCard = (props) => {
   const { pools, account, totalMultiflier, rewardTokenPerBlock } = useSelector(
@@ -23,6 +22,7 @@ const FarmingCard = (props) => {
   const [globalAPR, setGlobalAPR] = useState(0);
   const dispatch = useDispatch();
   const chainId = useChainId();
+  const connectionStatus = useConnectionStatus();
   const calculateGlobalAPR = () => {
     return getGlobalARP(
       totalMultiflier,
@@ -42,52 +42,23 @@ const FarmingCard = (props) => {
   const handleClick = () => {
     history.push(`/farm-detail/${id}`); // Chuyển đến đường dẫn với param
   };
-
   const handleModal = async () => {
-
-    try {
-      const checkConnect = await checkConnectAccount(dispatch);
-      const checkChain = await checkChainId(dispatch, true);
-      if (checkConnect == undefined) {
-        const warmingAction = setWarming({
-          type: "instruct",
-          header: "Chưa kết nối ví!",
-          message: "Bạn chưa kết nối ví MetaMask!",
-          code: "wm02",
-        });
-        dispatch(warmingAction);
-        setOpenModalWarming(true);
-        setModalOpen(false);
-      }
-      if (checkChain == false) {
-        const warmingAction = setWarming({
-          type: "instruct",
-          header: "Sai mạng!",
-          message: "Hãy chuyển sang mạng Sepolia!",
-          code: "wm03",
-        });
-        dispatch(warmingAction);
-        setOpenModalWarming(true);
-        setModalOpen(false);
-      }
-      else {
-        setOpenModalWarming(false);
-        setModalOpen(true);
-      }
-    } catch (error) {
-      console.error(error);
+    
+    if (chainId !== 11155111) {
+      const warmingAction = setWarming({
+        type: "instruct",
+        header: "Sai mạng!",
+        message: "Hãy chuyển sang mạng Sepolia!",
+        code: "wm03",
+      });
+      dispatch(warmingAction);
+      setOpenModalWarming(true);
+      setModalOpen(false);
     }
-
-    // if (account.address) {
-
-    //   setOpenModalWarming(false);
-    //   setModalOpen(true);
-    // } else {
-    //   setOpenModalWarming(true);
-
-    //   setModalOpen(false);
-
-    // }
+    else{
+      setOpenModalWarming(false);
+      setModalOpen(true);
+    }
   };
 
   return (
@@ -141,12 +112,20 @@ const FarmingCard = (props) => {
           className={`flex flex-row justify-center ${isHome == true ? "hidden" : ""
             }`}
         >
+          {(connectionStatus !== "connected") ? (
+          
+          <ConnectWallet className="button-connect" theme="light" btnTitle="Kết nối ví" modalTitle="Chọn ví để kết nối" />
+        
+          
+        ):(
           <button
-            onClick={handleModal}
-            className="w-full py-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg font-sans font-medium cursor-pointer text-white"
-          >
-            Nạp
-          </button>
+          // disabled={account.address == undefined}
+          onClick={handleModal}
+          className="w-full p-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg text-white"
+        >
+          Đặt cọc
+        </button>
+        )}
         </div>
       </div>
       <ModalContract

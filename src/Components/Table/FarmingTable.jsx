@@ -138,50 +138,56 @@ const FarmingTable = () => {
 
   const renderBody = () => {
     return (
-      allStakingTime.length > 0 &&
-      allStakingTime[poolId].stakingTime.map((key, index) => {
-        return (
-          <tr className="border-t-2 border-gray-600 p-4" key={index}>
-            <td className="py-4 px-4">{index + 1}</td>
-            <td className="py-4">{(key.amount / 1e18).toFixed(8)} TVN-LP</td>
-            <td className="py-4">{key.depositStartTime}</td>
-            <td className="py-4">
-              <RewardLiveUpdate
-                poolId={poolId}
-                isTotal={false}
-                time={key.unStakingTime}
-              />{" "}
-              TVN
-            </td>
-            <td className="py-4 operation">
-              <div className="flex flex-row justify-between gap-4 text-white">
-                <button
-                  onClick={() =>
-                    handleUnstaking(key.unStakingTime, key.amount, index)
-                  }
-                  className="w-full py-4 bg-white text-[#091227] hover:text-white hover:bg-[rgb(81,59,143)] rounded-lg"
-                >
-                  <Loading
-                    index={"unstaking" + index}
-                    loading={loading}
-                    text={"Kết thúc"}
-                  />
-                </button>
-                <button
-                  onClick={() => handleHarvest(key.unStakingTime, index)}
-                  className="w-full py-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg"
-                >
-                  <Loading
-                    index={"harvest" + index}
-                    loading={loading}
-                    text={"Thu Hoạch"}
-                  />
-                </button>
-              </div>
-            </td>
-          </tr>
-        );
-      })
+      allStakingTime.length > 0 && allStakingTime[poolId].stakingTime.length >0 ?(
+        allStakingTime[poolId].stakingTime.map((key, index) => {
+          return (
+            <tr className="border-t-2 border-gray-600 p-4" key={index}>
+              <td className="py-4 px-4">{index + 1}</td>
+              <td className="py-4">{(key.amount / 1e18).toFixed(8)} TVN-LP</td>
+              <td className="py-4">{key.depositStartTime}</td>
+              <td className="py-4">
+                <RewardLiveUpdate
+                  poolId={poolId}
+                  isTotal={false}
+                  time={key.unStakingTime}
+                />{" "}
+                TVN
+              </td>
+              <td className="py-4 operation">
+                <div className="flex flex-row justify-between gap-4 text-white">
+                  <button
+                    onClick={() =>
+                      handleUnstaking(key.unStakingTime, key.amount, index)
+                    }
+                    className="w-full py-4 bg-white text-[#091227] hover:text-white hover:bg-[rgb(81,59,143)] rounded-lg"
+                  >
+                    <Loading
+                      index={"unstaking" + index}
+                      loading={loading}
+                      text={"Kết thúc"}
+                    />
+                  </button>
+                  <button
+                    onClick={() => handleHarvest(key.unStakingTime, index)}
+                    className="w-full py-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg"
+                  >
+                    <Loading
+                      index={"harvest" + index}
+                      loading={loading}
+                      text={"Thu Hoạch"}
+                    />
+                  </button>
+                </div>
+              </td>
+            </tr>
+          );
+        })
+      ):(
+        <tr className="border-t-2 border-gray-600 p-4">
+            <td className="text-center pt-4 px-4" colSpan={4}>Không có dữ liệu</td>
+        </tr>
+      )
+
     );
   };
 
