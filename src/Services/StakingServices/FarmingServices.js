@@ -1,5 +1,6 @@
 import { convertSecondsToDateTime } from "../../Ultis/NetworkCheck/NetworkCheck";
 import web3 from "../Web3/Web3";
+// import { useReadFarmingContract } from "./FarmingHook";
 import rewardTokenServices from "./RewardTokenServices";
 import StakeTokenServices from "./StakeTokenServices";
 import StakingServices from "./StakingServices";
@@ -243,7 +244,7 @@ export const getAllPools = async () => {
     const pools = await StakingServices.methods.getAllPool().call();
     return pools;
   } catch (err) {
-    console.log("error: ", err.message);
+    // console.log("error: ", err.message);
     return false;
   }
 };
@@ -364,13 +365,13 @@ export const updatePoolRewards = async (poolId, time) => {
 };
 
 // cho biết giá trị ARP của một pool có poolId tương ứng
-export const getGlobalARP = async (poolId) => {
+export const getGlobalARP = (totalMultifier,totalTokenStaked,farmMultiplier,rewardTokenPerBlock) => {
   try {
-    const { totalTokenStaked } = await getPoolInfor(poolId);
-    const poolWeight = await getPoolMultifier(poolId);
-    const rewardTokenPerBlock = await StakingServices.methods
-      .getRewardTokenPerBlock()
-      .call();
+    // const { totalTokenStaked } = await getPoolInfor(poolId);
+    const poolWeight = farmMultiplier/totalMultifier;
+    // const rewardTokenPerBlock = await StakingServices.methods
+    //   .getRewardTokenPerBlock()
+    //   .call();
     const rewardTokenPerBlockForPool = poolWeight * rewardTokenPerBlock;
 
     if (totalTokenStaked == 0) {

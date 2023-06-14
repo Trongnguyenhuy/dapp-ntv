@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -11,39 +12,44 @@ import {
 import Loading from "../Button/loadingButton";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  getAllPoolsAction,
   getStakingTimeInfoApi,
   updateBalanceOfTokenApi,
 } from "../../Redux/Reducers/FarmingReducer";
 import { setMessage } from "../../Redux/Reducers/MessageReducer";
 import RewardLiveUpdate from "../LiveUpdate/RewardLiveUpdate";
+import { usePools } from "../../Services/StakingServices/FarmingHook";
+import useStaking from "../../Services/StakingServices/StakingHook";
+import { bignumberModifier } from "../../Ultis/modifierData";
 
 const FarmingTable = () => {
   const { allStakingTime } = useSelector((state) => state.farmingReducer);
   const dispatch = useDispatch();
-  const [searchText, setSearchText] = useState("");
-  const [data, setData] = useState([]);
-  const [filteredData, setFilteredData] = useState([]);
+  // const [searchText, setSearchText] = useState("");
+  // const [data, setData] = useState([]);
+  // const [filteredData, setFilteredData] = useState([]);
   const [loading, setLoading] = useState("");
+  const stakingContract = useStaking();
 
   const { id } = useParams();
   const poolId = id - 1;
 
-  useEffect(() => {
-    (async () => {
-      const staker = await getStakerInfo(poolId);
-      const allStakingTime = await getAllStakingTimeInfo(
-        poolId,
-        staker.firstStakeTime,
-        staker.finalStakeTime
-      );
-      allStakingTime.map((item) => {
-        item.amount = (item.amount / 1e18).toFixed(5);
-        item.reward = (item.reward / 1e18).toFixed(5);
-      });
-      setFilteredData(allStakingTime);
-      setData(allStakingTime);
-    })();
-  }, []);
+  // useEffect(() => {
+  //   (async () => {
+  //     const staker = await getStakerInfo(poolId);
+  //     const allStakingTime = await getAllStakingTimeInfo(
+  //       poolId,
+  //       staker.firstStakeTime,
+  //       staker.finalStakeTime
+  //     );
+  //     allStakingTime.map((item) => {
+  //       item.amount = (item.amount / 1e18).toFixed(5);
+  //       item.reward = (item.reward / 1e18).toFixed(5);
+  //     });
+  //     // setFilteredData(allStakingTime);
+  //     // setData(allStakingTime);
+  //   })();
+  // }, []);
 
   const handleHarvest = async (time, index) => {
     setLoading("harvest" + index);
@@ -79,8 +85,13 @@ const FarmingTable = () => {
       });
       dispatch(setMessageAction);
 
-      const balanceOfToken = updateBalanceOfTokenApi();
-      dispatch(balanceOfToken);
+      const allPool = await stakingContract.call("getAllPool");
+      const action = getAllPoolsAction(bignumberModifier(allPool));
+      dispatch(action);
+      
+      // console.log("allPool",bignumberModifier(allPool))
+      // const balanceOfToken = updateBalanceOfTokenApi();
+      // dispatch(balanceOfToken);
     } else {
       const setMessageAction = setMessage({
         type: "confirm",
@@ -91,33 +102,21 @@ const FarmingTable = () => {
 
     setLoading("");
   };
-
-  const handleSearchChange = (event) => {
-    const value = event.target.value;
-    setSearchText(value);
-  };
-  const handleSearchClick = () => {
-    if (searchText) {
-      const filtered = filteredData.filter((item) => {
-        return (
-          item.amount.toLowerCase().includes(searchText.toLowerCase()) ||
-          item.reward.toLowerCase().includes(searchText.toLowerCase()) ||
-          item.depositStartTime.toLowerCase().includes(searchText.toLowerCase())
-        );
-      });
-      console.log(filtered);
-      // console.log(allStakingTime[poolId].stakingTime);
-      // const allStaking = allStakingTime
-      // console.log(allStaking);
-      // console.log(allStakingTime[poolId].stakingTime);
-      // console.log(filtered);
-      // setFilteredData(filtered);
-    } else setFilteredData(data);
-  };
-
-  // const handleReset = () => {
-  //   setFilteredData(dataSource);
-  //   setSearchText("");
+// const handleSearchChange = (event) => {
+  //   const value = event.target.value;
+  //   setSearchText(value);
+  // };
+  // const handleSearchClick = () => {
+  //   if (searchText) {
+  //     const filtered = filteredData.filter((item) => {
+  //       return (
+  //         item.amount.toLowerCase().includes(searchText.toLowerCase()) ||
+  //         item.reward.toLowerCase().includes(searchText.toLowerCase()) ||
+  //         item.depositStartTime.toLowerCase().includes(searchText.toLowerCase())
+  //       );
+  //     });
+  //     setFilteredData(filtered);
+  //   } else setFilteredData(data);
   // };
 
   const renderHeader = () => {
@@ -160,7 +159,7 @@ const FarmingTable = () => {
                   onClick={() =>
                     handleUnstaking(key.unStakingTime, key.amount, index)
                   }
-                  className="w-1/2 py-4 bg-white text-[#091227] hover:text-white hover:bg-[rgb(81,59,143)] rounded-lg"
+                  className="w-full py-4 bg-white text-[#091227] hover:text-white hover:bg-[rgb(81,59,143)] rounded-lg"
                 >
                   <Loading
                     index={"unstaking" + index}
@@ -170,7 +169,7 @@ const FarmingTable = () => {
                 </button>
                 <button
                   onClick={() => handleHarvest(key.unStakingTime, index)}
-                  className="w-1/2 py-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg"
+                  className="w-full py-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg"
                 >
                   <Loading
                     index={"harvest" + index}
@@ -187,22 +186,7 @@ const FarmingTable = () => {
   };
 
   return (
-    <div className="container px-32 mx-auto py-8">
-      <div className="flex flex-row justify-between py-6 gap-4">
-        <input
-          type="text"
-          className="w-full py-2 px-4 bg-[#060d20] border-b-2 border-gray-800 focus:outline-none rounded-md"
-          placeholder="Search"
-          value={searchText || ""}
-          onChange={handleSearchChange}
-        />
-        <button
-          className="w-40 p-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg"
-          onClick={handleSearchClick}
-        >
-          Tìm kiếm
-        </button>
-      </div>
+    <div className="container px-40 mx-auto py-8">    
       {loading === "harvest" || loading === "unstaking" ? (
         <div className="w-full">
           <LoadingOutlined className="w-full text-4xl py-8 font-bold mx-auto" />

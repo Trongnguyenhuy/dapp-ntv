@@ -6,9 +6,11 @@ import {
   totalReward,
   updatePoolRewards,
 } from "../../Services/StakingServices/FarmingServices";
+import { useConnectionStatus } from "@thirdweb-dev/react";
 
 const RewardLiveUpdate = (props) => {
   const [reward, setReward] = useState(0);
+  const status = useConnectionStatus();
   const { poolId, isTotal, time } = props;
 
   useEffect(() => {
@@ -36,7 +38,7 @@ const RewardLiveUpdate = (props) => {
 
     const interval = setInterval(() => {
       fetchReward();
-    }, 3000);
+    }, 1000);
 
     return () => {
       clearInterval(interval);
@@ -46,7 +48,11 @@ const RewardLiveUpdate = (props) => {
   return (
     <>
       {isTotal ? (
-        <span className="text-4xl text-gray-400">{reward.toFixed(8)}</span>
+        <span className="text-4xl text-gray-400">
+          {status == "disconnected" ? "0.00000" : reward.toFixed(8)}
+        </span>
+      ) : status == "disconnected" ? (
+        0
       ) : (
         reward.toFixed(8)
       )}

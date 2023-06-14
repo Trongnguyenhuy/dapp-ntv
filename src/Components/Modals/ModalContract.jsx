@@ -7,6 +7,7 @@ import React, { useState } from "react";
 import { Slider } from "antd";
 import "antd/dist/reset.css";
 import {
+  getAllPoolsAction,
   getPoolAPRAPI,
   getStakingTimeInfoApi,
   updateBalanceOfTokenApi,
@@ -15,6 +16,13 @@ import { setMessage } from "../../Redux/Reducers/MessageReducer";
 import { depositTokenToPool } from "../../Services/StakingServices/FarmingServices";
 import Loading from "../Button/loadingButton";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
+import {
+  usePools,
+  useReadFarmingContract,
+} from "../../Services/StakingServices/FarmingHook";
+import useStaking from "../../Services/StakingServices/StakingHook";
+import { bignumberModifier } from "../../Ultis/modifierData";
+import { error } from "./ModalDeposit";
 const NUMBEROFBLOCKPERDAY = 84000 / 13;
 
 const ModalContract = (props) => {
@@ -25,6 +33,10 @@ const ModalContract = (props) => {
   const [loading, setLoading] = useState(0);
   const [quantity, setQuantity] = useState(0);
   const [predictAPR, setPredictAPR] = useState(0);
+
+  // const { result, isLoading, error } = usePools();
+  
+  const stakingContract = useStaking();
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -36,7 +48,6 @@ const ModalContract = (props) => {
     const rewardPerBlockForPool = poolWeight * rewardTokenPerBlock;
     const invidualAPRPerDay =
       assetRatio * poolWeight * rewardPerBlockForPool * NUMBEROFBLOCKPERDAY;
-
     return invidualAPRPerDay / 1e18;
   };
 
@@ -52,20 +63,40 @@ const ModalContract = (props) => {
   };
 
   const handleConfirm = async () => {
+    if (account.balanceOfStakeToken == 0 || account.balanceOfStakeToken < quantity) {
+      error({
+        title: "Tài Khoản Không Đủ",
+        content: "Tài khoản của bạn không đủ tiền để thực hiện giao dịch này!",
+      });
+
+      return;
+    }
+
+
+    if (amountOfToken.current == 0) {
+      error({
+        title: "Giao Dịch Sai",
+        content: "Bạn không thể thực hiện giao dịch với 0 TVN!",
+      });
+
+      return
+    }
+
     setLoading(1);
-    const success= await depositTokenToPool(poolId, amountOfToken.current);
+    const success = await depositTokenToPool(poolId, amountOfToken.current);
+    // const success = true;
     setLoading(0);
-    setModalOpen(false); 
-    if(success) {
+    setModalOpen(false);
+    if (success) {
       const setMessageAction = setMessage({
         type: "confirm",
         message: `${amountOfToken.current} tokens đã được ký gửi!`,
       });
-      const globalAPR = getPoolAPRAPI();
+      const allPool = await stakingContract.call("getAllPool");
+      const action = getAllPoolsAction(bignumberModifier(allPool));
+      dispatch(action);
       dispatch(setMessageAction);
-      dispatch(globalAPR);
-    }
-    else {
+    } else {
       const setMessageAction = setMessage({
         type: "confirm",
         message: `Đã hủy ký gửi`,
@@ -73,6 +104,8 @@ const ModalContract = (props) => {
       dispatch(setMessageAction);
     }
     if (!isInfoCard) {
+      const allStakingTime = getStakingTimeInfoApi();
+      dispatch(allStakingTime);
       history.push(`/farm-detail/${poolId + 1}`);
     } else {
       const allStakingTime = getStakingTimeInfoApi();
@@ -169,10 +202,12 @@ const ModalContract = (props) => {
           />
         </div> */}
         <div className="flex flex-row justify-between py-2">
-          <p className="py-2 text-base font-poppins font-semibold">Số tiền hiện có</p>
-            <h2 className="py-2 text-base font-poppins font-medium">
+          <p className="py-2 text-base font-poppins font-semibold">
+            Số tiền hiện có
+          </p>
+          <h2 className="py-2 text-base font-poppins font-medium">
             {`${account.balanceOfStakeToken} TVN-LP`}
-            </h2>
+          </h2>
         </div>
         <div className="flex flex-row justify-between py-2">
           <p className="py-2 text-base font-poppins font-semibold">

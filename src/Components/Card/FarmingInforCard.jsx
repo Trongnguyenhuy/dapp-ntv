@@ -6,17 +6,50 @@ import { useParams } from "react-router-dom";
 import RewardLiveUpdate from "../LiveUpdate/RewardLiveUpdate";
 import logoCoinLP from "../../assets/logo-coin-lp.png";
 import logoCoinTVN from "../../assets/logo-coin-tvn.png";
-import { harvestAllReward } from "../../Services/StakingServices/FarmingServices";
+import {
+  getGlobalARP,
+  harvestAllReward,
+} from "../../Services/StakingServices/FarmingServices";
 import { getStakingTimeInfoApi } from "../../Redux/Reducers/FarmingReducer";
 import { setMessage } from "../../Redux/Reducers/MessageReducer";
+import Loading from "../Button/loadingButton";
 
 const FarmingInforCard = () => {
   const [modalOpen, setModalOpen] = useState(false);
-  const { account, poolAPR, allStakingTime } = useSelector(
-    (state) => state.farmingReducer
-  );
+  const [harvestAllLoading, setHarvesAllLoading] = useState("");
+  const [globalAPR, setGlobalAPR] = useState(0);
+  const {
+    account,
+    pools,
+    allStakingTime,
+    totalMultiflier,
+    rewardTokenPerBlock,
+  } = useSelector((state) => state.farmingReducer);
   const { id } = useParams();
   const dispatch = useDispatch();
+
+  const calculateGlobalAPR = () => {
+    return getGlobalARP(
+      totalMultiflier,
+      pools[id - 1].tokensStaked,
+      pools[id - 1].farmMultiplier,
+      rewardTokenPerBlock
+    );
+  };
+
+  useEffect(() => {
+    if (totalMultiflier > 0 && pools.length > 0) {
+      const globalAPR = calculateGlobalAPR();
+      setGlobalAPR(globalAPR.toFixed(2));
+    }
+  }, [totalMultiflier, pools]);
+
+  // useEffect(() => {
+  //   if (totalMultiflier > 0) {
+  //     const globalAPR = calculateGlobalAPR();
+  //     setGlobalAPR(globalAPR.toFixed(2));
+  //   }
+  // }, [pools[id - 1].tokensStaked]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -34,6 +67,7 @@ const FarmingInforCard = () => {
 
   const handleharvestAll = async () => {
     try {
+      setHarvesAllLoading("harvestAll");
       const harvest = await harvestAllReward(poolId);
       if (harvest) {
         const allStakingTime = getStakingTimeInfoApi();
@@ -43,20 +77,23 @@ const FarmingInforCard = () => {
         });
         dispatch(setMessageAction);
         dispatch(allStakingTime);
+        setHarvesAllLoading("");
       } else {
         const setMessageAction = setMessage({
           type: "confirm",
           message: `Thu hoạch không thành công`,
         });
         dispatch(setMessageAction);
+        setHarvesAllLoading("");
       }
     } catch (err) {
       console.log(err);
+      setHarvesAllLoading("");
     }
   };
 
   return (
-    <div className="container px-32 mx-auto flex flex-col gap-4 pt-32 h-full py-12">
+    <div className="container px-40 mx-auto flex flex-col gap-6 pt-32 h-full py-8">
       <div className="flex flex-row justify-around items-center gap-4">
         <div className="w-1/3">
           <div className="flex flex-col gap-4 items-center">
@@ -71,61 +108,74 @@ const FarmingInforCard = () => {
             <h2 className="text-2xl font-bold">Nạp TVN-LP nhận TVN</h2>
           </div>
         </div>
-        <div className="w-2/3 flex flex-row gap-6">
-          <div className="w-1/2 flex flex-col items-center gap-4">
-            <div className="w-full flex flex-col items-center gap-4 border-2 border-gray-600 rounded-md">
-              <div className="w-full flex flex-col items-center border-b-2 border-gray-600 uppercase p-4">
-                <span>Đã đặt</span>
+        <div className="w-2/3 flex flex-col gap-6">
+          <div className="flex flex-row gap-6">
+            <div className="w-1/2 flex flex-col items-center gap-4">
+              <div className="w-full flex flex-col items-center gap-4 border-2 border-gray-600 rounded-md">
+                <div className="w-full flex flex-col items-center border-b-2 border-gray-600 uppercase p-4">
+                  <span>Đã đặt</span>
+                </div>
+                <div className="w-full flex flex-col items-center py-12 text-xl">
+                  <p className="flex flex-col items-center gap-2 font-bold">
+                    <span className="text-4xl text-gray-400">
+                      {amountOfStake.toFixed(5)}
+                    </span>
+                    <span className="text-xl  py-6">TVN-LP</span>
+                  </p>
+
+                </div>
               </div>
-              <div className="w-full flex flex-col items-center py-12 text-xl">
-                <p className="flex flex-col items-center gap-2 font-bold">
-                  <span className="text-4xl text-gray-400">
-                    {amountOfStake.toFixed(5)}
-                  </span>
-                  <span className="text-xl  py-6">TVN-LP</span>
-                </p>
-                <button
-                  className="w-full p-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg"
-                  style={{ visibility: "hidden" }}
-                >
-                  Rút
-                </button>
-              </div>
+
+
             </div>
-          </div>
-          <div className="w-1/2 flex flex-col items-center gap-4">
-            <div className="w-full flex flex-col items-center gap-4 border-2 border-gray-600 rounded-md">
-              <div className="w-full flex flex-col items-center border-b-2 border-gray-600 uppercase p-4">
-                <span>Kiếm được</span>
+
+            <div className="w-1/2 flex flex-col items-center gap-4">
+              <div className="w-full flex flex-col items-center gap-4 border-2 border-gray-600 rounded-md">
+                <div className="w-full flex flex-col items-center border-b-2 border-gray-600 uppercase p-4">
+                  <span>Kiếm được</span>
+                </div>
+                <div className="w-full flex flex-col items-center p-4 py-12 text-xl">
+                  <p className="flex flex-col items-center gap-2 font-bold">
+                    <RewardLiveUpdate poolId={poolId} isTotal={true} />
+                    <span className="text-xl  py-6">TVN</span>
+                  </p>
+
+                </div>
               </div>
-              <div className="w-full flex flex-col items-center p-4 py-12 text-xl">
-                <p className="flex flex-col items-center gap-2 font-bold">
-                  <RewardLiveUpdate poolId={poolId} isTotal={true} />
-                  <span className="text-xl  py-6">TVN</span>
-                </p>
-                <button
-                  onClick={handleharvestAll}
-                  className="w-full p-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg"
-                >
-                  Thu Hoạch Tất Cả
-                </button>
-              </div>
+
+
             </div>
+
           </div>
+          <button
+              onClick={handleharvestAll}
+              className="p-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg"
+              style={
+                allStakingTime.length > 0 ? {} : { visibility: "hidden" }
+              }
+            >
+              <Loading
+                index={"harvestAll"}
+                loading={harvestAllLoading}
+                text={"Thu hoạch tất cả"}
+              />
+            </button>
         </div>
+
       </div>
-      <div className="flex flex-row justify-around items-center mt-8">
+
+      <div className="flex flex-row justify-around items-center">
         <div className="w-full border-2 border-gray-600 rounded-md px-8">
           <div className="flex flex-col">
             <p className="flex flex-row justify-between py-6">
               <span>APR</span>
-              <span>{poolAPR.length > 0 ? poolAPR[poolId] : 0} %</span>
+              <span>{" " + globalAPR} %</span>
             </p>
             <p className="flex flex-row justify-between py-6">
               <span>Tổng số thanh khoản đã được đặt cọc</span>
               <span>
-                {allStakingTime.length > 0
-                  ? (allStakingTime[poolId].pool.tokensStaked / 1e18).toFixed(5)
+                {pools.length > 0
+                  ? (pools[id - 1].tokensStaked / 1e18).toFixed(5)
                   : 0}
               </span>
             </p>
@@ -137,12 +187,19 @@ const FarmingInforCard = () => {
         </div>
       </div>
       <div className="flex flex-col items-center gap-8 w-full rounded-md cursor-pointer py-6">
-        <span className="underline">Xem hợp đồng</span>
+        <a
+          target="_blank"
+          rel="noreferrer"
+          href="https://sepolia.etherscan.io/address/0xB25aef1a480e4613D6FAE9559F09F542CFb83f81#code"
+        >
+          <span className="underline">Xem hợp đồng</span>
+        </a>
         <button
+          disabled={account.address == undefined}
           onClick={handleModal}
           className="w-full p-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg"
         >
-          Thêm thanh khoản
+          Đặt cọc
         </button>
       </div>
       <ModalContract

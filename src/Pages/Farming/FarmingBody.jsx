@@ -24,5 +24,5 @@ export const FarmingBody = () => {
         ))}
       </div>
     </div>
-  );
+  )
 };
