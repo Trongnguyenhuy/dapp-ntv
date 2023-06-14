@@ -149,8 +149,9 @@
   color: white;
 }
 .custom-modal .ant-modal-content {
-  /* width: 40vw; */
-  /* height: 50vh; */
+  width: 30vw;
+  height: 40vh;
+  margin: auto auto;
 
   /* ff 3.6+ */
   background: -moz-radial-gradient(
@@ -237,3 +238,16 @@ color: black; */
     rgba(61, 18, 186, 1) 70%
   );
 }
+.modal-info{
+  background-color: white !important;
+  color: black !important;
+  padding: 12px 12px !important;
+}
+.button-connect{
+  background-color: rgb(127,82,255) !important;
+  /* w-full p-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg */
+width: 100% !important;
+padding: 1.5rem 0 !important;
+color: white !important;
+}
+

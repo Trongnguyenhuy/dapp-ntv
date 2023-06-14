@@ -37,13 +37,7 @@ export const addWalletInfo = async (dispatch, isApp) => {
     dispatch(allStakingTime);
     // dispatch(getWalletInforAction);
     dispatch(warmingAction);
-    if (isApp) {
-      const connectAction = setMessage({
-        type: "infor",
-        message: "Kết nối với ví MetaMask thành công!",
-      });
-      dispatch(connectAction);
-    }
+    
   } else {
     const warmingAction = setWarming({
       type: "instruct",

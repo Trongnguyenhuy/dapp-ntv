@@ -13,6 +13,7 @@ const ModalChangeNetwork = (props) => {
         method: "wallet_switchEthereumChain",
         params: [{ chainId: "0xaa36a7" }],
       });
+      setModalOpen(false);
     } catch (switchError) {
       if (switchError.code === 4902) {
         try {

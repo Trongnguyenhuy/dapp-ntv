@@ -43,6 +43,7 @@ import {
   useAddress,
   useChain,
   useConnectionStatus,
+  
 } from "@thirdweb-dev/react";
 import { useStakeTokenbalence } from "../../Services/Hooks/TokenHook";
 import { ethers } from "ethers";
@@ -244,7 +245,7 @@ export const Header = () => {
           {/* </div> */}
         </ul>
         <ul className="flex flex-row justify-start items-center gap-8 mr-8">
-          <ConnectWallet className="modal-info" theme="dark" btnTitle="Kết nối ví" modalTitle="Chọn ví để kết nối" />
+          <ConnectWallet className="modal-info" theme="light" btnTitle="Kết nối ví" modalTitle="Chọn ví để kết nối" />
           {/* {account.walletAddress.length > 0 ? (
             <li>
               <WalletInforCard />

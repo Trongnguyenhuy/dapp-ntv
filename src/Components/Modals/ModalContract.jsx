@@ -22,7 +22,6 @@ import {
 } from "../../Services/StakingServices/FarmingHook";
 import useStaking from "../../Services/StakingServices/StakingHook";
 import { bignumberModifier } from "../../Ultis/modifierData";
-import { error } from "./ModalDeposit";
 const NUMBEROFBLOCKPERDAY = 84000 / 13;
 
 const ModalContract = (props) => {
@@ -30,13 +29,13 @@ const ModalContract = (props) => {
   const { account, pools, rewardTokenPerBlock, totalMultiflier } = useSelector(
     (state) => state.farmingReducer
   );
+
+  const stakingContract = useStaking();
+  // const { result, isLoading, error } = usePools();
+
   const [loading, setLoading] = useState(0);
   const [quantity, setQuantity] = useState(0);
   const [predictAPR, setPredictAPR] = useState(0);
-
-  // const { result, isLoading, error } = usePools();
-  
-  const stakingContract = useStaking();
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -63,57 +62,51 @@ const ModalContract = (props) => {
   };
 
   const handleConfirm = async () => {
-    if (account.balanceOfStakeToken == 0 || account.balanceOfStakeToken < quantity) {
-      error({
-        title: "Tài Khoản Không Đủ",
-        content: "Tài khoản của bạn không đủ tiền để thực hiện giao dịch này!",
-      });
-
-      return;
-    }
-
-
-    if (amountOfToken.current == 0) {
-      error({
-        title: "Giao Dịch Sai",
-        content: "Bạn không thể thực hiện giao dịch với 0 TVN!",
-      });
-
-      return
-    }
-
     setLoading(1);
-    const success = await depositTokenToPool(poolId, amountOfToken.current);
-    // const success = true;
-    setLoading(0);
-    setModalOpen(false);
-    if (success) {
+    
+    if(amountOfToken.current<=0){
       const setMessageAction = setMessage({
-        type: "confirm",
-        message: `${amountOfToken.current} tokens đã được ký gửi!`,
-      });
-      const allPool = await stakingContract.call("getAllPool");
-      const action = getAllPoolsAction(bignumberModifier(allPool));
-      dispatch(action);
-      dispatch(setMessageAction);
-    } else {
-      const setMessageAction = setMessage({
-        type: "confirm",
-        message: `Đã hủy ký gửi`,
+        type: "instruct",
+        message: `Số tiền trong ví không đủ để giao dịch!`,
       });
       dispatch(setMessageAction);
+      setLoading(0);
+      setModalOpen(false);
     }
-    if (!isInfoCard) {
-      const allStakingTime = getStakingTimeInfoApi();
-      dispatch(allStakingTime);
-      history.push(`/farm-detail/${poolId + 1}`);
-    } else {
-      const allStakingTime = getStakingTimeInfoApi();
-      dispatch(allStakingTime);
+    else{
+      const success = await depositTokenToPool(poolId, amountOfToken.current);
+      // const success = true;
+      setLoading(0);
+      setModalOpen(false);
+      if (success) {
+        const setMessageAction = setMessage({
+          type: "confirm",
+          message: `${amountOfToken.current} tokens đã được ký gửi!`,
+        });
+        const allPool = await stakingContract.call("getAllPool");
+        const action = getAllPoolsAction(bignumberModifier(allPool));
+        dispatch(action);
+        dispatch(setMessageAction);
+      } else {
+        const setMessageAction = setMessage({
+          type: "confirm",
+          message: `Đã hủy ký gửi`,
+        });
+        dispatch(setMessageAction);
+      }
+      if (!isInfoCard) {
+        const allStakingTime = getStakingTimeInfoApi();
+        dispatch(allStakingTime);
+        history.push(`/farm-detail/${poolId + 1}`);
+      } else {
+        const allStakingTime = getStakingTimeInfoApi();
+        dispatch(allStakingTime);
+      }
+  
+      const balanceOfToken = updateBalanceOfTokenApi();
+      dispatch(balanceOfToken);
     }
-
-    const balanceOfToken = updateBalanceOfTokenApi();
-    dispatch(balanceOfToken);
+    
   };
 
   const handleCancel = () => {
@@ -136,8 +129,8 @@ const ModalContract = (props) => {
   return (
     <Modal
       title={
-        <h2 className="p-4 font-bold text-3xl border-b-2 border-gray-700">
-          Số Lượng Muốn Nạp
+        <h2 className="p-4 font-bold text-2xl text-center uppercase">
+          Số lượng muốn đặt cọc
         </h2>
       }
       bodyStyle={{ padding: 20 }}
@@ -150,7 +143,7 @@ const ModalContract = (props) => {
           onClick={handleCancel}
           className="text-xl w-1/4 font-poppins p-4 text-white bg-[rgb(28,23,41)] rounded-md"
         >
-          Quay Về
+          Quay lại
         </button>,
         <button
           key="submit"
@@ -177,7 +170,7 @@ const ModalContract = (props) => {
 
           <input
             type="number"
-            min="0"
+            min={0}
             max={account.balanceOfStakeToken}
             id="amountOfToke"
             name="amountOfToke"
@@ -186,42 +179,27 @@ const ModalContract = (props) => {
             onChange={handleChange}
           />
         </div>
-
-        {/* <div>
-          <Slider
-            min={0}
-            max={account.balanceOfStakeToken}
-            value={quantity}
-            onChange={handleSliderChange}
-            trackStyle={{
-              backgroundColor: "#091227",
-            }}
-            railStyle={{
-              backgroundColor: "#A7AABA",
-            }}
-          />
-        </div> */}
-        <div className="flex flex-row justify-between py-2">
-          <p className="py-2 text-base font-poppins font-semibold">
+        <div className="flex flex-row justify-between">
+          <p className="text-base font-poppins font-semibold">
             Số tiền hiện có
           </p>
-          <h2 className="py-2 text-base font-poppins font-medium">
+          <h2 className="text-base font-poppins font-medium">
             {`${account.balanceOfStakeToken} TVN-LP`}
           </h2>
         </div>
         <div className="flex flex-row justify-between py-2">
-          <p className="py-2 text-base font-poppins font-semibold">
+          <p className="text-base font-poppins font-semibold">
             Tổng phần thưởng dự kiến
           </p>
-          <h2 className="py-2 text-base font-poppins font-medium">
+          <h2 className="text-base font-poppins font-medium">
             {`${(predictAPR * 30 * (poolId + 1)).toFixed(8)} TVN`}
           </h2>
         </div>
         <div className="flex flex-row justify-between pb-6">
-          <p className="py-2 text-base font-poppins font-semibold">
+          <p className="text-base font-poppins font-semibold">
             Phần thưởng dự kiến theo ngày
           </p>
-          <h2 className="py-2 text-base font-poppins font-medium">
+          <h2 className="text-base font-poppins font-medium">
             {`${predictAPR.toFixed(8)} TVN`}
           </h2>
         </div>
