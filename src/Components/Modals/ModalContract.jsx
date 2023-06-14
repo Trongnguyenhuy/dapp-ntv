@@ -64,7 +64,7 @@ const ModalContract = (props) => {
   const handleConfirm = async () => {
     setLoading(1);
     
-    if(amountOfToken.current<=0){
+    if(amountOfToken.current==0 || amountOfToken.current<=quantity){
       const setMessageAction = setMessage({
         type: "instruct",
         message: `Số tiền trong ví không đủ để giao dịch!`,
