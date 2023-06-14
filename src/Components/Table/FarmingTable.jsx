@@ -188,7 +188,7 @@ const FarmingTable = () => {
 
   return (
     <div className="container px-32 mx-auto py-8">
-      {/* <div className="flex flex-row justify-between py-6 gap-4">
+      <div className="flex flex-row justify-between py-6 gap-4">
         <input
           type="text"
           className="w-full py-2 px-4 bg-[#060d20] border-b-2 border-gray-800 focus:outline-none rounded-md"
