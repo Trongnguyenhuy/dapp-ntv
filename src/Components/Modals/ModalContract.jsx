@@ -63,8 +63,11 @@ const ModalContract = (props) => {
 
   const handleConfirm = async () => {
     setLoading(1);
-    
-    if(amountOfToken.current==0 || amountOfToken.current<=quantity){
+
+    if (
+      account.balanceOfStakeToken == 0 ||
+      account.balanceOfStakeToken < quantity
+    ) {
       const setMessageAction = setMessage({
         type: "instruct",
         message: `Số tiền trong ví không đủ để giao dịch!`,
@@ -72,8 +75,17 @@ const ModalContract = (props) => {
       dispatch(setMessageAction);
       setLoading(0);
       setModalOpen(false);
-    }
-    else{
+    } else if (
+      amountOfToken.current == 0
+    ) {
+      const setMessageAction = setMessage({
+        type: "instruct",
+        message: `Không thể giao dịch với số tiền 0 TVN!`,
+      });
+      dispatch(setMessageAction);
+      setLoading(0);
+      setModalOpen(false);
+    } else {
       const success = await depositTokenToPool(poolId, amountOfToken.current);
       // const success = true;
       setLoading(0);
@@ -102,11 +114,10 @@ const ModalContract = (props) => {
         const allStakingTime = getStakingTimeInfoApi();
         dispatch(allStakingTime);
       }
-  
+
       const balanceOfToken = updateBalanceOfTokenApi();
       dispatch(balanceOfToken);
     }
-    
   };
 
   const handleCancel = () => {
