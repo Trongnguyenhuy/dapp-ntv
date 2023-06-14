@@ -9,7 +9,7 @@ import { useChainId } from "@thirdweb-dev/react";
 const ModalWarming = (props) => {
   const { modalOpen, setModalOpen } = props;
   const { warming } = useSelector((state) => state.messageReducer);
-  console.log("Warming", warming.code);
+  // console.log("Warming", warming.code);
   const chainId = useChainId();
 
   return (

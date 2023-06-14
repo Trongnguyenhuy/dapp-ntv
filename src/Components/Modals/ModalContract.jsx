@@ -22,6 +22,7 @@ import {
 } from "../../Services/StakingServices/FarmingHook";
 import useStaking from "../../Services/StakingServices/StakingHook";
 import { bignumberModifier } from "../../Ultis/modifierData";
+import { error } from "./ModalDeposit";
 const NUMBEROFBLOCKPERDAY = 84000 / 13;
 
 const ModalContract = (props) => {
@@ -29,13 +30,13 @@ const ModalContract = (props) => {
   const { account, pools, rewardTokenPerBlock, totalMultiflier } = useSelector(
     (state) => state.farmingReducer
   );
-
-  const stakingContract = useStaking();
-  // const { result, isLoading, error } = usePools();
-
   const [loading, setLoading] = useState(0);
   const [quantity, setQuantity] = useState(0);
   const [predictAPR, setPredictAPR] = useState(0);
+
+  // const { result, isLoading, error } = usePools();
+  
+  const stakingContract = useStaking();
   const dispatch = useDispatch();
   const history = useHistory();
 
@@ -62,6 +63,25 @@ const ModalContract = (props) => {
   };
 
   const handleConfirm = async () => {
+    if (account.balanceOfStakeToken == 0 || account.balanceOfStakeToken < quantity) {
+      error({
+        title: "Tài Khoản Không Đủ",
+        content: "Tài khoản của bạn không đủ tiền để thực hiện giao dịch này!",
+      });
+
+      return;
+    }
+
+
+    if (amountOfToken.current == 0) {
+      error({
+        title: "Giao Dịch Sai",
+        content: "Bạn không thể thực hiện giao dịch với 0 TVN!",
+      });
+
+      return
+    }
+
     setLoading(1);
     const success = await depositTokenToPool(poolId, amountOfToken.current);
     // const success = true;
@@ -76,9 +96,6 @@ const ModalContract = (props) => {
       const action = getAllPoolsAction(bignumberModifier(allPool));
       dispatch(action);
       dispatch(setMessageAction);
-      // console.log("allPool",bignumberModifier(allPool))
-      // const globalAPR = getPoolAPRAPI();
-      // dispatch(globalAPR);
     } else {
       const setMessageAction = setMessage({
         type: "confirm",

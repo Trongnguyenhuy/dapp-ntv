@@ -2,15 +2,13 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useState } from "react";
 import ModalContract from "../Modals/ModalContract";
-import { useDispatch, useSelector } from "react-redux";
+import ErrorModal from "../Modals/CustomModal/ErrorModal";
+import { useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import logoCoinLP from "../../assets/logo-coin-lp.png";
 import logoCoinTVN from "../../assets/logo-coin-tvn.png";
-import ModalWarming from "../Modals/ModalWarming";
 import { getGlobalARP } from "../../Services/StakingServices/FarmingServices";
-import { checkConnectAccount, checkChainId } from "../../Services/WalletServices/WalletServices";
-import { setWarming } from "../../Redux/Reducers/MessageReducer";
-import { useChainId } from "@thirdweb-dev/react";
+import { useAddress, useChain } from "@thirdweb-dev/react";
 
 const FarmingCard = (props) => {
   const { pools, account, totalMultiflier, rewardTokenPerBlock } = useSelector(
@@ -19,10 +17,16 @@ const FarmingCard = (props) => {
   const { id, isHome, duration } = props;
   const history = useHistory();
   const [modalOpen, setModalOpen] = useState(false);
-  const [openModalWarming, setOpenModalWarming] = useState(false);
   const [globalAPR, setGlobalAPR] = useState(0);
-  const dispatch = useDispatch();
-  const chainId = useChainId();
+  const [chainName, setChainName] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [message, setMessage] = useState({
+    title: "",
+    content: "",
+  });
+  const chain = useChain();
+  const address = useAddress();
+
   const calculateGlobalAPR = () => {
     return getGlobalARP(
       totalMultiflier,
@@ -37,57 +41,64 @@ const FarmingCard = (props) => {
       const globalAPR = calculateGlobalAPR();
       setGlobalAPR(globalAPR.toFixed(2));
     }
-  }, [totalMultiflier,pools]);
+    if (chain) {
+      setChainName(chain.name);
+    }
+
+    if (chainName != "" || address != undefined) {
+      setIsModalOpen(false);
+    }
+
+  }, [totalMultiflier, pools, chain, chainName, address]);
 
   const handleClick = () => {
     history.push(`/farm-detail/${id}`); // Chuyển đến đường dẫn với param
   };
 
-  const handleModal = async () => {
+  const handleModal = () => {
+    console.log("chainName", chainName);
+    console.log("address", address);
 
-    try {
-      const checkConnect = await checkConnectAccount(dispatch);
-      const checkChain = await checkChainId(dispatch, true);
-      if (checkConnect == undefined) {
-        const warmingAction = setWarming({
-          type: "instruct",
-          header: "Chưa kết nối ví!",
-          message: "Bạn chưa kết nối ví MetaMask!",
-          code: "wm02",
-        });
-        dispatch(warmingAction);
-        setOpenModalWarming(true);
-        setModalOpen(false);
-      }
-      if (checkChain == false) {
-        const warmingAction = setWarming({
-          type: "instruct",
-          header: "Sai mạng!",
-          message: "Hãy chuyển sang mạng Sepolia!",
-          code: "wm03",
-        });
-        dispatch(warmingAction);
-        setOpenModalWarming(true);
-        setModalOpen(false);
-      }
-      else {
-        setOpenModalWarming(false);
-        setModalOpen(true);
-      }
-    } catch (error) {
-      console.error(error);
+    if (address == undefined) {
+      setMessage({
+        title: "Chưa kết nối",
+        content: "Kết nối bằng Button bên dưới",
+      });
+      setIsModalOpen(true);
+      return;
     }
 
-    // if (account.address) {
+    if (chainName == "") {
+      setMessage({
+        title: "Chưa kết nối",
+        content: "Kết nối bằng Button bên dưới",
+      });
+      setIsModalOpen(true);
+      return;
+    }
 
-    //   setOpenModalWarming(false);
-    //   setModalOpen(true);
-    // } else {
-    //   setOpenModalWarming(true);
+    if (chainName != "Sepolia") {
+      setIsModalOpen(false);
+      setMessage({
+        title: "Sai Mạng",
+        content: "Vui lòng chuyển mạng Sepolia bằng button bên dưới",
+      });
 
-    //   setModalOpen(false);
+      setIsModalOpen(true);
+      return;
+    }
 
-    // }
+    if (account.address == undefined) {
+      console.log("account.address", account.address);
+      setMessage({
+        title: "Chưa kết nối",
+        content: "Kết nối bằng Button bên dưới",
+      });
+      setIsModalOpen(true);
+      return;
+    }
+
+    setModalOpen(true);
   };
 
   return (
@@ -123,23 +134,26 @@ const FarmingCard = (props) => {
           <div className="flex flex-col items-center py-4">
             <button
               onClick={handleClick}
-              className={`${isHome == false ? "hidden" : ""
-                } w-full py-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg font-sans font-medium cursor-pointer text-white`}
+              className={`${
+                isHome == false ? "hidden" : ""
+              } w-full py-4 bg-[rgb(127,82,255)] hover:bg-[rgb(81,59,143)] rounded-lg font-sans font-medium cursor-pointer text-white`}
             >
               Xem chi tiết
             </button>
             <span
               onClick={handleClick}
-              className={`${isHome == true ? "hidden" : ""
-                } underline cursor-pointer`}
+              className={`${
+                isHome == true ? "hidden" : ""
+              } underline cursor-pointer`}
             >
               Xem chi tiết
             </span>
           </div>
         </div>
         <div
-          className={`flex flex-row justify-center ${isHome == true ? "hidden" : ""
-            }`}
+          className={`flex flex-row justify-center ${
+            isHome == true ? "hidden" : ""
+          }`}
         >
           <button
             onClick={handleModal}
@@ -157,9 +171,14 @@ const FarmingCard = (props) => {
         duration={duration}
         isInfoCard={false}
       />
-      <ModalWarming
+      {/* <ModalWarming
         modalOpen={openModalWarming}
         setModalOpen={setOpenModalWarming}
+      /> */}
+      <ErrorModal
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+        message={message}
       />
     </div>
   );
